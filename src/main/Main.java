@@ -104,7 +104,7 @@ public class Main {
 				float x = (float) cursorPosX.get(0);
 				float y = (float) cursorPosY.get(0);
 				
-				// convert cursor coordinate to world coordinate
+				// convert cursor coordinate to OpenGL world coordinate
 				x -= WIDTH/2;
 				y *= -1;
 				y += HEIGHT/2;

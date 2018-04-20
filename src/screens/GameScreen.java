@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import org.joml.Vector3f;
 
 import main.Main;
-import objects.Button;
 import objects.Entity;
-import objects.GUIComponent;
 import objects.Loader;
 import objects.Model;
 import renderEngine.Renderer;
+import widgets.Button;
+import widgets.GUIComponent;
 
 /**
  * This class implements the game screen of the 

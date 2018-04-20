@@ -13,8 +13,8 @@ import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryUtil;
 
 import objects.Entity;
-import objects.GUIComponent;
 import shaders.ShaderProgram;
+import widgets.GUIComponent;
 
 /**
  * This class allows objects to be rendered in OpenGL.
