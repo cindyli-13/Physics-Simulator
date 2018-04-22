@@ -22,15 +22,15 @@ public class Physics {
 	 * Manages the collision detection and collision response between 
 	 * all possible collision scenarios.
 	 * 
-	 * @param entities   the ArrayList containing the entities to check for collision
-	 * @param ground 	 the boundary bordering the bottom of the simulation window
-	 * @param boundary1  the boundary bordering the left of the simulation window
-	 * @param boundary2  the boundary bordering the top of the simulation window
-	 * @param boundary3  the boundary bordering the right of the simulation window
-	 * @param z 		 the z-value of all entities
+	 * @param entities   	the ArrayList containing the entities to check for collision
+	 * @param ground 	 	the boundary bordering the bottom of the simulation window
+	 * @param leftBoundary  the boundary bordering the left of the simulation window
+	 * @param topBoundary 	the boundary bordering the top of the simulation window
+	 * @param rightBoundary  	the boundary bordering the right of the simulation window
+	 * @param z 		 	the z-value of all entities
 	 */
-	public static void collision(ArrayList<Entity> entities, Rectangle ground, Rectangle boundary1, 
-			Rectangle boundary2, Rectangle boundary3, float z) {
+	public static void collision(ArrayList<Entity> entities, Rectangle ground, Rectangle leftBoundary, 
+			Rectangle topBoundary, Rectangle rightBoundary, float z) {
 			
 		// entity-entity collision
 		for (int i = 0; i < entities.size(); i++) {
@@ -89,31 +89,32 @@ public class Physics {
 					
 				// ground
 				if (r.getAabb().intersects(ground.getAabb())) {
+					
 					r.setPosition(new Vector3f(r.getPosition().x, 
-							ground.getAabb().getMax().y - r.getYMin(), z));
+							ground.getAabb().getMax().y + r.getHeight()/2, z));
 					r.setVelocity(new Vector3f(r.getVelocity().x, 
 							r.getVelocity().y * r.getCoefficientOfRestitution(), 0));
 				}
 					
-				// boundary 1
-				if (r.getAabb().intersects(boundary1.getAabb())) {
-					r.setPosition(new Vector3f(boundary1.getAabb().getMax().x - r.getXMin(), 
+				// left boundary
+				if (r.getAabb().intersects(leftBoundary.getAabb())) {
+					r.setPosition(new Vector3f(leftBoundary.getAabb().getMax().x + r.getWidth()/2, 
 							r.getPosition().y, z));
 					r.setVelocity(new Vector3f(r.getVelocity().x * r.getCoefficientOfRestitution(), 
 							r.getVelocity().y, 0));
 				}
 					
-				// boundary 2
-				if (r.getAabb().intersects(boundary2.getAabb())) {
+				// top boundary
+				if (r.getAabb().intersects(topBoundary.getAabb())) {
 					r.setPosition(new Vector3f(r.getPosition().x, 
-							boundary2.getAabb().getMin().y - r.getYMax(), z));
+							topBoundary.getAabb().getMin().y - r.getHeight()/2, z));
 					r.setVelocity(new Vector3f(r.getVelocity().x, 
 							r.getVelocity().y * r.getCoefficientOfRestitution(), 0));
 				}
 					
-				// boundary 3
-				if (r.getAabb().intersects(boundary3.getAabb())) {
-					r.setPosition(new Vector3f(boundary3.getAabb().getMin().x - r.getXMax(), 
+				// right boundary
+				if (r.getAabb().intersects(rightBoundary.getAabb())) {
+					r.setPosition(new Vector3f(rightBoundary.getAabb().getMin().x - r.getWidth()/2, 
 							r.getPosition().y, z));
 					r.setVelocity(new Vector3f(r.getVelocity().x * r.getCoefficientOfRestitution(), 
 							r.getVelocity().y, 0));
@@ -133,25 +134,25 @@ public class Physics {
 							c.getVelocity().y * c.getCoefficientOfRestitution(), 0));
 				}
 					
-				// boundary 1
-				if (c.intersects(boundary1.getAabb())) {
-					c.setPosition(new Vector3f(boundary1.getAabb().getMax().x + c.getRadius(), 
+				// left boundary
+				if (c.intersects(leftBoundary.getAabb())) {
+					c.setPosition(new Vector3f(leftBoundary.getAabb().getMax().x + c.getRadius(), 
 							c.getPosition().y, z));
 					c.setVelocity(new Vector3f(c.getVelocity().x * c.getCoefficientOfRestitution(), 
 							c.getVelocity().y, 0));
 				}
 					
-				// boundary 2
-				if (c.intersects(boundary2.getAabb())) {
+				// top boundary
+				if (c.intersects(topBoundary.getAabb())) {
 					c.setPosition(new Vector3f(c.getPosition().x, 
-							boundary2.getAabb().getMin().y - c.getRadius(), z));
+							topBoundary.getAabb().getMin().y - c.getRadius(), z));
 					c.setVelocity(new Vector3f(c.getVelocity().x, 
 							c.getVelocity().y * c.getCoefficientOfRestitution(), 0));
 				}
 					
-				// boundary 3
-				if (c.intersects(boundary3.getAabb())) {
-					c.setPosition(new Vector3f(boundary3.getAabb().getMin().x - c.getRadius(), 
+				// right boundary
+				if (c.intersects(rightBoundary.getAabb())) {
+					c.setPosition(new Vector3f(rightBoundary.getAabb().getMin().x - c.getRadius(), 
 							c.getPosition().y, z));
 					c.setVelocity(new Vector3f(c.getVelocity().x * c.getCoefficientOfRestitution(), 
 							c.getVelocity().y, 0));
@@ -279,8 +280,8 @@ public class Physics {
 			
 		Vector3f closest = new Vector3f(b.getPosition().x, b.getPosition().y, b.getPosition().z);
 			
-		closest.x = Physics.clamp(closest.x, a.getPosition().x + a.getXMin(), a.getPosition().x + a.getXMax());
-		closest.y = Physics.clamp(closest.y, a.getPosition().y + a.getYMin(), a.getPosition().y + a.getYMax());
+		closest.x = Physics.clamp(closest.x, a.getPosition().x - a.getWidth()/2, a.getPosition().x + a.getWidth()/2);
+		closest.y = Physics.clamp(closest.y, a.getPosition().y - a.getHeight()/2, a.getPosition().y + a.getHeight()/2);
 			
 		Vector3f collisionNormal = new Vector3f();
 		b.getPosition().sub(closest, collisionNormal);

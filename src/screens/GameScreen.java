@@ -1,8 +1,13 @@
 package screens;
 
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.GL_TRUE;
+
+import java.nio.DoubleBuffer;
 import java.util.ArrayList;
 
 import org.joml.Vector3f;
+import org.lwjgl.BufferUtils;
 
 import main.Main;
 import objects.Entity;
@@ -11,6 +16,7 @@ import objects.Model;
 import renderEngine.Renderer;
 import widgets.Button;
 import widgets.GUIComponent;
+import widgets.SimulationWindow;
 
 /**
  * This class implements the game screen of the 
@@ -28,11 +34,13 @@ public class GameScreen {
 	private ArrayList<GUIComponent> guiComponents;
 	private ArrayList<Button> buttons;
 	
+	private SimulationWindow simulation;
+	
 	// static variables
 	private static String MENU_BUTTON_TEXTURE_FILE = "./res/MenuB.png";
 	
 	// constructor
-	public GameScreen(Loader loader, float screenWidth, float screenHeight, float z) {
+	public GameScreen(long window, Loader loader, float screenWidth, float screenHeight, float z) {
 		
 		// ******** INITIAL STATES OF BUTTONS ********
 		//
@@ -72,16 +80,59 @@ public class GameScreen {
 		// initialize button array list
 		buttons = new ArrayList<Button>();
 		buttons.add(menuButton);
+		
+		
+		// simulation window
+		simulation = new SimulationWindow(window, loader, screenWidth, screenHeight, z);
 	}
 	
 	/**
-	 * Renders the GUI components of the game screen.
+	 * Renders the game screen.
 	 * 
 	 * @param renderer		the renderer
 	 */
 	public void render(Renderer renderer) {
 		
+		simulation.render(renderer);
 		renderer.renderGUI(guiComponents);
+	}
+	
+	/**
+	 * Updates the game screen.
+	 */
+	public void update() {
+		
+		if (!simulation.isPause())
+			simulation.update();
+	}
+	
+	/**
+	 * Contains the logic for input handling.
+	 * 
+	 * @param window
+	 */
+	public void input(Main main, long window, float screenWidth, float screenHeight) {
+		
+		// mouse input
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GL_TRUE) {
+			
+			// get cursor coordinate
+			
+			DoubleBuffer cursorPosX = BufferUtils.createDoubleBuffer(1);
+			DoubleBuffer cursorPosY = BufferUtils.createDoubleBuffer(1);
+			
+			glfwGetCursorPos(window, cursorPosX, cursorPosY);
+			
+			float x = (float) cursorPosX.get(0);
+			float y = (float) cursorPosY.get(0);
+			
+			// convert cursor coordinate to OpenGL world coordinate
+			x -= screenWidth/2;
+			y *= -1f;
+			y += screenHeight/2;
+			
+			mouseInput(main, x, y);
+		}
 	}
 	
 	/**
@@ -99,11 +150,26 @@ public class GameScreen {
 			if (button.getAabb().intersects(x, y)) {
 						
 				// check which button
-				if (button.equals(menuButton))
+				if (button.equals(menuButton)) {
+					
+					// pause simulation
+					simulation.setPause(true);
+					
 					main.setCurrScreen(0);
+				}
 			}
 			
 		}
 		
 	}
+
+	/**
+	 * Returns the game screen's simulation window.
+	 * 
+	 * @return simulation
+	 */
+	public SimulationWindow getSimulationWindow() {
+		return simulation;
+	}
+	
 }

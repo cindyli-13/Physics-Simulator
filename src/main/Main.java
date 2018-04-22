@@ -6,10 +6,8 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 
-import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
@@ -91,57 +89,27 @@ public class Main {
 			// key callback will be invoked here
 			glfwPollEvents();
 			
-			// mouse input
-			if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GL_TRUE) {
-				
-				// get cursor coordinate
-				
-				DoubleBuffer cursorPosX = BufferUtils.createDoubleBuffer(1);
-				DoubleBuffer cursorPosY = BufferUtils.createDoubleBuffer(1);
-				
-				glfwGetCursorPos(window, cursorPosX, cursorPosY);
-				
-				float x = (float) cursorPosX.get(0);
-				float y = (float) cursorPosY.get(0);
-				
-				// convert cursor coordinate to OpenGL world coordinate
-				x -= WIDTH/2;
-				y *= -1;
-				y += HEIGHT/2;
-				
-				// check the current screen the user is on
-				switch (currScreen) {
-					case 0:
-						menuScreen.mouseInput(this, x, y);
-						break;
-					case 1:
-						gameScreen.mouseInput(this, x, y);
-						break;
-					case 2:
-						lessonScreen.mouseInput(this, x, y);
-						break;
-					case 3:
-						customizedScreen.mouseInput(this, x, y);
-						break;
-				}
-			}
-			
 			glEnable(GL_DEPTH_TEST);
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			
-			// check the current screen the user is on and render it
+			// check the current screen the user is on, check for inputs, then render it
 			switch (currScreen) {
 				case 0:
+					menuScreen.input(this, window, WIDTH, HEIGHT);
 					menuScreen.render(renderer);
 					break;
 				case 1:
+					gameScreen.input(this, window, WIDTH, HEIGHT);
+					gameScreen.update();
 					gameScreen.render(renderer);
 					break;
 				case 2:
+					lessonScreen.input(this, window, WIDTH, HEIGHT);
 					lessonScreen.render(renderer);
 					break;
 				case 3:
+					customizedScreen.input(this, window, WIDTH, HEIGHT);
 					customizedScreen.render(renderer);
 					break;
 			}
@@ -231,11 +199,48 @@ public class Main {
 	public void initScreens() {
 		
 		menuScreen = new MenuScreen(loader, WIDTH, HEIGHT, z);
-		gameScreen = new GameScreen(loader, WIDTH, HEIGHT, z);
+		gameScreen = new GameScreen(window, loader, WIDTH, HEIGHT, z);
 		lessonScreen = new LessonScreen(loader, WIDTH, HEIGHT, z);
 		customizedScreen = new CustomizedScreen(loader, WIDTH, HEIGHT, z);
 		
 		currScreen = 0;
+		
+		// test (to be removed later)
+		test();
+	}
+	
+	// test method (to be removed later)
+	private void test() {
+		
+		// just a flag to remind me to remove this later
+		int dummy = 0;
+		
+		// add a crate to game screen simulation window
+		float sideLength = 60f;
+		float x = 0f;
+		float y = 0f;
+		float mass = 10f;
+		float e = -0.5f;
+		
+		gameScreen.getSimulationWindow().createCrateEntity(sideLength, x, y, z, mass, e);
+		
+		// add a metal box to game screen simulation window
+		sideLength = 60f;
+		x = 100f;
+		y = 0f;
+		mass = 50f;
+		e = -0.3f;
+				
+		gameScreen.getSimulationWindow().createMetalBoxEntity(sideLength, x, y, z, mass, e);
+		
+		// add a ball to game screen simulation window
+		float radius = 30f;
+		x = 200f;
+		y = 0f;
+		mass = 5f;
+		e = -0.7f;
+						
+		gameScreen.getSimulationWindow().createBallEntity(radius, x, y, z, mass, e);
 	}
 		
 	/**

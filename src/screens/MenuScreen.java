@@ -1,8 +1,15 @@
 package screens;
 
+import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_1;
+import static org.lwjgl.glfw.GLFW.glfwGetCursorPos;
+import static org.lwjgl.glfw.GLFW.glfwGetMouseButton;
+import static org.lwjgl.opengl.GL11.GL_TRUE;
+
+import java.nio.DoubleBuffer;
 import java.util.ArrayList;
 
 import org.joml.Vector3f;
+import org.lwjgl.BufferUtils;
 
 import main.Main;
 import objects.Entity;
@@ -118,13 +125,42 @@ public class MenuScreen {
 	}
 	
 	/**
-	 * Renders the GUI components of the menu screen.
+	 * Renders the menu screen.
 	 * 
 	 * @param renderer		the renderer
 	 */
 	public void render(Renderer renderer) {
 		
 		renderer.renderGUI(guiComponents);
+	}
+	
+	/**
+	 * Contains the logic for input handling.
+	 * 
+	 * @param window
+	 */
+	public void input(Main main, long window, float screenWidth, float screenHeight) {
+		
+		// mouse input
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GL_TRUE) {
+			
+			// get cursor coordinate
+			
+			DoubleBuffer cursorPosX = BufferUtils.createDoubleBuffer(1);
+			DoubleBuffer cursorPosY = BufferUtils.createDoubleBuffer(1);
+			
+			glfwGetCursorPos(window, cursorPosX, cursorPosY);
+			
+			float x = (float) cursorPosX.get(0);
+			float y = (float) cursorPosY.get(0);
+			
+			// convert cursor coordinate to OpenGL world coordinate
+			x -= screenWidth/2;
+			y *= -1f;
+			y += screenHeight/2;
+			
+			mouseInput(main, x, y);
+		}
 	}
 	
 	/**
@@ -158,4 +194,5 @@ public class MenuScreen {
 		}
 		
 	}
+	
 }
