@@ -45,6 +45,7 @@ public class Main {
 	
 	private float z = -1f;
 	private int currScreen;		// 0 = menu, 1 = game, 2 = lesson, 3 = customized
+	private int key;
 	
 	// static variables
 	private static final int WIDTH = 1000;
@@ -52,6 +53,8 @@ public class Main {
 	
 	private static final String VERTEX_FILE = "src/shaders/vertexShader.vs";
 	private static final String FRAGMENT_FILE = "src/shaders/fragmentShader.fs";
+	
+	public static final int KEY_SPACE = 0;
 	
 	// main
 	public static void main(String[] args) {
@@ -100,7 +103,7 @@ public class Main {
 					menuScreen.render(renderer);
 					break;
 				case 1:
-					gameScreen.input(this, window, WIDTH, HEIGHT);
+					gameScreen.input(this, window, WIDTH, HEIGHT, key);
 					gameScreen.update();
 					gameScreen.render(renderer);
 					break;
@@ -113,6 +116,9 @@ public class Main {
 					customizedScreen.render(renderer);
 					break;
 			}
+			
+			// reset keyboard input holder
+			key = -1;
 			
 			glfwSwapBuffers(window); // swap the color buffers
 		}
@@ -143,9 +149,15 @@ public class Main {
 		// set up a key callback
 		// these will be detected with "poll events" in the render loop
 		glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+			
 			if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
 				glfwSetWindowShouldClose(window, true);
+			
+			if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
+				this.key = KEY_SPACE;
 		});
+		
+		key = -1;
 			
 		// get the thread stack and push a new frame
 		try (MemoryStack stack = stackPush()) {
@@ -217,29 +229,29 @@ public class Main {
 		
 		// add a crate to game screen simulation window
 		float sideLength = 60f;
-		float x = 0f;
-		float y = 0f;
+		float x = 100f;
+		float y = 50f;
 		float mass = 10f;
-		float e = -0.5f;
+		float e = -0.7f;
 		
 		gameScreen.getSimulationWindow().createCrateEntity(sideLength, x, y, z, mass, e);
 		
 		// add a metal box to game screen simulation window
 		sideLength = 60f;
 		x = 100f;
-		y = 0f;
+		y = -50f;
 		mass = 50f;
 		e = -0.3f;
-				
+		
 		gameScreen.getSimulationWindow().createMetalBoxEntity(sideLength, x, y, z, mass, e);
 		
 		// add a ball to game screen simulation window
 		float radius = 30f;
-		x = 200f;
-		y = 0f;
+		x = 100f;
+		y = 150f;
 		mass = 5f;
-		e = -0.7f;
-						
+		e = -0.9f;
+				
 		gameScreen.getSimulationWindow().createBallEntity(radius, x, y, z, mass, e);
 	}
 		

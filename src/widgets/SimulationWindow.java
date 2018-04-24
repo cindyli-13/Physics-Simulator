@@ -1,7 +1,5 @@
 package widgets;
 
-import static org.lwjgl.glfw.GLFW.*;
-
 import java.util.ArrayList;
 
 import org.joml.Vector3f;
@@ -63,6 +61,18 @@ public class SimulationWindow {
 	private static final String BOUNDARY_TEXTURE_FILE = "./res/boundary.png";
 	private static final String SKY_TEXTURE_FILE = "./res/sky.png";
 	
+	private static final float CRATE_STATIC_FRICTION = 0.4f;
+	private static final float METAL_BOX_STATIC_FRICTION = 0.3f;
+	private static final float BALL_STATIC_FRICTION = 0.1f;
+	private static final float GROUND_STATIC_FRICTION = 0.4f;
+	private static final float BOUNDARY_STATIC_FRICTION = 0.2f;
+	
+	private static final float CRATE_KINETIC_FRICTION = 0.3f;
+	private static final float METAL_BOX_KINETIC_FRICTION = 0.2f;
+	private static final float BALL_KINETIC_FRICTION = 0.05f;
+	private static final float GROUND_KINETIC_FRICTION = 0.3f;
+	private static final float BOUNDARY_KINETIC_FRICTION = 0.1f;
+	
 	private static final float maximumMass = Float.MAX_VALUE;
 	
 	private static float g = -9.81f;	// acceleration due to gravity
@@ -99,7 +109,7 @@ public class SimulationWindow {
 		Model gModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 		
 		ground = new Rectangle(gModel, gPos, velocity, acceleration, rotation, scale, 
-				maximumMass, 0, gWidth, gHeight);
+				maximumMass, 0, gWidth, gHeight, GROUND_STATIC_FRICTION, GROUND_KINETIC_FRICTION);
 		
 		// left boundary
 		float lWidth = 30f;
@@ -114,7 +124,7 @@ public class SimulationWindow {
 		Model lModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 		
 		leftBoundary = new Rectangle(lModel, lPos, velocity, acceleration, rotation, scale, 
-				maximumMass, 0, lWidth, lHeight);
+				maximumMass, 0, lWidth, lHeight, BOUNDARY_STATIC_FRICTION, BOUNDARY_KINETIC_FRICTION);
 		
 		// right boundary
 		float rWidth = lWidth;	// same as left boundary
@@ -129,7 +139,7 @@ public class SimulationWindow {
 		Model rModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 				
 		rightBoundary = new Rectangle(rModel, rPos, velocity, acceleration, rotation, scale, 
-				maximumMass, 0, rWidth, rHeight);
+				maximumMass, 0, rWidth, rHeight, BOUNDARY_STATIC_FRICTION, BOUNDARY_KINETIC_FRICTION);
 		
 		// top boundary
 		float tWidth = gWidth;
@@ -144,7 +154,7 @@ public class SimulationWindow {
 		Model tModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 				
 		topBoundary = new Rectangle(tModel, tPos, velocity, acceleration, rotation, scale, 
-				maximumMass, 0, tWidth, tHeight);
+				maximumMass, 0, tWidth, tHeight, BOUNDARY_STATIC_FRICTION, BOUNDARY_KINETIC_FRICTION);
 		
 		
 		// initialize boundaries array list
@@ -216,14 +226,6 @@ public class SimulationWindow {
 		pause = true;
 		
 		this.z = z;
-		
-		// set up a key callback
-		// these will be detected with "poll events" in the loop in the main class
-		glfwSetKeyCallback(window, (w, key, scancode, action, mods) -> {
-			
-			if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
-				pause = !pause;
-		});
 	}
 	
 	/**
@@ -245,7 +247,7 @@ public class SimulationWindow {
 		float scale = sideLength / modelSideLength;
 		
 		Rectangle crate = new Rectangle(crateModel, position, velocity, acceleration, rotation, scale, 
-				mass, e, sideLength, sideLength);
+				mass, e, sideLength, sideLength, CRATE_STATIC_FRICTION, CRATE_KINETIC_FRICTION);
 		
 		entities.add(crate);
 	}
@@ -263,13 +265,13 @@ public class SimulationWindow {
 	public void createMetalBoxEntity(float sideLength, float x, float y, float z, float mass, float e) {
 		
 		Vector3f position = new Vector3f(x,y,z);
-		Vector3f velocity = new Vector3f(0,0,0);
+		Vector3f velocity = new Vector3f(10,0,0);
 		Vector3f acceleration = new Vector3f(0,g,0);
 		Vector3f rotation = new Vector3f(0,0,0);
 		float scale = sideLength / modelSideLength;
 		
 		Rectangle metalBox = new Rectangle(metalBoxModel, position, velocity, acceleration, rotation, scale, 
-				mass, e, sideLength, sideLength);
+				mass, e, sideLength, sideLength, METAL_BOX_STATIC_FRICTION, METAL_BOX_KINETIC_FRICTION);
 		
 		entities.add(metalBox);
 	}
@@ -293,7 +295,7 @@ public class SimulationWindow {
 		float scale = 2 * radius / modelSideLength;
 		
 		Circle ball = new Circle(ballModel, position, velocity, acceleration, rotation, scale, 
-				mass, e, radius);
+				mass, e, radius, BALL_STATIC_FRICTION, BALL_KINETIC_FRICTION);
 		
 		entities.add(ball);
 	}
@@ -344,6 +346,33 @@ public class SimulationWindow {
 	 */
 	public void setPause(boolean pause) {
 		this.pause = pause;
+	}
+
+	/**
+	 * Returns the crate model.
+	 * 
+	 * @return crateModel
+	 */
+	public Model getCrateModel() {
+		return crateModel;
+	}
+
+	/**
+	 * Returns the metal box model.
+	 * 
+	 * @return metalBoxModel
+	 */
+	public Model getMetalBoxModel() {
+		return metalBoxModel;
+	}
+
+	/**
+	 * Returns the ball model.
+	 * 
+	 * @return ballModel
+	 */
+	public Model getBallModel() {
+		return ballModel;
 	}
 	
 }

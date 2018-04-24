@@ -111,7 +111,7 @@ public class GameScreen {
 	 * 
 	 * @param window
 	 */
-	public void input(Main main, long window, float screenWidth, float screenHeight) {
+	public void input(Main main, long window, float screenWidth, float screenHeight, int key) {
 		
 		// mouse input
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GL_TRUE) {
@@ -133,6 +133,9 @@ public class GameScreen {
 			
 			mouseInput(main, x, y);
 		}
+		
+		// keyboard input
+		keyboardInput(key);
 	}
 	
 	/**
@@ -161,6 +164,19 @@ public class GameScreen {
 			
 		}
 		
+	}
+	
+	/**
+	 * Contains the logic for when a key is pressed.
+	 * 
+	 * @param key  the key that was pressed
+	 */
+	public void keyboardInput(int key) {
+		
+		// space bar
+		if(key == Main.KEY_SPACE) {
+			simulation.setPause(!simulation.isPause());
+		}
 	}
 
 	/**

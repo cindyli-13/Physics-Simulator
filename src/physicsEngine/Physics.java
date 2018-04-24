@@ -94,6 +94,25 @@ public class Physics {
 							ground.getAabb().getMax().y + r.getHeight()/2, z));
 					r.setVelocity(new Vector3f(r.getVelocity().x, 
 							r.getVelocity().y * r.getCoefficientOfRestitution(), 0));
+					
+					// friction
+					float mu = pythagoreanTheorem(r.getKineticFriction(), ground.getKineticFriction());
+					float magnitude = mu * 9.81f;
+					
+					if (r.getVelocity().x > 0) {
+						
+						if (r.getVelocity().x < magnitude)
+							r.getVelocity().x = 0f;
+						else
+							r.getVelocity().x -= magnitude;
+					}
+					else if (r.getVelocity().x < 0) {
+						
+						if (r.getVelocity().x > -magnitude)
+							r.getVelocity().x = 0f;
+						else
+							r.getVelocity().x += magnitude;
+					}
 				}
 					
 				// left boundary
@@ -132,6 +151,25 @@ public class Physics {
 							ground.getAabb().getMax().y + c.getRadius(), z));
 					c.setVelocity(new Vector3f(c.getVelocity().x, 
 							c.getVelocity().y * c.getCoefficientOfRestitution(), 0));
+					
+					// friction
+					float mu = pythagoreanTheorem(c.getKineticFriction(), ground.getKineticFriction());
+					float magnitude = mu * 9.81f;
+					
+					if (c.getVelocity().x > 0) {
+						
+						if (c.getVelocity().x < magnitude)
+							c.getVelocity().x = 0f;
+						else
+							c.getVelocity().x -= magnitude;
+					}
+					else if (c.getVelocity().x < 0) {
+						
+						if (c.getVelocity().x > -magnitude)
+							c.getVelocity().x = 0f;
+						else
+							c.getVelocity().x += magnitude;
+					}
 				}
 					
 				// left boundary
@@ -374,11 +412,11 @@ public class Physics {
 	}
 	
 	/**
-	 * Resolves the collision using. Impulse resolution is a method of 
+	 * Resolves the collision using impulse resolution. Impulse resolution is a method of 
 	 * collision resolution where an instantaneous change in velocity is 
 	 * applied to each of the objects involved.
 	 * 
-	 * @param collisionNormal  the direction in which the collision should resolve in
+	 * @param collisionNormal  the direction in which the collision should resolve
 	 * @param a  the first entity
 	 * @param b  the second entity
 	 */
@@ -415,7 +453,72 @@ public class Physics {
 			// apply impulse
 			a.getVelocity().sub(impulseA.div(a.getMass()));
 			b.getVelocity().add(impulseB.div(b.getMass()));
+			
+			// apply friction
+			// this method is called here to make use of the impulse scalar that was calculated
+			friction(collisionNormal, a, b, impulseScalar);
 		}
+	}
+	
+	/**
+	 * Computes the friction vector to be added to each entity in question. 
+	 * There are two types of friction: static friction and kinetic friction. 
+	 * Static friction is friction between the two objects when they are stationary 
+	 * relative to each other. Dynamic friction is friction between the two 
+	 * objects when they are sliding across each other.
+	 * 
+	 * @param collisionNormal  the direction in which the collision resolved
+	 * @param a  the first entity
+	 * @param b  the second entity
+	 * @param j  the magnitude of the normal force
+	 */
+	public static void friction(Vector3f collisionNormal, 
+			Entity a, Entity b, float j) {
+		
+		// store inverse masses
+		float invMassA = 1f / a.getMass();
+		float invMassB = 1f / b.getMass();
+		
+		// find velocity of B relative to A
+		Vector3f relativeVel = new Vector3f();
+		b.getVelocity().sub(a.getVelocity(), relativeVel);
+		
+		// solve for tangent vector
+		Vector3f tangent = new Vector3f();
+		collisionNormal.mul(relativeVel.dot(collisionNormal), tangent);		
+		relativeVel.sub(tangent, tangent);
+		
+		if (tangent.length() != 0)
+			tangent.normalize();
+		
+		// solve for magnitude and apply along friction vector
+		float jt = -relativeVel.dot(tangent);
+		jt /= invMassA + invMassB;
+		
+		// solve for static friction given the static friction coefficients 
+		// of each object
+		// this method uses the Pythagorean Theorem
+		float staticFriction = pythagoreanTheorem(a.getStaticFriction(), 
+				b.getStaticFriction());
+		
+		// clamp magnitude of friction and create impulse vector
+		Vector3f frictionImpulse = new Vector3f();
+		if (Math.abs(jt) < j * staticFriction) {
+			tangent.mul(jt, frictionImpulse);
+		}
+		else {
+			float kineticFriction = pythagoreanTheorem(a.getKineticFriction(), 
+					b.getKineticFriction());
+			
+			tangent.mul(kineticFriction, frictionImpulse);
+			frictionImpulse.mul(-j);
+		}
+		
+		Vector3f temp = new Vector3f(frictionImpulse.x, frictionImpulse.y, frictionImpulse.z); 
+		
+		// apply friction impulse
+		a.getVelocity().sub(temp.div(a.getMass()));
+		b.getVelocity().add(frictionImpulse.div(b.getMass()));
 	}
 		
 	/**
@@ -437,4 +540,21 @@ public class Physics {
 			
 		return x;
 	}
+	
+	/**
+	 * Computes the value of c following the Pythagorean 
+	 * Theorem: a^2 + b^2 = c^2.
+	 * 
+	 * @param a
+	 * @param b
+	 * @return c
+	 */
+	public static float pythagoreanTheorem(float a, float b) {
+		
+		float c = (float) (Math.pow(a, 2) + Math.pow(b, 2));
+		c = (float) Math.sqrt(c);
+		
+		return c;
+	}
+	
 }

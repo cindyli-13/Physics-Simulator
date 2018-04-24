@@ -21,10 +21,12 @@ public class Entity {
 	private float scale;
 	private float mass;
 	private float e;  // the entity's coefficient of restitution, or "bounciness"
+	private float staticFriction;
+	private float kineticFriction;
 	
 	// constructor
 	public Entity(Model model, Vector3f position, Vector3f velocity, Vector3f acceleration, 
-			Vector3f rotation, float scale, float mass, float e) {
+			Vector3f rotation, float scale, float mass, float e, float staticFriction, float kineticFriction) {
 		
 		// model
 		this.model = model;
@@ -61,6 +63,10 @@ public class Entity {
 		
 		// coefficient of restitution
 		this.e = e;
+		
+		// coefficients of friction
+		this.staticFriction = staticFriction;
+		this.kineticFriction = kineticFriction;
 	}
 	
 	/**
@@ -292,6 +298,24 @@ public class Entity {
 	public void setCoefficientOfRestitution(float e) {
 		this.e = e;
 	}
+
+	/**
+	 * Returns the object's coefficient of static friction.
+	 * 
+	 * @return staticFriction
+	 */
+	public float getStaticFriction() {
+		return staticFriction;
+	}
+
+	/**
+	 * Returns the object's coefficient of kinetic friction.
+	 * 
+	 * @return kineticFriction
+	 */
+	public float getKineticFriction() {
+		return kineticFriction;
+	}
 	
 	
 	// ********** PUBLIC HELPER METHODS **********
@@ -358,4 +382,5 @@ public class Entity {
 		
 		return indices;
 	}
+	
 }

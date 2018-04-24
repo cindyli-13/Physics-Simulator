@@ -17,9 +17,10 @@ public class Circle extends Entity {
 	
 	// constructor
 	public Circle(Model model, Vector3f position, Vector3f velocity, Vector3f acceleration, Vector3f rotation,
-			float scale, float mass, float e, float radius) {
+			float scale, float mass, float e, float radius, float staticFriction, float kineticFriction) {
 		
-		super(model, position, velocity, acceleration, rotation, scale, mass, e);
+		super(model, position, velocity, acceleration, rotation, scale, mass, e, 
+				staticFriction, kineticFriction);
 		
 		this.radius = radius;
 	}

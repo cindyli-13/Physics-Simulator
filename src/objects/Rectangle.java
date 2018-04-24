@@ -21,9 +21,10 @@ public class Rectangle extends Entity {
 	
 	// constructor
 	public Rectangle(Model model, Vector3f position, Vector3f velocity, Vector3f acceleration, Vector3f rotation,
-			float scale, float mass, float e, float width, float height) {
+			float scale, float mass, float e, float width, float height, float staticFriction, float kineticFriction) {
 		
-		super(model, position, velocity, acceleration, rotation, scale, mass, e);
+		super(model, position, velocity, acceleration, rotation, scale, mass, e, 
+				staticFriction, kineticFriction);
 		
 		// dimensions
 		this.width = width;
