@@ -108,11 +108,11 @@ public class Main {
 					gameScreen.render(renderer);
 					break;
 				case 2:
-					lessonScreen.input(this, window, WIDTH, HEIGHT);
+					lessonScreen.input(this, window, WIDTH, HEIGHT, key);
 					lessonScreen.render(renderer);
 					break;
 				case 3:
-					customizedScreen.input(this, window, WIDTH, HEIGHT);
+					customizedScreen.input(this, window, WIDTH, HEIGHT, key);
 					customizedScreen.render(renderer);
 					break;
 			}
@@ -212,8 +212,8 @@ public class Main {
 		
 		menuScreen = new MenuScreen(loader, WIDTH, HEIGHT, z);
 		gameScreen = new GameScreen(window, loader, WIDTH, HEIGHT, z);
-		lessonScreen = new LessonScreen(loader, WIDTH, HEIGHT, z);
-		customizedScreen = new CustomizedScreen(loader, WIDTH, HEIGHT, z);
+		lessonScreen = new LessonScreen(window, loader, WIDTH, HEIGHT, z);
+		customizedScreen = new CustomizedScreen(window, loader, WIDTH, HEIGHT, z);
 		
 		currScreen = 0;
 		

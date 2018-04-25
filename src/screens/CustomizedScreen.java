@@ -18,6 +18,7 @@ import objects.Model;
 import renderEngine.Renderer;
 import widgets.Button;
 import widgets.GUIComponent;
+import widgets.SimulationWindow;
 
 /**
  * This class implements the customized screen of the 
@@ -34,12 +35,14 @@ public class CustomizedScreen {
 		
 	private ArrayList<GUIComponent> guiComponents;
 	private ArrayList<Button> buttons;
+	
+	private SimulationWindow simulation;
 		
 	// static variables
 	private static String MENU_BUTTON_TEXTURE_FILE = "./res/MenuB.png";
 		
 	// constructor
-	public CustomizedScreen(Loader loader, float screenWidth, float screenHeight, float z) {
+	public CustomizedScreen(long window, Loader loader, float screenWidth, float screenHeight, float z) {
 			
 		// ******** INITIAL STATES OF BUTTONS ********
 		//
@@ -79,6 +82,9 @@ public class CustomizedScreen {
 		// initialize button array list
 		buttons = new ArrayList<Button>();
 		buttons.add(menuButton);
+		
+		// simulation window
+		simulation = new SimulationWindow(window, loader, screenWidth, screenHeight, z);
 	}
 		
 	/**
@@ -88,7 +94,17 @@ public class CustomizedScreen {
 	 */
 	public void render(Renderer renderer) {
 			
+		simulation.render(renderer);
 		renderer.renderGUI(guiComponents);
+	}
+	
+	/**
+	 * Updates the game screen.
+	 */
+	public void update() {
+		
+		if (!simulation.isPause())
+			simulation.update();
 	}
 	
 	/**
@@ -96,7 +112,7 @@ public class CustomizedScreen {
 	 * 
 	 * @param window
 	 */
-	public void input(Main main, long window, float screenWidth, float screenHeight) {
+	public void input(Main main, long window, float screenWidth, float screenHeight, int key) {
 		
 		// mouse input
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GL_TRUE) {
@@ -118,8 +134,11 @@ public class CustomizedScreen {
 			
 			mouseInput(main, x, y);
 		}
-	}
 		
+		// keyboard input
+		keyboardInput(key);
+	}
+	
 	/**
 	 * Contains the logic for when a mouse is clicked.
 	 * 
@@ -130,16 +149,43 @@ public class CustomizedScreen {
 		
 		// loop through buttons array list
 		for (Button button: buttons) {
-						
+					
 			// check if this button was clicked
 			if (button.getAabb().intersects(x, y)) {
-							
+						
 				// check which button
-				if (button.equals(menuButton))
+				if (button.equals(menuButton)) {
+					
+					// pause simulation
+					simulation.setPause(true);
+					
 					main.setCurrScreen(0);
+				}
 			}
-				
-		}
 			
+		}
+		
+	}
+	
+	/**
+	 * Contains the logic for when a key is pressed.
+	 * 
+	 * @param key  the key that was pressed
+	 */
+	public void keyboardInput(int key) {
+		
+		// space bar
+		if(key == Main.KEY_SPACE) {
+			simulation.setPause(!simulation.isPause());
+		}
+	}
+
+	/**
+	 * Returns the game screen's simulation window.
+	 * 
+	 * @return simulation
+	 */
+	public SimulationWindow getSimulationWindow() {
+		return simulation;
 	}
 }

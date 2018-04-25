@@ -265,7 +265,7 @@ public class SimulationWindow {
 	public void createMetalBoxEntity(float sideLength, float x, float y, float z, float mass, float e) {
 		
 		Vector3f position = new Vector3f(x,y,z);
-		Vector3f velocity = new Vector3f(10,0,0);
+		Vector3f velocity = new Vector3f(0,0,0);
 		Vector3f acceleration = new Vector3f(0,g,0);
 		Vector3f rotation = new Vector3f(0,0,0);
 		float scale = sideLength / modelSideLength;
