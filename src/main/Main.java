@@ -109,10 +109,12 @@ public class Main {
 					break;
 				case 2:
 					lessonScreen.input(this, window, WIDTH, HEIGHT, key);
+					lessonScreen.update();
 					lessonScreen.render(renderer);
 					break;
 				case 3:
 					customizedScreen.input(this, window, WIDTH, HEIGHT, key);
+					customizedScreen.update();
 					customizedScreen.render(renderer);
 					break;
 			}

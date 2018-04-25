@@ -1,24 +1,18 @@
 package screens;
 
-import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_1;
-import static org.lwjgl.glfw.GLFW.glfwGetCursorPos;
-import static org.lwjgl.glfw.GLFW.glfwGetMouseButton;
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_TRUE;
 
 import java.nio.DoubleBuffer;
-import java.util.ArrayList;
 
-import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
 import main.Main;
-import objects.Entity;
 import objects.Loader;
-import objects.Model;
 import renderEngine.Renderer;
 import widgets.Button;
-import widgets.GUIComponent;
 import widgets.SimulationWindow;
+import widgets.Toolbar;
 
 /**
  * This class implements the customized screen of the 
@@ -30,61 +24,22 @@ import widgets.SimulationWindow;
  */
 public class CustomizedScreen {
 
-	// instance variables
-	private Button menuButton;		// mButton
-		
-	private ArrayList<GUIComponent> guiComponents;
-	private ArrayList<Button> buttons;
-	
+	// instance variables	
 	private SimulationWindow simulation;
-		
-	// static variables
-	private static String MENU_BUTTON_TEXTURE_FILE = "./res/MenuB.png";
+	private Toolbar toolbar;
+	
+	private float z;
 		
 	// constructor
 	public CustomizedScreen(long window, Loader loader, float screenWidth, float screenHeight, float z) {
-			
-		// ******** INITIAL STATES OF BUTTONS ********
-		//
-		// 	width		the button width
-		// 	height		the button height
-		// 	x			the x coordinate of the center of the button (in OpenGL world coordinates)
-		// 	y			the y coordinate of the center of the button (in OpenGL world coordinates)
-			
-		float mbuttonWidth = 100f;
-		float mbuttonHeight = 70f;	
-		float mButtonX = -screenWidth/2 + mbuttonWidth/2;	// flush against left side of the screen
-		float mButtonY = screenHeight/2 - mbuttonHeight/2;  // flush against top of the screen
-		Vector3f mButtonPos = new Vector3f(mButtonX, mButtonY, z);
-			
-		float[] mButtonVertices = Entity.getVertices(mbuttonWidth, mbuttonHeight, z);
-			
-		// the following will be the same for each button
-		float[] texCoords = Entity.getTexCoords();
-		int[] indices = Entity.getIndices();
 					
-		Vector3f rotation = new Vector3f(0,0,0);
-		float scale = 1f;
-					
-		// **************************************************
-					
-		// menu button
-		int textureID = loader.loadTexture(MENU_BUTTON_TEXTURE_FILE);
-		Model gButtonModel = loader.loadToVAO(mButtonVertices, texCoords, indices, textureID);
-					
-		menuButton = new Button(gButtonModel, mButtonPos, rotation, scale, mbuttonWidth, mbuttonHeight);
-					
-			
-		// initialize GUI components array list
-		guiComponents = new ArrayList<GUIComponent>();
-		guiComponents.add(menuButton);
-					
-		// initialize button array list
-		buttons = new ArrayList<Button>();
-		buttons.add(menuButton);
-		
 		// simulation window
 		simulation = new SimulationWindow(window, loader, screenWidth, screenHeight, z);
+		
+		// toolbar
+		toolbar = new Toolbar(loader, screenWidth, screenHeight, z);
+		
+		this.z = z;
 	}
 		
 	/**
@@ -93,9 +48,9 @@ public class CustomizedScreen {
 	 * @param renderer		the renderer
 	 */
 	public void render(Renderer renderer) {
-			
+		
+		toolbar.render(renderer);
 		simulation.render(renderer);
-		renderer.renderGUI(guiComponents);
 	}
 	
 	/**
@@ -147,22 +102,53 @@ public class CustomizedScreen {
 	 */
 	public void mouseInput(Main main, float x, float y) {
 		
-		// loop through buttons array list
-		for (Button button: buttons) {
-					
+		// loop through buttons of toolbar
+		for (Button button: toolbar.getButtons()) {
+			
 			// check if this button was clicked
 			if (button.getAabb().intersects(x, y)) {
-						
-				// check which button
-				if (button.equals(menuButton)) {
+								
+				// menu button
+				if (button.equals(toolbar.getMenuButton())) {
 					
 					// pause simulation
 					simulation.setPause(true);
-					
+								
 					main.setCurrScreen(0);
 				}
+				
+				// info button
+				else if (button.equals(toolbar.getInfoButton())) {
+					
+					UserGuideScreen.showUserGuide();
+				}
+				
+				// rectangle button
+				else if (button.equals(toolbar.getRectangleButton())) {
+					
+					// generate random crate for now
+					float sideLength = (float) Math.random() * 50 + 20;
+					float posX = (float) Math.random() * 650 - 230;
+					float posY = (float) Math.random() * 350 - 200;
+					float mass = (float) Math.random() * 20 + 1;
+					float e = -0.5f;
+					
+					simulation.createCrateEntity(sideLength, posX, posY, z, mass, e);
+				}
+				
+				// circle button
+				else if (button.equals(toolbar.getCircleButton())) {
+					
+					// generate random ball for now
+					float radius = (float) Math.random() * 25 + 10;
+					float posX = (float) Math.random() * 650 - 230;
+					float posY = (float) Math.random() * 350 - 200;
+					float mass = (float) Math.random() * 20 + 1;
+					float e = -0.5f;
+					
+					simulation.createBallEntity(radius, posX, posY, z, mass, e);
+				}
 			}
-			
 		}
 		
 	}
