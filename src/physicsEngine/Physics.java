@@ -42,7 +42,7 @@ public class Physics {
 					
 				// if collision is detected
 				if (a.intersects(b)) {
-						
+					
 					// if A is Rectangle
 					if (a instanceof Rectangle) {
 							
@@ -65,7 +65,7 @@ public class Physics {
 						// if B is Rectangle
 						if (b instanceof Rectangle) {
 								
-							collisionRectangleCircle((Rectangle) a, (Circle) b);
+							collisionRectangleCircle((Rectangle) b, (Circle) a);
 						}
 							
 						// if B is Circle

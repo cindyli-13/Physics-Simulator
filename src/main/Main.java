@@ -46,6 +46,7 @@ public class Main {
 	private float z = -1f;
 	private int currScreen;		// 0 = menu, 1 = game, 2 = lesson, 3 = customized
 	private int key;
+	private boolean leftClick;
 	
 	// static variables
 	private static final int WIDTH = 1000;
@@ -82,7 +83,7 @@ public class Main {
 		GL.createCapabilities();
 		
 		// set the clear color
-		glClearColor(0f, 0f, 0f, 0f); // black
+		glClearColor(0.6f, 0.9f, 0.9f, 1.0f); // light blue
 
 		// run the loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key
@@ -92,9 +93,8 @@ public class Main {
 			// key callback will be invoked here
 			glfwPollEvents();
 			
-			glEnable(GL_DEPTH_TEST);
-			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glEnable(GL_BLEND);
 			
 			// check the current screen the user is on, check for inputs, then render it
 			switch (currScreen) {
@@ -103,24 +103,25 @@ public class Main {
 					menuScreen.render(renderer);
 					break;
 				case 1:
-					gameScreen.input(this, window, WIDTH, HEIGHT, key);
+					gameScreen.input(this, window, WIDTH, HEIGHT, key, leftClick);
 					gameScreen.update();
 					gameScreen.render(renderer);
 					break;
 				case 2:
-					lessonScreen.input(this, window, WIDTH, HEIGHT, key);
+					lessonScreen.input(this, window, WIDTH, HEIGHT, key, leftClick);
 					lessonScreen.update();
 					lessonScreen.render(renderer);
 					break;
 				case 3:
-					customizedScreen.input(this, window, WIDTH, HEIGHT, key);
+					customizedScreen.input(this, window, WIDTH, HEIGHT, key, leftClick);
 					customizedScreen.update();
 					customizedScreen.render(renderer);
 					break;
 			}
 			
-			// reset keyboard input holder
+			// reset input holders
 			key = -1;
+			leftClick = false;
 			
 			glfwSwapBuffers(window); // swap the color buffers
 		}
@@ -159,7 +160,15 @@ public class Main {
 				this.key = KEY_SPACE;
 		});
 		
-		key = -1;
+		// set up a mouse button callback
+		glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
+		    
+			if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
+		        this.leftClick = true;
+		});
+		
+		this.key = -1;
+		this.leftClick = false;
 			
 		// get the thread stack and push a new frame
 		try (MemoryStack stack = stackPush()) {
@@ -249,7 +258,7 @@ public class Main {
 		
 		// add a ball to game screen simulation window
 		float radius = 30f;
-		x = 100f;
+		x = 150f;
 		y = 150f;
 		mass = 5f;
 		e = -0.9f;

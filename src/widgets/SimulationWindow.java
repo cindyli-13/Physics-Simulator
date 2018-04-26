@@ -191,7 +191,7 @@ public class SimulationWindow {
 		
 		// initialize GUI components array list
 		guiComponents = new ArrayList<GUIComponent>();
-		guiComponents.add(sky);
+		//guiComponents.add(sky);
 		
 		// **********************************************
 		
