@@ -109,7 +109,7 @@ public class Entity {
 			// if B is rectangle
 			if (e instanceof Rectangle) {
 				
-				return ((Rectangle) this).getAabb().intersects(((Rectangle) e).getAabb());
+				return (((Rectangle) this).getAabb().intersects(((Rectangle) e).getAabb()));
 			}
 			
 			// if B is circle

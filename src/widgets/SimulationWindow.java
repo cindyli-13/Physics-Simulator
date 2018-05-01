@@ -41,6 +41,9 @@ public class SimulationWindow {
 	private boolean pause;
 	private float z;
 	
+	private Vector3f min;	// the minimum point that is considered inside the bounds of the simulation
+	private Vector3f max;	// the maximum point that is considered inside the bounds of the simulation
+	
 	// time step is, by default set to 0.05f
 	private float dt = 0.05f;
 	
@@ -226,6 +229,10 @@ public class SimulationWindow {
 		pause = true;
 		
 		this.z = z;
+		
+		// set up min and max points
+		min = new Vector3f(leftBoundary.getAabb().getMax().x, ground.getAabb().getMax().y, z);
+		max = new Vector3f(rightBoundary.getAabb().getMin().x, topBoundary.getAabb().getMin().y, z);
 	}
 	
 	/**
@@ -375,4 +382,33 @@ public class SimulationWindow {
 		return ballModel;
 	}
 	
+	/**
+	 * Returns the array list of entities in the simulation
+	 * window.
+	 * 
+	 * @return entities
+	 */
+	public ArrayList<Entity> getEntities() {
+		return entities;
+	}
+	
+	/**
+	 * Returns the minimum point that is considered inside the 
+	 * bounds of the simulation.
+	 * 
+	 * @return min
+	 */
+	public Vector3f getMin() {
+		return min;
+	}
+	
+	/**
+	 * Returns the maximum point that is considered inside the 
+	 * bounds of the simulation.
+	 * 
+	 * @return max
+	 */
+	public Vector3f getMax() {
+		return max;
+	}
 }

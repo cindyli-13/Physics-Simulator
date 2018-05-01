@@ -21,7 +21,8 @@ public class Rectangle extends Entity {
 	
 	// constructor
 	public Rectangle(Model model, Vector3f position, Vector3f velocity, Vector3f acceleration, Vector3f rotation,
-			float scale, float mass, float e, float width, float height, float staticFriction, float kineticFriction) {
+			float scale, float mass, float e, float width, float height, float staticFriction, 
+			float kineticFriction) {
 		
 		super(model, position, velocity, acceleration, rotation, scale, mass, e, 
 				staticFriction, kineticFriction);
@@ -32,15 +33,15 @@ public class Rectangle extends Entity {
 		
 		// aabb
 		float xMin = position.x - width/2;
-		float yMin = position.x + width/2;
-		float xMax = position.y - height/2;
+		float xMax = position.x + width/2;
+		float yMin = position.y - height/2;
 		float yMax = position.y + height/2;
 				
 		this.aabb = new AABB(new Vector2f(xMin, yMin), new Vector2f(new Vector2f(xMax, yMax)));
 	}
 
 	/**
-	 * Updates the rectangle's AABB.
+	 * Updates the rectangle's ABB.
 	 * 
 	 * @param dt  the change in time, or time step
 	 */

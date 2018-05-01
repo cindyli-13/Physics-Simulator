@@ -89,7 +89,7 @@ public class Main {
 		// the window or has pressed the ESCAPE key
 		while (!glfwWindowShouldClose(window)) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
-
+			
 			// key callback will be invoked here
 			glfwPollEvents();
 			
@@ -113,7 +113,7 @@ public class Main {
 					lessonScreen.render(renderer);
 					break;
 				case 3:
-					customizedScreen.input(this, window, WIDTH, HEIGHT, key, leftClick);
+					customizedScreen.input(this, key, leftClick);
 					customizedScreen.update();
 					customizedScreen.render(renderer);
 					break;
