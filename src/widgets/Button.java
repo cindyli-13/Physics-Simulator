@@ -19,6 +19,9 @@ public class Button extends GUIComponent {
 	// instance variables
 	private AABB aabb;
 	
+	private float width;
+	private float height;
+	
 	// constructor
 	public Button(Model model, Vector3f position, Vector3f rotation, float scale, float width, float height) {
 		
@@ -32,6 +35,9 @@ public class Button extends GUIComponent {
 		float yMax = position.y + height/2;
 		
 		this.aabb = new AABB(new Vector2f(xMin, yMin), new Vector2f(xMax, yMax));
+		
+		this.width = width;
+		this.height = height;
 	}
 	
 	/**
@@ -41,6 +47,24 @@ public class Button extends GUIComponent {
 	 */
 	public AABB getAabb() {
 		return aabb;
+	}
+
+	/**
+	 * Returns the button's width.
+	 * 
+	 * @return width
+	 */
+	public float getWidth() {
+		return width;
+	}
+
+	/**
+	 * Returns the button's height.
+	 * 
+	 * @return height
+	 */
+	public float getHeight() {
+		return height;
 	}
 
 }

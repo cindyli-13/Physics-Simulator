@@ -140,6 +140,25 @@ public class Entity {
 	}
 	
 	/**
+	 * Checks whether or not this entity intersects with 
+	 * a point.
+	 * 
+	 * @param x		the x coordinate of the point
+	 * @param y		the y coordinate of the point
+	 * @return true if they intersect, false otherwise
+	 */
+	public boolean intersects(float x, float y) {
+		
+		if (this instanceof Rectangle)
+			return ((Rectangle) this).getAabb().intersects(x, y);
+		
+		else if (this instanceof Circle)
+			return ((Circle) this).intersects(x, y);
+		
+		return false;
+	}
+	
+	/**
 	 * Increases the entity's rotation.
 	 * 
 	 * @param dx  angle change in the x direction

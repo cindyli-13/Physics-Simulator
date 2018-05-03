@@ -31,11 +31,11 @@ public class Toolbar {
 	private Button rampButton;			// raButton
 
 	// static variables
-	private static String MENU_BUTTON_TEXTURE_FILE = "./res/MenuB.png";
-	private static String INFO_BUTTON_TEXTURE_FILE = "./res/InfoB.png";
-	private static String RECT_BUTTON_TEXTURE_FILE = "./res/Rect.png";
-	private static String CIRC_BUTTON_TEXTURE_FILE = "./res/Circ.png";
-	private static String RAMP_BUTTON_TEXTURE_FILE = "./res/Ramp.png";
+	public static String MENU_BUTTON_TEXTURE_FILE = "./res/MenuB.png";
+	public static String INFO_BUTTON_TEXTURE_FILE = "./res/InfoB.png";
+	public static String RECT_BUTTON_TEXTURE_FILE = "./res/Rect.png";
+	public static String CIRC_BUTTON_TEXTURE_FILE = "./res/Circ.png";
+	public static String RAMP_BUTTON_TEXTURE_FILE = "./res/Ramp.png";
 
 	// constructor
 	public  Toolbar(Loader loader, float screenWidth, float screenHeight, float z) {
@@ -48,12 +48,12 @@ public class Toolbar {
 		// 	y			the y coordinate of the center of the button (in OpenGL world coordinates)
 			
 		// the following will be the same for each button
-		float ButtonY = 275;
+		float buttonY = 275;
 		
 		float buttonWidth = 70f;
 		float buttonHeight = 70f;
 		
-		float[] vertices = Entity.getVertices(buttonWidth, buttonHeight, z);
+		float[] vertices = Entity.getVertices(buttonWidth, buttonHeight, z - 100f);
 		float[] texCoords = Entity.getTexCoords();
 		int[] indices = Entity.getIndices();
 				
@@ -62,19 +62,19 @@ public class Toolbar {
 		
 		
 		float mButtonX = -450;
-		Vector3f mButtonPos = new Vector3f(mButtonX, ButtonY, z);
+		Vector3f mButtonPos = new Vector3f(mButtonX, buttonY, z - 100f);
 		
 		float iButtonX = mButtonX+buttonWidth ;
-		Vector3f iButtonPos = new Vector3f(iButtonX, ButtonY, z);
+		Vector3f iButtonPos = new Vector3f(iButtonX, buttonY, z - 100f);
 		
 		float rButtonX = iButtonX+buttonWidth;
-		Vector3f rButtonPos = new Vector3f(rButtonX, ButtonY, z);
+		Vector3f rButtonPos = new Vector3f(rButtonX, buttonY, z - 100f);
 		
 		float cButtonX = rButtonX +buttonWidth;
-		Vector3f cButtonPos = new Vector3f(cButtonX, ButtonY, z);
+		Vector3f cButtonPos = new Vector3f(cButtonX, buttonY, z - 100f);
 		
 		float raButtonX = cButtonX +buttonWidth;
-		Vector3f raButtonPos = new Vector3f(raButtonX, ButtonY, z);
+		Vector3f raButtonPos = new Vector3f(raButtonX, buttonY, z - 100f);
 		
 		// **************************************************
 		

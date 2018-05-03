@@ -28,15 +28,8 @@ public class SimulationWindow {
 	private Rectangle rightBoundary;	// r
 	private Rectangle topBoundary;		// t
 	
-	// This is a special case: the sky will be a rectangle in the 
-	// background of the simulation and will be rendered only for its colour.
-	// It is a GUIComponent instead of a Rectangle because it does not have 
-	// an AABB.
-	private GUIComponent sky;			// s
-	
 	private ArrayList<Entity> entities;
 	private ArrayList<Entity> boundaries;
-	private ArrayList<GUIComponent> guiComponents;
 	
 	private boolean pause;
 	private float z;
@@ -57,24 +50,23 @@ public class SimulationWindow {
 	private Model ballModel;
 	
 	// static variables
-	private static final String CRATE_TEXTURE_FILE = "./res/crate.png";
-	private static final String METAL_BOX_TEXTURE_FILE = "./res/metal_box.png";
-	private static final String BALL_TEXTURE_FILE = "./res/ball.png";
-	private static final String GROUND_TEXTURE_FILE = "./res/ground.png";
-	private static final String BOUNDARY_TEXTURE_FILE = "./res/boundary.png";
-	private static final String SKY_TEXTURE_FILE = "./res/sky.png";
+	public static final String CRATE_TEXTURE_FILE = "./res/crate.png";
+	public static final String METAL_BOX_TEXTURE_FILE = "./res/metal_box.png";
+	public static final String BALL_TEXTURE_FILE = "./res/ball.png";
+	public static final String GROUND_TEXTURE_FILE = "./res/ground.png";
+	public static final String BOUNDARY_TEXTURE_FILE = "./res/boundary.png";
 	
-	private static final float CRATE_STATIC_FRICTION = 0.4f;
-	private static final float METAL_BOX_STATIC_FRICTION = 0.3f;
-	private static final float BALL_STATIC_FRICTION = 0.1f;
-	private static final float GROUND_STATIC_FRICTION = 0.4f;
-	private static final float BOUNDARY_STATIC_FRICTION = 0.2f;
+	public static final float CRATE_STATIC_FRICTION = 0.4f;
+	public static final float METAL_BOX_STATIC_FRICTION = 0.3f;
+	public static final float BALL_STATIC_FRICTION = 0.1f;
+	public static final float GROUND_STATIC_FRICTION = 0.4f;
+	public static final float BOUNDARY_STATIC_FRICTION = 0.2f;
 	
-	private static final float CRATE_KINETIC_FRICTION = 0.3f;
-	private static final float METAL_BOX_KINETIC_FRICTION = 0.2f;
-	private static final float BALL_KINETIC_FRICTION = 0.05f;
-	private static final float GROUND_KINETIC_FRICTION = 0.3f;
-	private static final float BOUNDARY_KINETIC_FRICTION = 0.1f;
+	public static final float CRATE_KINETIC_FRICTION = 0.3f;
+	public static final float METAL_BOX_KINETIC_FRICTION = 0.2f;
+	public static final float BALL_KINETIC_FRICTION = 0.05f;
+	public static final float GROUND_KINETIC_FRICTION = 0.3f;
+	public static final float BOUNDARY_KINETIC_FRICTION = 0.1f;
 	
 	private static final float maximumMass = Float.MAX_VALUE;
 	
@@ -105,9 +97,9 @@ public class SimulationWindow {
 		
 		float gX = -screenWidth/2 + 250f + gWidth/2; // 250 pixels from left side of the screen
 		float gY = -screenHeight/2 + gHeight/2 + 20f;  // 20 pixels up from the bottom of the screen
-		Vector3f gPos = new Vector3f(gX, gY, z);
+		Vector3f gPos = new Vector3f(gX, gY, z - 100f);
 		
-		float[] vertices = Entity.getVertices(gWidth, gHeight, z);
+		float[] vertices = Entity.getVertices(gWidth, gHeight, z - 100f);
 		int textureID = loader.loadTexture(GROUND_TEXTURE_FILE);
 		Model gModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 		
@@ -120,9 +112,9 @@ public class SimulationWindow {
 				
 		float lX = gX - gWidth/2 + lWidth/2;	// left edge of ground
 		float lY = gY + gHeight/2 + lHeight/2;  // above ground
-		Vector3f lPos = new Vector3f(lX, lY, z);
+		Vector3f lPos = new Vector3f(lX, lY, z - 100f);
 		
-		vertices = Entity.getVertices(lWidth, lHeight, z);
+		vertices = Entity.getVertices(lWidth, lHeight, z - 100f);
 		textureID = loader.loadTexture(BOUNDARY_TEXTURE_FILE);
 		Model lModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 		
@@ -135,9 +127,9 @@ public class SimulationWindow {
 			
 		float rX = gX + gWidth/2 - rWidth/2;	// right edge of ground
 		float rY = gY + gHeight/2 + lHeight/2;  // above ground
-		Vector3f rPos = new Vector3f(rX, rY, z);
+		Vector3f rPos = new Vector3f(rX, rY, z - 100f);
 		
-		vertices = Entity.getVertices(rWidth, rHeight, z);
+		vertices = Entity.getVertices(rWidth, rHeight, z - 100f);
 		textureID = loader.loadTexture(BOUNDARY_TEXTURE_FILE);
 		Model rModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 				
@@ -150,9 +142,9 @@ public class SimulationWindow {
 			
 		float tX = gX;	// same as ground
 		float tY = lY + lHeight/2 + tHeight/2;	// above left boundary
-		Vector3f tPos = new Vector3f(tX, tY, z);
+		Vector3f tPos = new Vector3f(tX, tY, z - 100f);
 		
-		vertices = Entity.getVertices(tWidth, tHeight, z);
+		vertices = Entity.getVertices(tWidth, tHeight, z - 100f);
 		textureID = loader.loadTexture(BOUNDARY_TEXTURE_FILE);
 		Model tModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 				
@@ -166,35 +158,6 @@ public class SimulationWindow {
 		boundaries.add(leftBoundary);
 		boundaries.add(rightBoundary);
 		boundaries.add(topBoundary);
-		
-		// **********************************************
-		
-		
-		// ******************** SKY *********************
-		
-		float sWidth = gWidth;	// same as ground
-		float sHeight = gHeight + lHeight + tHeight;	// sum of these three boundaries
-		
-		vertices = Entity.getVertices(sWidth, sHeight, z);
-		texCoords = Entity.getTexCoords();
-		indices = Entity.getIndices();
-		
-		float sX = gX;	// same as ground
-		float sY = (gY + gHeight/2 + lHeight + tHeight) - sHeight/2;	// the middle of the simulation window
-		Vector3f sPos = new Vector3f(sX, sY, z - 100f);
-		
-		rotation = new Vector3f(0,0,0);
-		scale = 1f;
-		
-		textureID = loader.loadTexture(SKY_TEXTURE_FILE);
-		Model sModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
-		
-		sky = new GUIComponent(sModel, sPos, rotation, scale);
-		
-		
-		// initialize GUI components array list
-		guiComponents = new ArrayList<GUIComponent>();
-		//guiComponents.add(sky);
 		
 		// **********************************************
 		
@@ -316,7 +279,6 @@ public class SimulationWindow {
 		
 		renderer.render(entities);
 		renderer.render(boundaries);
-		renderer.renderGUI(guiComponents);
 	}
 	
 	/**

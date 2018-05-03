@@ -39,10 +39,10 @@ public class MenuScreen {
 	private ArrayList<Button> buttons;
 	
 	// static variables
-	private static String GAME_BUTTON_TEXTURE_FILE = "./res/GameB.png";
-	private static String LESSON_BUTTON_TEXTURE_FILE = "./res/GB.png";
-	private static String CUSTOMIZED_BUTTON_TEXTURE_FILE = "./res/CustomB.png";
-	private static String HELP_BUTTON_TEXTURE_FILE = "./res/InfoB.png";
+	public static String GAME_BUTTON_TEXTURE_FILE = "./res/GameB.png";
+	public static String LESSON_BUTTON_TEXTURE_FILE = "./res/GB.png";
+	public static String CUSTOMIZED_BUTTON_TEXTURE_FILE = "./res/CustomB.png";
+	public static String HELP_BUTTON_TEXTURE_FILE = "./res/InfoB.png";
 	
 	// constructor
 	public MenuScreen(Loader loader, float screenWidth, float screenHeight, float z) {

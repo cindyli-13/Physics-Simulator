@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+// ***** taken from the ICS3U course *****
 public class IO
 {
 

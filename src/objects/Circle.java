@@ -50,6 +50,18 @@ public class Circle extends Entity {
 		
 		return a.intersects(this);
 	}
+	
+	/**
+	 * Checks whether or not this circle intersects with a point.
+	 * 
+	 * @param x		the x coordinate of the point
+	 * @param y		the y coordinate of the point
+	 * @return true if they intersect, false otherwise
+	 */
+	public boolean intersects(float x, float y) {
+		
+		return Math.abs(x - getPosition().x) < radius && Math.abs(y - getPosition().y) < radius;
+	}
 
 	/**
 	 * Returns the circle's radius.

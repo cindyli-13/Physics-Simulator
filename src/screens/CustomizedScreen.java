@@ -3,18 +3,23 @@ package screens;
 import static org.lwjgl.glfw.GLFW.*;
 
 import java.nio.DoubleBuffer;
+import java.util.ArrayList;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
+import io.IO;
 import main.Main;
 import objects.Circle;
 import objects.Entity;
 import objects.Loader;
+import objects.Model;
 import objects.Rectangle;
 import renderEngine.Renderer;
 import widgets.Button;
+import widgets.GUIComponent;
+import widgets.PopUpBox;
 import widgets.SimulationWindow;
 import widgets.Toolbar;
 
@@ -31,13 +36,28 @@ public class CustomizedScreen {
 	// instance variables	
 	private SimulationWindow simulation;
 	private Toolbar toolbar;
+	private Button saveButton;		// sButton
+	private PopUpBox popUpBox;
+	private Entity entityForPopUpBox;
+	
+	private ArrayList<GUIComponent> guiComponents;
+	
+	private Loader loader;
 	
 	private float z;
-	private boolean newEntityCreated;
+	
+	// specifies the program:
+	// 0 = default
+	// 1 = new entity created
+	// 2 = pop-up box created
+	private int program;
 	
 	private long window;
 	private float screenWidth;
 	private float screenHeight;
+	
+	// static variables
+	public static final String SAVE_BUTTON_TEXTURE_FILE = "./res/saveButton.png";
 		
 	// constructor
 	public CustomizedScreen(long window, Loader loader, float screenWidth, float screenHeight, float z) {
@@ -48,8 +68,33 @@ public class CustomizedScreen {
 		// toolbar
 		toolbar = new Toolbar(loader, screenWidth, screenHeight, z);
 		
+		// save button
+		float buttonX = 100;
+		float buttonY = 275;
+		
+		float buttonWidth = 70f;
+		float buttonHeight = 70f;
+		
+		float[] vertices = Entity.getVertices(buttonWidth, buttonHeight, z);
+		float[] texCoords = Entity.getTexCoords();
+		int[] indices = Entity.getIndices();
+				
+		Vector3f position = new Vector3f(buttonX, buttonY, z);
+		Vector3f rotation = new Vector3f(0,0,0);
+		float scale = 0.7f;
+		
+		int textureID = loader.loadTexture(SAVE_BUTTON_TEXTURE_FILE);
+		Model sButtonModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+		
+		saveButton = new Button(sButtonModel, position, rotation, scale, buttonWidth, buttonHeight);
+		
+		guiComponents = new ArrayList<GUIComponent>();
+		guiComponents.add(saveButton);
+		
+		this.loader = loader;
+		
 		this.z = z;
-		newEntityCreated = false;
+		program = 0;
 		
 		this.window = window;
 		this.screenWidth = screenWidth;
@@ -65,9 +110,35 @@ public class CustomizedScreen {
 		
 		toolbar.render(renderer);
 		simulation.render(renderer);
+		renderer.renderGUI(guiComponents);
 		
-		if (newEntityCreated)
+		if (program == 1)
 			moveNewObject();
+		
+		else if (program == 2) {
+			
+			float x = 0f;
+			float y = 0f;
+			
+			if (entityForPopUpBox instanceof Rectangle) {
+				
+				x = ((Rectangle) entityForPopUpBox).getWidth()/2;
+				y = ((Rectangle) entityForPopUpBox).getHeight()/2;
+			}
+			else if (entityForPopUpBox instanceof Circle) {
+				x = ((Circle) entityForPopUpBox).getRadius();
+				y = x;
+			}
+			
+			float offsetX = entityForPopUpBox.getPosition().x - 
+					(popUpBox.getPosition().x + popUpBox.getWidth()/2 + x + 5f);
+			
+			float offsetY = entityForPopUpBox.getPosition().y - 
+					(popUpBox.getPosition().y - popUpBox.getHeight()/2 - y - 5f);
+			
+			popUpBox.update(offsetX, offsetY);
+			popUpBox.render(renderer);
+		}
 	}
 	
 	/**
@@ -123,10 +194,42 @@ public class CustomizedScreen {
 		if (leftClick) {
 			
 			// clear new entity
-			if (newEntityCreated) {
+			if (program == 1) {
 				
 				placeNewEntity(simulation.getEntities().get(simulation.getEntities().size()-1));
-				newEntityCreated = false;
+				program = 0;
+				return;
+			}
+			
+			// pop-up box
+			else if (program == 2) {
+				
+				// close button
+				if (popUpBox.getCloseButton().getAabb().intersects(x, y)) {
+					
+					popUpBox = null;
+					entityForPopUpBox = null;
+					program = 0;
+					return;
+				}
+				
+				// delete entity button
+				else if (popUpBox.getDeleteEntityButton().getAabb().intersects(x, y)) {
+					
+					// find and remove entity from array list
+					for (int i = 0; i < simulation.getEntities().size(); i++) {
+						
+						if (entityForPopUpBox.equals(simulation.getEntities().get(i))) {
+							simulation.getEntities().remove(i);
+							break;
+						}
+					}
+					
+					popUpBox = null;
+					entityForPopUpBox = null;
+					program = 0;
+					return;
+				}
 			}
 			
 			else {
@@ -144,18 +247,20 @@ public class CustomizedScreen {
 							simulation.setPause(true);
 											
 							main.setCurrScreen(0);
+							return;
 						}
 							
 						// info button
 						else if (button.equals(toolbar.getInfoButton())) {
 								
-								UserGuideScreen.showUserGuide();
+							UserGuideScreen.showUserGuide();
+							return;
 						}
 						
 						// rectangle button
 						else if (button.equals(toolbar.getRectangleButton())) {
 								
-							// generate random crate for now
+							// generate a crate
 							float sideLength = (float) Math.random() * 50 + 30;
 							float posX = toolbar.getRectangleButton().getPosition().x;
 							float posY = toolbar.getRectangleButton().getPosition().y;
@@ -164,13 +269,14 @@ public class CustomizedScreen {
 								
 							simulation.createCrateEntity(sideLength, posX, posY, z, mass, e);
 							
-							newEntityCreated = true;
+							program = 1;
+							return;
 						}
 						
 						// circle button
 						else if (button.equals(toolbar.getCircleButton())) {
 								
-							// generate random ball for now
+							// generate a ball
 							float radius = (float) Math.random() * 25 + 20;
 							float posX = toolbar.getCircleButton().getPosition().x;
 							float posY = toolbar.getCircleButton().getPosition().y;
@@ -179,11 +285,73 @@ public class CustomizedScreen {
 								
 							simulation.createBallEntity(radius, posX, posY, z, mass, e);
 							
-							newEntityCreated = true;
+							program = 1;
+							return;
 						}
 					}
 						
 				}
+				
+				// save button
+				if (saveButton.getAabb().intersects(x, y)) {
+					
+					// save data into text file
+					IO.createOutputFile("./data/customized_test.txt");
+					
+					// number of entities
+					IO.println(Integer.toString(simulation.getEntities().size()));
+					
+					// loop through entities
+					for (Entity entity: simulation.getEntities()) {
+							
+						// line buffer
+						IO.println("");
+						
+						// rectangle
+						if (entity instanceof Rectangle) {
+								
+							Rectangle r = (Rectangle) entity;
+								
+							IO.println("RECTANGLE");
+							IO.println(Float.toString(r.getWidth()));
+							IO.println(Float.toString(r.getPosition().x));
+							IO.println(Float.toString(r.getPosition().y));
+							IO.println(Float.toString(r.getMass()));
+							IO.println(Float.toString(r.getCoefficientOfRestitution()));
+						}
+							
+						// circle
+						else if (entity instanceof Circle) {
+								
+							Circle c = (Circle) entity;
+								
+							IO.println("CIRCLE");
+							IO.println(Float.toString(c.getRadius()));
+							IO.println(Float.toString(c.getPosition().x));
+							IO.println(Float.toString(c.getPosition().y));
+							IO.println(Float.toString(c.getMass()));
+							IO.println(Float.toString(c.getCoefficientOfRestitution()));
+						}
+					}
+					IO.closeOutputFile();
+					
+					System.out.println("Simulation saved!");
+					return;
+				}
+				
+				// loop through entities of simulation
+				for (Entity entity: simulation.getEntities()) {
+					
+					if (entity.intersects(x, y)) {
+						
+						// create pop-up box
+						popUpBox = createPopUpBox(entity);
+						entityForPopUpBox = entity;
+						program = 2;
+						return;
+					}
+				}
+				
 			}
 			
 		}
@@ -249,10 +417,11 @@ public class CustomizedScreen {
 	
 	/**
 	 * Checks whether or not a newly created entity can 
-	 * be placed at the location of the cursor.
+	 * be placed at the location of the cursor. If yes,
+	 * places the entity at the location. If no, deletes 
+	 * the entity.
 	 * 
 	 * @param entity		the newly created entity
-	 * @return true if yes, false otherwise
 	 */
 	public void placeNewEntity(Entity newEntity) {
 		
@@ -314,5 +483,45 @@ public class CustomizedScreen {
 			}
 		}
 		
+	}
+	
+	/**
+	 * Creates a pop-up box for the given entity.
+	 * 
+	 * @param entity
+	 */
+	public PopUpBox createPopUpBox(Entity entity) {
+		
+		float offsetX = 0f;
+		float offsetY = 0f;
+		
+		if (entity instanceof Rectangle) {
+			
+			offsetX = ((Rectangle) entity).getWidth()/2;
+			offsetY = ((Rectangle) entity).getHeight()/2;
+		}
+		else if (entity instanceof Circle) {
+			offsetX = ((Circle) entity).getRadius();
+			offsetY = offsetX;
+		}
+		
+		float width = 200f;
+		float height = 120f;
+		
+		float x = entity.getPosition().x - width/2 - offsetX - 5f;
+		float y = entity.getPosition().y + height/2 + offsetY + 5f;
+				
+		float[] vertices = Entity.getVertices(width, height, z);
+		float[] texCoords = Entity.getTexCoords();
+		int[] indices = Entity.getIndices();
+				
+		Vector3f position = new Vector3f(x, y, z);
+		Vector3f rotation = new Vector3f(0,0,0);
+		float scale = 1f;
+		
+		int textureID = loader.loadTexture(PopUpBox.POP_UP_BOX_TEXTURE_FILE);
+		Model model = loader.loadToVAO(vertices, texCoords, indices, textureID);
+		
+		return new PopUpBox(loader, model, position, rotation, scale, width, height, z);
 	}
 }

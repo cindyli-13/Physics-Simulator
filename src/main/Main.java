@@ -6,6 +6,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
+import java.io.IOException;
 import java.nio.IntBuffer;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -13,6 +14,7 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
+import io.IO;
 import objects.Loader;
 import renderEngine.Renderer;
 import screens.CustomizedScreen;
@@ -52,8 +54,8 @@ public class Main {
 	private static final int WIDTH = 1000;
 	private static final int HEIGHT = 600;
 	
-	private static final String VERTEX_FILE = "src/shaders/vertexShader.vs";
-	private static final String FRAGMENT_FILE = "src/shaders/fragmentShader.fs";
+	public static final String VERTEX_FILE = "src/shaders/vertexShader.vs";
+	public static final String FRAGMENT_FILE = "src/shaders/fragmentShader.fs";
 	
 	public static final int KEY_SPACE = 0;
 	
@@ -93,6 +95,7 @@ public class Main {
 			// key callback will be invoked here
 			glfwPollEvents();
 			
+			glEnable(GL_DEPTH_TEST);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glEnable(GL_BLEND);
 			
@@ -228,42 +231,96 @@ public class Main {
 		
 		currScreen = 0;
 		
-		// test (to be removed later)
-		test();
+		// retrieve data
+		retrieveDataFromTextFiles();
 	}
 	
 	// test method (to be removed later)
-	private void test() {
+	private void retrieveDataFromTextFiles() {
 		
-		// just a flag to remind me to remove this later
+		// just a flag to remind me to change this later
 		int dummy = 0;
 		
-		// add a crate to game screen simulation window
-		float sideLength = 60f;
-		float x = 100f;
-		float y = 50f;
-		float mass = 10f;
-		float e = -0.7f;
+		// game screen
+		retrieveDataFromFile("./data/game_test.txt", 1);
 		
-		gameScreen.getSimulationWindow().createCrateEntity(sideLength, x, y, z, mass, e);
+		// customized screen
+		retrieveDataFromFile("./data/customized_test.txt", 3);
+	}
+	
+	/**
+	 * Retrieves the simulation data from the specified 
+	 * file.
+	 * 
+	 * @param fileName
+	 */
+	private void retrieveDataFromFile(String fileName, int screen) {
 		
-		// add a metal box to game screen simulation window
-		sideLength = 60f;
-		x = 100f;
-		y = -50f;
-		mass = 50f;
-		e = -0.3f;
-		
-		gameScreen.getSimulationWindow().createMetalBoxEntity(sideLength, x, y, z, mass, e);
-		
-		// add a ball to game screen simulation window
-		float radius = 30f;
-		x = 150f;
-		y = 150f;
-		mass = 5f;
-		e = -0.9f;
+		try {
+			IO.openInputFile(fileName);
 				
-		gameScreen.getSimulationWindow().createBallEntity(radius, x, y, z, mass, e);
+			// get number of entities
+			int numEntities = Integer.parseInt(IO.readLine());
+					
+			// line buffer
+			IO.readLine();
+					
+			for (int i = 0; i < numEntities; i++) {
+						
+				String type = IO.readLine();
+						
+				// rectangle
+				if (type.equals("RECTANGLE")) {
+							
+					float sideLength = Float.parseFloat(IO.readLine());
+					float x = Float.parseFloat(IO.readLine());
+					float y = Float.parseFloat(IO.readLine());
+					float mass = Float.parseFloat(IO.readLine());
+					float e = Float.parseFloat(IO.readLine());
+						
+					switch (screen) {
+						case 1:
+							gameScreen.getSimulationWindow().createCrateEntity(sideLength, x, y, z, mass, e);
+							break;
+						case 2:
+							lessonScreen.getSimulationWindow().createCrateEntity(sideLength, x, y, z, mass, e);
+							break;
+						case 3:
+							customizedScreen.getSimulationWindow().createCrateEntity(sideLength, x, y, z, mass, e);
+							break;
+					}
+				}
+						
+				// circle
+				else if (type.equals("CIRCLE")) {
+							
+					float radius = Float.parseFloat(IO.readLine());
+					float x = Float.parseFloat(IO.readLine());
+					float y = Float.parseFloat(IO.readLine());
+					float mass = Float.parseFloat(IO.readLine());
+					float e = Float.parseFloat(IO.readLine());
+							
+					switch (screen) {
+						case 1:
+							gameScreen.getSimulationWindow().createBallEntity(radius, x, y, z, mass, e);
+							break;
+						case 2:
+							lessonScreen.getSimulationWindow().createBallEntity(radius, x, y, z, mass, e);
+							break;
+						case 3:
+							customizedScreen.getSimulationWindow().createBallEntity(radius, x, y, z, mass, e);
+							break;
+					}
+				}
+						
+				// line buffer
+				IO.readLine();
+			}
+			IO.closeInputFile();
+					
+		} catch (IOException exception) {
+			exception.printStackTrace();
+		}
 	}
 		
 	/**

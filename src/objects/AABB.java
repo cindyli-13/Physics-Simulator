@@ -38,9 +38,9 @@ public class AABB {
 	 */
 	public boolean intersects(AABB a) {
 		
-		if (this.max.x < a.min.x || this.min.x > a.max.x)
+		if (this.max.x <= a.min.x || this.min.x >= a.max.x)
 			return false;
-		if (this.max.y < a.min.y || this.min.y > a.max.y)
+		if (this.max.y <= a.min.y || this.min.y >= a.max.y)
 			return false;
 		
 		return true;
@@ -54,11 +54,12 @@ public class AABB {
 	 */
 	public boolean intersects(Circle c) {
 		
-		if (this.max.x < c.getPosition().x - c.getRadius() || 
-				this.min.x > c.getPosition().x + c.getRadius())
+		if (this.max.x <= c.getPosition().x - c.getRadius() || 
+				this.min.x >= c.getPosition().x + c.getRadius())
 			return false;
-		if (this.max.y < c.getPosition().y - c.getRadius() || 
-				this.min.y > c.getPosition().y + c.getRadius())
+		
+		if (this.max.y <= c.getPosition().y - c.getRadius() || 
+				this.min.y >= c.getPosition().y + c.getRadius())
 			return false;
 		
 		// clamp closest point to the AABB's extents
@@ -69,7 +70,7 @@ public class AABB {
 		Vector2f circleCenter = new Vector2f(c.getPosition().x, c.getPosition().y);
 		float distance = circleCenter.distance(closest);
 		
-		if (distance > c.getRadius())
+		if (distance >= c.getRadius())
 			return false;
 		
 		return true;
@@ -84,7 +85,7 @@ public class AABB {
 	 */
 	public boolean intersects(float x, float y) {
 		
-		return (x > this.min.x && x < this.max.x && y > this.min.y && y < this.max.y);
+		return (x >= this.min.x && x <= this.max.x && y >= this.min.y && y <= this.max.y);
 	}
 
 	/**
