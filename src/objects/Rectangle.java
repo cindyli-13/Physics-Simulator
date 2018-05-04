@@ -41,12 +41,20 @@ public class Rectangle extends Entity {
 	}
 
 	/**
-	 * Updates the rectangle's ABB.
+	 * Updates the rectangle.
 	 * 
 	 * @param dt  the change in time, or time step
 	 */
 	public void update(float dt) {
 		super.update(dt);
+		
+		updateAABB();
+	}
+	
+	/**
+	 * Updates the rectangle's AABB.
+	 */
+	public void updateAABB() {
 		
 		this.aabb.setMin(new Vector2f(getPosition().x - width/2, getPosition().y - height/2)); 
 		this.aabb.setMax(new Vector2f(getPosition().x + width/2, getPosition().y + height/2));

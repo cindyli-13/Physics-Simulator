@@ -30,6 +30,7 @@ public class SimulationWindow {
 	
 	private ArrayList<Entity> entities;
 	private ArrayList<Entity> boundaries;
+	private ArrayList<GUIComponent> guiComponents;
 	
 	private boolean pause;
 	private float z;
@@ -49,12 +50,20 @@ public class SimulationWindow {
 	private Model metalBoxModel;
 	private Model ballModel;
 	
+	// button for pause and play simulation
+	private Button pausePlayButton;
+	private Model pauseButtonModel;
+	private Model playButtonModel;
+	
 	// static variables
 	public static final String CRATE_TEXTURE_FILE = "./res/crate.png";
 	public static final String METAL_BOX_TEXTURE_FILE = "./res/metal_box.png";
 	public static final String BALL_TEXTURE_FILE = "./res/ball.png";
 	public static final String GROUND_TEXTURE_FILE = "./res/ground.png";
 	public static final String BOUNDARY_TEXTURE_FILE = "./res/boundary.png";
+	
+	public static final String PAUSE_BUTTON_TEXTURE_FILE = "./res/pauseButton.png";
+	public static final String PLAY_BUTTON_TEXTURE_FILE = "./res/playButton.png";
 	
 	public static final float CRATE_STATIC_FRICTION = 0.4f;
 	public static final float METAL_BOX_STATIC_FRICTION = 0.3f;
@@ -162,6 +171,32 @@ public class SimulationWindow {
 		// **********************************************
 		
 		
+		// ************* PAUSE-PLAY BUTTON **************
+				
+		float buttonWidth = 40f;
+		float buttonHeight = 40f;
+		
+		float buttonX = rX + rWidth/2 - buttonWidth/2;
+		float buttonY = tY + tHeight/2 + buttonHeight/2 + 20f;
+				
+		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
+		Vector3f position = new Vector3f(buttonX, buttonY, z);
+				
+		textureID = loader.loadTexture(PAUSE_BUTTON_TEXTURE_FILE);
+		pauseButtonModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+		
+		textureID = loader.loadTexture(PLAY_BUTTON_TEXTURE_FILE);
+		playButtonModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+				
+		pausePlayButton = new Button(playButtonModel, position, rotation, scale, buttonWidth, buttonHeight);
+		
+		// initialize GUI components array list
+		guiComponents = new ArrayList<GUIComponent>();
+		guiComponents.add(pausePlayButton);
+		
+		// **********************************************
+		
+		
 		// ********* MODELS FOR PHYSICS OBJECTS *********
 		// 
 		
@@ -207,8 +242,9 @@ public class SimulationWindow {
 	 * @param z				the z coordinate of the crate
 	 * @param mass			the crate's mass
 	 * @param e				the crate's coefficient of restitution
+	 * @return crate		the crate entity
 	 */
-	public void createCrateEntity(float sideLength, float x, float y, float z, float mass, float e) {
+	public Entity createCrateEntity(float sideLength, float x, float y, float z, float mass, float e) {
 		
 		Vector3f position = new Vector3f(x,y,z);
 		Vector3f velocity = new Vector3f(0,0,0);
@@ -220,6 +256,8 @@ public class SimulationWindow {
 				mass, e, sideLength, sideLength, CRATE_STATIC_FRICTION, CRATE_KINETIC_FRICTION);
 		
 		entities.add(crate);
+		
+		return crate;
 	}
 	
 	/**
@@ -231,8 +269,9 @@ public class SimulationWindow {
 	 * @param z				the z coordinate of the metal box
 	 * @param mass			the metal box's mass
 	 * @param e				the metal box's coefficient of restitution
+	 * @return metalBox		the metal box entity
 	 */
-	public void createMetalBoxEntity(float sideLength, float x, float y, float z, float mass, float e) {
+	public Entity createMetalBoxEntity(float sideLength, float x, float y, float z, float mass, float e) {
 		
 		Vector3f position = new Vector3f(x,y,z);
 		Vector3f velocity = new Vector3f(0,0,0);
@@ -244,6 +283,8 @@ public class SimulationWindow {
 				mass, e, sideLength, sideLength, METAL_BOX_STATIC_FRICTION, METAL_BOX_KINETIC_FRICTION);
 		
 		entities.add(metalBox);
+		
+		return metalBox;
 	}
 	
 	/**
@@ -255,8 +296,9 @@ public class SimulationWindow {
 	 * @param z				the z coordinate of the ball
 	 * @param mass			the metal ball's mass
 	 * @param e				the metal ball's coefficient of restitution
+	 * @return ball			the ball entity
 	 */
-	public void createBallEntity(float radius, float x, float y, float z, float mass, float e) {
+	public Entity createBallEntity(float radius, float x, float y, float z, float mass, float e) {
 		
 		Vector3f position = new Vector3f(x,y,z);
 		Vector3f velocity = new Vector3f(0,0,0);
@@ -268,6 +310,8 @@ public class SimulationWindow {
 				mass, e, radius, BALL_STATIC_FRICTION, BALL_KINETIC_FRICTION);
 		
 		entities.add(ball);
+		
+		return ball;
 	}
 	
 	/**
@@ -279,6 +323,7 @@ public class SimulationWindow {
 		
 		renderer.render(entities);
 		renderer.render(boundaries);
+		renderer.renderGUI(guiComponents);
 	}
 	
 	/**
@@ -298,13 +343,49 @@ public class SimulationWindow {
 		
 		Physics.collision(entities, ground, leftBoundary, topBoundary, rightBoundary, z);
 	}
+	
+	/**
+	 * Checks whether an entity is within the bounds of the 
+	 * simulation.
+	 * 
+	 * @param entity
+	 * @return true if yes, false otherwise
+	 */
+	public boolean isWithinBounds(Entity entity) {
+		
+		// if entity is a rectangle
+		if (entity instanceof Rectangle) {
+					
+			Rectangle r = (Rectangle) entity;
+					
+			// check if rectangle is within bounds
+			if (r.getAabb().getMin().x < this.min.x || r.getAabb().getMax().x > this.max.x || 
+				r.getAabb().getMin().y < this.min.y || r.getAabb().getMax().y > this.max.y)
+				
+				return false;
+		}
+		
+		// if entity is a circle
+		else if (entity instanceof Circle) {
+			
+			Circle c = (Circle) entity;
+			
+			// check if circle is within bounds
+			if (c.getPosition().x - c.getRadius() < this.min.x || c.getPosition().x + c.getRadius() > this.max.x || 
+				c.getPosition().y - c.getRadius() < this.min.y || c.getPosition().y + c.getRadius() > this.max.y)
+				
+				return false;
+		}
+		
+		return true;
+	}
 
 	/**
 	 * Returns whether or not the simulation is paused.
 	 * 
 	 * @return pause
 	 */
-	public boolean isPause() {
+	public boolean isPaused() {
 		return pause;
 	}
 
@@ -315,6 +396,30 @@ public class SimulationWindow {
 	 */
 	public void setPause(boolean pause) {
 		this.pause = pause;
+	}
+	
+	/**
+	 * Returns the pause-play button.
+	 * 
+	 * @return pausePlayButton
+	 */
+	public Button getPausePlayButton() {
+		return pausePlayButton;
+	}
+	
+	/**
+	 * Sets the state of the pause-play button and 
+	 * the simulation.
+	 */
+	public void pausePlaySimulation() {
+		
+		pause = !pause;
+		
+		if (pause)
+			pausePlayButton.setModel(playButtonModel);
+		
+		else
+			pausePlayButton.setModel(pauseButtonModel);
 	}
 
 	/**

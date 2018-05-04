@@ -37,6 +37,15 @@ public class GUIComponent {
 	public Model getModel() {
 		return model;
 	}
+	
+	/**
+	 * Sets the GUI component's model.
+	 * 
+	 * @param model
+	 */
+	public void setModel(Model model) {
+		this.model = model;
+	}
 
 	/**
 	 * Returns the GUI component's position.

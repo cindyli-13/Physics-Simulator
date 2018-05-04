@@ -5,7 +5,6 @@ import static org.lwjgl.glfw.GLFW.*;
 import java.nio.DoubleBuffer;
 import java.util.ArrayList;
 
-import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
@@ -38,7 +37,10 @@ public class CustomizedScreen {
 	private Toolbar toolbar;
 	private Button saveButton;		// sButton
 	private PopUpBox popUpBox;
-	private Entity entityForPopUpBox;
+	private Entity selectedEntity;
+	
+	private float selectedEntityOriginalX;
+	private float selectedEntityOriginalY;
 	
 	private ArrayList<GUIComponent> guiComponents;
 	
@@ -50,6 +52,7 @@ public class CustomizedScreen {
 	// 0 = default
 	// 1 = new entity created
 	// 2 = pop-up box created
+	// 3 = entity selected
 	private int program;
 	
 	private long window;
@@ -112,28 +115,28 @@ public class CustomizedScreen {
 		simulation.render(renderer);
 		renderer.renderGUI(guiComponents);
 		
-		if (program == 1)
-			moveNewObject();
+		if (program == 1 || program == 3)
+			moveEntity();
 		
 		else if (program == 2) {
 			
 			float x = 0f;
 			float y = 0f;
 			
-			if (entityForPopUpBox instanceof Rectangle) {
+			if (selectedEntity instanceof Rectangle) {
 				
-				x = ((Rectangle) entityForPopUpBox).getWidth()/2;
-				y = ((Rectangle) entityForPopUpBox).getHeight()/2;
+				x = ((Rectangle) selectedEntity).getWidth()/2;
+				y = ((Rectangle) selectedEntity).getHeight()/2;
 			}
-			else if (entityForPopUpBox instanceof Circle) {
-				x = ((Circle) entityForPopUpBox).getRadius();
+			else if (selectedEntity instanceof Circle) {
+				x = ((Circle) selectedEntity).getRadius();
 				y = x;
 			}
 			
-			float offsetX = entityForPopUpBox.getPosition().x - 
+			float offsetX = selectedEntity.getPosition().x - 
 					(popUpBox.getPosition().x + popUpBox.getWidth()/2 + x + 5f);
 			
-			float offsetY = entityForPopUpBox.getPosition().y - 
+			float offsetY = selectedEntity.getPosition().y - 
 					(popUpBox.getPosition().y - popUpBox.getHeight()/2 - y - 5f);
 			
 			popUpBox.update(offsetX, offsetY);
@@ -146,7 +149,7 @@ public class CustomizedScreen {
 	 */
 	public void update() {
 		
-		if (!simulation.isPause())
+		if (!simulation.isPaused())
 			simulation.update();
 	}
 	
@@ -156,11 +159,12 @@ public class CustomizedScreen {
 	 * @param main				where the main loop is
 	 * @param key				the key that was pressed
 	 * @param leftClick			whether the left mouse button was pressed
+	 * @param rightClick		whether the right mouse button was pressed
 	 */
-	public void input(Main main, int key, boolean leftClick) {
+	public void input(Main main, int key, boolean leftClick, boolean rightClick) {
 		
 		// mouse input
-		mouseInput(main, leftClick);
+		mouseInput(main, leftClick, rightClick);
 		
 		// keyboard input
 		keyboardInput(key);
@@ -171,9 +175,10 @@ public class CustomizedScreen {
 	 * 
 	 * @param main				where the main loop is
 	 * @param leftClick			whether the left mouse button was pressed
+	 * @param rightClick		whether the right mouse button was pressed
 	 */
-	public void mouseInput(Main main, boolean leftClick) {
-			
+	public void mouseInput(Main main, boolean leftClick, boolean rightClick) {
+		
 		// get cursor coordinate
 		
 		DoubleBuffer cursorPosX = BufferUtils.createDoubleBuffer(1);
@@ -193,10 +198,10 @@ public class CustomizedScreen {
 		// if left mouse button was pressed
 		if (leftClick) {
 			
-			// clear new entity
-			if (program == 1) {
+			// place entity
+			if (program == 1 || program == 3) {
 				
-				placeNewEntity(simulation.getEntities().get(simulation.getEntities().size()-1));
+				placeEntity();
 				program = 0;
 				return;
 			}
@@ -208,7 +213,7 @@ public class CustomizedScreen {
 				if (popUpBox.getCloseButton().getAabb().intersects(x, y)) {
 					
 					popUpBox = null;
-					entityForPopUpBox = null;
+					selectedEntity = null;
 					program = 0;
 					return;
 				}
@@ -219,16 +224,86 @@ public class CustomizedScreen {
 					// find and remove entity from array list
 					for (int i = 0; i < simulation.getEntities().size(); i++) {
 						
-						if (entityForPopUpBox.equals(simulation.getEntities().get(i))) {
+						if (selectedEntity.equals(simulation.getEntities().get(i))) {
 							simulation.getEntities().remove(i);
 							break;
 						}
 					}
 					
 					popUpBox = null;
-					entityForPopUpBox = null;
+					selectedEntity = null;
 					program = 0;
 					return;
+				}
+				
+				// increase size button
+				else if (popUpBox.getIncreaseSizeButton().getAabb().intersects(x, y)) {
+					
+					// increase entity's scale
+					selectedEntity.setScale(selectedEntity.getScale() + 10f);
+					
+					if (selectedEntity.getScale() >= 100f) {
+						
+						selectedEntity.setScale(100f);
+						popUpBox.setIncreaseSizeButtonState(false);
+					}
+					else {
+						popUpBox.setDecreaseSizeButtonState(true);
+					}
+					
+					// rectangle
+					if (selectedEntity instanceof Rectangle) {
+						
+						Rectangle r = (Rectangle) selectedEntity;
+						
+						r.setWidth(r.getScale());
+						r.setHeight(r.getScale());
+						
+						r.updateAABB();
+					}
+					
+					// circle
+					else if (selectedEntity instanceof Circle) {
+						
+						Circle c = (Circle) selectedEntity;
+						
+						c.setRadius(c.getScale()/2);
+					}
+				}
+				
+				// decrease size button
+				else if (popUpBox.getDecreaseSizeButton().getAabb().intersects(x, y)) {
+					
+					// increase entity's scale
+					selectedEntity.setScale(selectedEntity.getScale() - 10f);
+					
+					if (selectedEntity.getScale() <= 30f) {
+						
+						selectedEntity.setScale(30f);
+						popUpBox.setDecreaseSizeButtonState(false);
+					}
+					else {
+						popUpBox.setIncreaseSizeButtonState(true);
+					}
+					
+					// rectangle
+					if (selectedEntity instanceof Rectangle) {
+						
+						Rectangle r = (Rectangle) selectedEntity;
+						
+						r.setWidth(r.getScale());
+						r.setHeight(r.getScale());
+						
+						r.updateAABB();
+					}
+					
+					// circle
+					else if (selectedEntity instanceof Circle) {
+						
+						Circle c = (Circle) selectedEntity;
+						
+						c.setRadius(c.getScale()/2);
+					}
 				}
 			}
 			
@@ -258,32 +333,32 @@ public class CustomizedScreen {
 						}
 						
 						// rectangle button
-						else if (button.equals(toolbar.getRectangleButton())) {
+						else if (button.equals(toolbar.getRectangleButton()) && simulation.isPaused()) {
 								
 							// generate a crate
-							float sideLength = (float) Math.random() * 50 + 30;
+							float sideLength = 50;
 							float posX = toolbar.getRectangleButton().getPosition().x;
 							float posY = toolbar.getRectangleButton().getPosition().y;
-							float mass = (float) Math.random() * 20 + 1;
-							float e = -0.5f;
+							float mass = 20;
+							float e = -0.3f;
 								
-							simulation.createCrateEntity(sideLength, posX, posY, z, mass, e);
+							selectedEntity = simulation.createCrateEntity(sideLength, posX, posY, z, mass, e);
 							
 							program = 1;
 							return;
 						}
 						
 						// circle button
-						else if (button.equals(toolbar.getCircleButton())) {
+						else if (button.equals(toolbar.getCircleButton()) && simulation.isPaused()) {
 								
 							// generate a ball
-							float radius = (float) Math.random() * 25 + 20;
+							float radius = 25;
 							float posX = toolbar.getCircleButton().getPosition().x;
 							float posY = toolbar.getCircleButton().getPosition().y;
-							float mass = (float) Math.random() * 20 + 1;
-							float e = -0.5f;
+							float mass = 20;
+							float e = -0.7f;
 								
-							simulation.createBallEntity(radius, posX, posY, z, mass, e);
+							selectedEntity = simulation.createBallEntity(radius, posX, posY, z, mass, e);
 							
 							program = 1;
 							return;
@@ -339,21 +414,60 @@ public class CustomizedScreen {
 					return;
 				}
 				
-				// loop through entities of simulation
-				for (Entity entity: simulation.getEntities()) {
+				// pause-play button
+				if (simulation.getPausePlayButton().getAabb().intersects(x, y)) {
 					
-					if (entity.intersects(x, y)) {
+					simulation.pausePlaySimulation();
+					return;
+				}
+				
+				// selecting an object
+				if (simulation.isPaused()) {
+					
+					// loop through entities of simulation
+					for (Entity entity: simulation.getEntities()) {
+					
+						if (entity.intersects(x, y)) {
 						
-						// create pop-up box
-						popUpBox = createPopUpBox(entity);
-						entityForPopUpBox = entity;
-						program = 2;
-						return;
+							// select entity
+							selectedEntity = entity;
+							selectedEntityOriginalX = selectedEntity.getPosition().x;
+							selectedEntityOriginalY = selectedEntity.getPosition().y;
+						
+							program = 3;						
+							return;
+						}
 					}
 				}
 				
 			}
 			
+		}
+		
+		// if right mouse button was pressed
+		else if (rightClick && simulation.isPaused()) {
+			
+			// loop through entities of simulation
+			for (Entity entity: simulation.getEntities()) {
+				
+				if (entity.intersects(x, y)) {
+					
+					// create pop-up box
+					popUpBox = createPopUpBox(entity);
+					selectedEntity = entity;
+					program = 2;
+					
+					// set states of increase and decrease size button
+					
+					if (selectedEntity.getScale() == 100f)
+						popUpBox.setIncreaseSizeButtonState(false);
+					
+					else if (selectedEntity.getScale() == 30f)
+						popUpBox.setDecreaseSizeButtonState(false);
+					
+					return;
+				}
+			}
 		}
 			
 	}
@@ -366,9 +480,8 @@ public class CustomizedScreen {
 	public void keyboardInput(int key) {
 		
 		// space bar
-		if(key == Main.KEY_SPACE) {
-			simulation.setPause(!simulation.isPause());
-		}
+		if(key == Main.KEY_SPACE)
+			simulation.pausePlaySimulation();
 	}
 
 	/**
@@ -381,9 +494,9 @@ public class CustomizedScreen {
 	}
 	
 	/**
-	 * Moves the newly created entity following the position of the cursor.
+	 * Moves the selected entity following the position of the cursor.
 	 */
-	public void moveNewObject() {
+	public void moveEntity() {
 	
 		// get cursor coordinate
 		
@@ -402,82 +515,73 @@ public class CustomizedScreen {
 		y += screenHeight/2;
 		
 		// set position of entity
-		Entity e = simulation.getEntities().get(simulation.getEntities().size()-1);
-		e.setPosition(new Vector3f(x,y, e.getPosition().z));
+		selectedEntity.setPosition(new Vector3f(x,y, selectedEntity.getPosition().z));
 				
 		// update AABB if entity is a rectangle
-		if (e instanceof Rectangle) {
-			Rectangle r = (Rectangle) e;
+		if (selectedEntity instanceof Rectangle) {
+			Rectangle r = (Rectangle) selectedEntity;
 					
-			r.getAabb().setMin(new Vector2f(r.getPosition().x - r.getWidth()/2, r.getPosition().y - r.getHeight()/2)); 
-			r.getAabb().setMax(new Vector2f(r.getPosition().x + r.getWidth()/2, r.getPosition().y + r.getHeight()/2));
+			r.updateAABB();
 		}
 			
 	}
 	
 	/**
-	 * Checks whether or not a newly created entity can 
+	 * Checks whether or not a selected entity can 
 	 * be placed at the location of the cursor. If yes,
 	 * places the entity at the location. If no, deletes 
 	 * the entity.
-	 * 
-	 * @param entity		the newly created entity
 	 */
-	public void placeNewEntity(Entity newEntity) {
-		
-		// if entity is a rectangle
-		if (newEntity instanceof Rectangle) {
+	public void placeEntity() {
 			
-			Rectangle r = (Rectangle) newEntity;
-			
-			// horizontal check
-			if (r.getAabb().getMin().x < simulation.getMin().x || 
-					r.getAabb().getMax().x > simulation.getMax().x) {
+		// check if entity can be placed
+		if (!simulation.isWithinBounds(selectedEntity)) {
 				
+			if (program == 1)
 				simulation.getEntities().remove(simulation.getEntities().size()-1);
-				return;
+				
+			else if (program == 3) {
+					
+				selectedEntity.setPosition(new Vector3f(selectedEntityOriginalX, selectedEntityOriginalY, 
+						selectedEntity.getPosition().z));
+					
+				// update AABB if selected entity is a rectangle
+				if (selectedEntity instanceof Rectangle) {
+					
+					Rectangle r = (Rectangle) selectedEntity;
+					r.updateAABB();
+				}
 			}
 			
-			// vertical check
-			if (r.getAabb().getMin().y < simulation.getMin().y || 
-					r.getAabb().getMax().y > simulation.getMax().y) {
-				
-				simulation.getEntities().remove(simulation.getEntities().size()-1);
-				return;
-			}
-		}
-		
-		// if entity is circle
-		else if (newEntity instanceof Circle) {
-			
-			Circle c = (Circle) newEntity;
-			
-			// horizontal check
-			if (c.getPosition().x - c.getRadius() < simulation.getMin().x || 
-					c.getPosition().x + c.getRadius() > simulation.getMax().x) {
-				
-				simulation.getEntities().remove(simulation.getEntities().size()-1);
-				return;
-			}
-			
-			// vertical check
-			if (c.getPosition().y - c.getRadius() < simulation.getMin().y || 
-					c.getPosition().y + c.getRadius() > simulation.getMax().y) {
-				
-				simulation.getEntities().remove(simulation.getEntities().size()-1);
-				return;
-			}
+			return;
 		}
 		
 		// loop through entities
-		for(Entity entity : simulation.getEntities()) {
+		for (Entity entity : simulation.getEntities()) {
 			
 			// check that the entities to check collision for are not the same entity
-			if (!newEntity.equals(entity)) {
+			if (!selectedEntity.equals(entity)) {
 				
-				if (newEntity.intersects(entity)) {
+				if (selectedEntity.intersects(entity)) {
 					
-					simulation.getEntities().remove(simulation.getEntities().size()-1);
+					if (program == 1)
+						simulation.getEntities().remove(simulation.getEntities().size()-1);
+					
+					else if (program == 3) {
+						
+						selectedEntity.setPosition(new Vector3f(selectedEntityOriginalX, selectedEntityOriginalY, 
+								selectedEntity.getPosition().z));
+						
+						// update AABB if selected entity is a rectangle
+						if (selectedEntity instanceof Rectangle) {
+							
+							Rectangle r = (Rectangle) selectedEntity;
+							
+							r.updateAABB();
+						}
+						
+					}
+					
 					return;
 				}
 			}
@@ -524,4 +628,5 @@ public class CustomizedScreen {
 		
 		return new PopUpBox(loader, model, position, rotation, scale, width, height, z);
 	}
+	
 }

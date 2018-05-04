@@ -57,7 +57,7 @@ public class GameScreen {
 	 */
 	public void update() {
 		
-		if (!simulation.isPause())
+		if (!simulation.isPaused())
 			simulation.update();
 	}
 	
@@ -173,7 +173,7 @@ public class GameScreen {
 		
 		// space bar
 		if(key == Main.KEY_SPACE) {
-			simulation.setPause(!simulation.isPause());
+			simulation.setPause(!simulation.isPaused());
 		}
 	}
 	

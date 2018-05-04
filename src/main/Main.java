@@ -49,6 +49,7 @@ public class Main {
 	private int currScreen;		// 0 = menu, 1 = game, 2 = lesson, 3 = customized
 	private int key;
 	private boolean leftClick;
+	private boolean rightClick;
 	
 	// static variables
 	private static final int WIDTH = 1000;
@@ -116,7 +117,7 @@ public class Main {
 					lessonScreen.render(renderer);
 					break;
 				case 3:
-					customizedScreen.input(this, key, leftClick);
+					customizedScreen.input(this, key, leftClick, rightClick);
 					customizedScreen.update();
 					customizedScreen.render(renderer);
 					break;
@@ -125,6 +126,7 @@ public class Main {
 			// reset input holders
 			key = -1;
 			leftClick = false;
+			rightClick = false;
 			
 			glfwSwapBuffers(window); // swap the color buffers
 		}
@@ -148,9 +150,9 @@ public class Main {
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 					
 		// create the window
-		window = glfwCreateWindow(WIDTH, HEIGHT, "OpenGL Test Project", NULL, NULL);
-			if (window == NULL)
-				throw new RuntimeException("Failed to create the GLFW window");
+		window = glfwCreateWindow(WIDTH, HEIGHT, "Physics Simulator", NULL, NULL);
+		if (window == NULL)
+			throw new RuntimeException("Failed to create the GLFW window");
 						
 		// set up a key callback
 		// these will be detected with "poll events" in the render loop
@@ -168,10 +170,14 @@ public class Main {
 		    
 			if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
 		        this.leftClick = true;
+			
+			if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
+		        this.rightClick = true;
 		});
 		
 		this.key = -1;
 		this.leftClick = false;
+		this.rightClick = false;
 			
 		// get the thread stack and push a new frame
 		try (MemoryStack stack = stackPush()) {
