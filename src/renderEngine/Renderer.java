@@ -48,6 +48,45 @@ public class Renderer {
 	}
 	
 	/**
+	 * Takes in an entity and renders it in the OpenGL 
+	 * world.
+	 * 
+	 * @param entity
+	 */
+	public void render(Entity entity) {
+		
+		shader.bind();
+			
+		// create transformation matrix
+		Matrix4f worldMatrix = Transformation.getWorldMatrix(
+				entity.getPosition(), 
+				entity.getRotation(), 
+				entity.getScale());
+			
+		shader.loadWorldMatrix(worldMatrix);
+			
+			
+		// bind the entity's model
+		glBindVertexArray(entity.getModel().getVaoID());
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
+			
+		// render the entity's model
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, entity.getModel().getTextureID());
+		glDrawElements(GL_TRIANGLES, entity.getModel().getVertexCount(), GL_UNSIGNED_INT, 0);
+			
+		// unbind the entity's model
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
+		glBindVertexArray(0);
+		
+		shader.unbind();
+	}
+	
+	/**
 	 * Takes in an ArrayList of entities and renders each one in the OpenGL 
 	 * world.
 	 * 
@@ -55,39 +94,45 @@ public class Renderer {
 	 */
 	public void render(ArrayList<Entity> entities) {
 		
-		shader.bind();
-		
 		// loop through entities
-		for (Entity entity:entities) {
-			
-			// create transformation matrix
-			Matrix4f worldMatrix = Transformation.getWorldMatrix(
-					entity.getPosition(), 
-					entity.getRotation(), 
-					entity.getScale());
-			
-			shader.loadWorldMatrix(worldMatrix);
-			
-			
-			// bind the entity's model
-			glBindVertexArray(entity.getModel().getVaoID());
-			glEnableVertexAttribArray(0);
-			glEnableVertexAttribArray(1);
-			glEnableVertexAttribArray(2);
-			
-			// render the entity's model
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, entity.getModel().getTextureID());
-			glDrawElements(GL_TRIANGLES, entity.getModel().getVertexCount(), GL_UNSIGNED_INT, 0);
-			
-			// unbind the entity's model
-			glDisableVertexAttribArray(0);
-			glDisableVertexAttribArray(1);
-			glDisableVertexAttribArray(2);
-			glBindVertexArray(0);
-		}
+		for (Entity entity:entities)
+			render(entity);
+	}
+	
+	/**
+	 * Takes in a GUI component and renders it in the OpenGL 
+	 * world.
+	 * 
+	 * @param guiComponent
+	 */
+	public void render(GUIComponent guiComponent) {
 		
-		shader.unbind();
+		shader.bind();
+			
+		// create transformation matrix
+		Matrix4f worldMatrix = Transformation.getWorldMatrix(
+				guiComponent.getPosition(), 
+				guiComponent.getRotation(), 
+				guiComponent.getScale());
+			
+		shader.loadWorldMatrix(worldMatrix);
+			
+		// bind the GUI component's model
+		glBindVertexArray(guiComponent.getModel().getVaoID());
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
+			
+		// render the GUI component's model
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, guiComponent.getModel().getTextureID());
+		glDrawElements(GL_TRIANGLES, guiComponent.getModel().getVertexCount(), GL_UNSIGNED_INT, 0);
+			
+		// unbind the GUI component's model
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
+		glBindVertexArray(0);
 	}
 	
 	/**
@@ -98,38 +143,9 @@ public class Renderer {
 	 */
 	public void renderGUI(ArrayList<GUIComponent> guiComponents) {
 		
-		shader.bind();
-		
 		// loop through GUI components
-		for (GUIComponent guiComponent:guiComponents) {
-			
-			// create transformation matrix
-			Matrix4f worldMatrix = Transformation.getWorldMatrix(
-					guiComponent.getPosition(), 
-					guiComponent.getRotation(), 
-					guiComponent.getScale());
-			
-			shader.loadWorldMatrix(worldMatrix);
-			
-			// bind the GUI component's model
-			glBindVertexArray(guiComponent.getModel().getVaoID());
-			glEnableVertexAttribArray(0);
-			glEnableVertexAttribArray(1);
-			glEnableVertexAttribArray(2);
-			
-			// render the GUI component's model
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, guiComponent.getModel().getTextureID());
-			glDrawElements(GL_TRIANGLES, guiComponent.getModel().getVertexCount(), GL_UNSIGNED_INT, 0);
-			
-			// unbind the GUI component's model
-			glDisableVertexAttribArray(0);
-			glDisableVertexAttribArray(1);
-			glDisableVertexAttribArray(2);
-			glBindVertexArray(0);
-		}
-		
-		shader.unbind();
+		for (GUIComponent guiComponent:guiComponents)
+			render(guiComponent);
 	}
 	
 	/**

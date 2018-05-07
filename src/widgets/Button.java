@@ -41,6 +41,15 @@ public class Button extends GUIComponent {
 	}
 	
 	/**
+	 * Updates the button's AABB.
+	 */
+	public void updateAABB() {
+		
+		this.aabb.setMin(new Vector2f(getPosition().x - width/2, getPosition().y - height/2)); 
+		this.aabb.setMax(new Vector2f(getPosition().x + width/2, getPosition().y + height/2));
+	}
+	
+	/**
 	 * Returns the button's AABB.
 	 * 
 	 * @return aabb

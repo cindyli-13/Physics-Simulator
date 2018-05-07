@@ -230,103 +230,38 @@ public class Main {
 	 */
 	public void initScreens() {
 		
-		menuScreen = new MenuScreen(loader, WIDTH, HEIGHT, z);
-		gameScreen = new GameScreen(window, loader, WIDTH, HEIGHT, z);
-		lessonScreen = new LessonScreen(window, loader, WIDTH, HEIGHT, z);
-		customizedScreen = new CustomizedScreen(window, loader, WIDTH, HEIGHT, z);
-		
-		currScreen = 0;
-		
-		// retrieve data
-		retrieveDataFromTextFiles();
-	}
-	
-	// test method (to be removed later)
-	private void retrieveDataFromTextFiles() {
-		
-		// just a flag to remind me to change this later
-		int dummy = 0;
-		
-		// game screen
-		retrieveDataFromFile("./data/game_test.txt", 1);
-		
-		// customized screen
-		retrieveDataFromFile("./data/customized_test.txt", 3);
-	}
-	
-	/**
-	 * Retrieves the simulation data from the specified 
-	 * file.
-	 * 
-	 * @param fileName
-	 */
-	private void retrieveDataFromFile(String fileName, int screen) {
-		
 		try {
-			IO.openInputFile(fileName);
+			
+			// menu screen
+			menuScreen = new MenuScreen(loader, WIDTH, HEIGHT, z);
+			
+			// game screen
+			gameScreen = new GameScreen(window, loader, WIDTH, HEIGHT, z);
+			
+			// lesson screen
+			lessonScreen = new LessonScreen(window, loader, WIDTH, HEIGHT, z);
+			
+			// customized screen
+			
+			IO.openInputFile("./data/customized_data_files.txt");
+			
+			int n = Integer.parseInt(IO.readLine());
+			String[] customizedFiles = new String[n];
+			
+			for (int i = 0; i < n; i++) {
 				
-			// get number of entities
-			int numEntities = Integer.parseInt(IO.readLine());
-					
-			// line buffer
-			IO.readLine();
-					
-			for (int i = 0; i < numEntities; i++) {
-						
-				String type = IO.readLine();
-						
-				// rectangle
-				if (type.equals("RECTANGLE")) {
-							
-					float sideLength = Float.parseFloat(IO.readLine());
-					float x = Float.parseFloat(IO.readLine());
-					float y = Float.parseFloat(IO.readLine());
-					float mass = Float.parseFloat(IO.readLine());
-					float e = Float.parseFloat(IO.readLine());
-						
-					switch (screen) {
-						case 1:
-							gameScreen.getSimulationWindow().createCrateEntity(sideLength, x, y, z, mass, e);
-							break;
-						case 2:
-							lessonScreen.getSimulationWindow().createCrateEntity(sideLength, x, y, z, mass, e);
-							break;
-						case 3:
-							customizedScreen.getSimulationWindow().createCrateEntity(sideLength, x, y, z, mass, e);
-							break;
-					}
-				}
-						
-				// circle
-				else if (type.equals("CIRCLE")) {
-							
-					float radius = Float.parseFloat(IO.readLine());
-					float x = Float.parseFloat(IO.readLine());
-					float y = Float.parseFloat(IO.readLine());
-					float mass = Float.parseFloat(IO.readLine());
-					float e = Float.parseFloat(IO.readLine());
-							
-					switch (screen) {
-						case 1:
-							gameScreen.getSimulationWindow().createBallEntity(radius, x, y, z, mass, e);
-							break;
-						case 2:
-							lessonScreen.getSimulationWindow().createBallEntity(radius, x, y, z, mass, e);
-							break;
-						case 3:
-							customizedScreen.getSimulationWindow().createBallEntity(radius, x, y, z, mass, e);
-							break;
-					}
-				}
-						
-				// line buffer
-				IO.readLine();
+				customizedFiles[i] = IO.readLine();
 			}
+			
+			customizedScreen = new CustomizedScreen(window, loader, WIDTH, HEIGHT, z, customizedFiles);
+			
 			IO.closeInputFile();
-					
+			
 		} catch (IOException exception) {
 			exception.printStackTrace();
 		}
+		
+		currScreen = 0;
 	}
 		
 	/**

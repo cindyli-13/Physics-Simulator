@@ -2,6 +2,7 @@ package screens;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+import java.io.File;
 import java.nio.DoubleBuffer;
 import java.util.ArrayList;
 
@@ -18,7 +19,9 @@ import objects.Rectangle;
 import renderEngine.Renderer;
 import widgets.Button;
 import widgets.GUIComponent;
+import widgets.Label;
 import widgets.PopUpBox;
+import widgets.Sidebar;
 import widgets.SimulationWindow;
 import widgets.Toolbar;
 
@@ -35,9 +38,13 @@ public class CustomizedScreen {
 	// instance variables	
 	private SimulationWindow simulation;
 	private Toolbar toolbar;
+	private Sidebar sidebar;
 	private Button saveButton;		// sButton
+	private Button deleteButton;	// dButton
 	private PopUpBox popUpBox;
 	private Entity selectedEntity;
+	
+	private Label selectASimLabel;
 	
 	private float selectedEntityOriginalX;
 	private float selectedEntityOriginalY;
@@ -55,21 +62,29 @@ public class CustomizedScreen {
 	// 3 = entity selected
 	private int program;
 	
+	private int currentSim;
+	
 	private long window;
 	private float screenWidth;
 	private float screenHeight;
 	
 	// static variables
-	public static final String SAVE_BUTTON_TEXTURE_FILE = "./res/saveButton.png";
+	public static final String SAVE_BUTTON_TEXTURE_FILE = "./res/Save.png";
+	public static final String DELETE_BUTTON_TEXTURE_FILE = "./res/Delete.png";
+	public static final String SELECT_A_SIM_LABEL_TEXTURE_FILE = "./res/selectASimulationLabel.png";
 		
 	// constructor
-	public CustomizedScreen(long window, Loader loader, float screenWidth, float screenHeight, float z) {
+	public CustomizedScreen(long window, Loader loader, float screenWidth, float screenHeight, float z, 
+			String[] files) {
 					
 		// simulation window
 		simulation = new SimulationWindow(window, loader, screenWidth, screenHeight, z);
 		
 		// toolbar
 		toolbar = new Toolbar(loader, screenWidth, screenHeight, z);
+		
+		// sidebar
+		sidebar = new Sidebar(loader, screenWidth, screenHeight, z, files);
 		
 		// save button
 		float buttonX = 100;
@@ -91,13 +106,40 @@ public class CustomizedScreen {
 		
 		saveButton = new Button(sButtonModel, position, rotation, scale, buttonWidth, buttonHeight);
 		
+		// delete button
+		buttonX = 100 + buttonWidth;
+		buttonY = 275;
+		
+		position = new Vector3f(buttonX, buttonY, z);
+		
+		textureID = loader.loadTexture(DELETE_BUTTON_TEXTURE_FILE);
+		Model dButtonModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+		
+		deleteButton = new Button(dButtonModel, position, rotation, scale, buttonWidth, buttonHeight);
+		
+		// select a simulation label
+		float labelWidth = 3f;
+		float labelHeight = 3f;
+		
+		float labelX = (simulation.getMax().x + simulation.getMin().x) / 2;
+		float labelY = (simulation.getMax().y + simulation.getMin().y) / 2;
+		
+		position = new Vector3f(labelX, labelY, z);
+		
+		textureID = loader.loadTexture(SELECT_A_SIM_LABEL_TEXTURE_FILE);
+		Model selectionASimModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+		
+		selectASimLabel = new Label(selectionASimModel, position, rotation, labelWidth, labelWidth, labelHeight);
+		
 		guiComponents = new ArrayList<GUIComponent>();
 		guiComponents.add(saveButton);
+		guiComponents.add(deleteButton);
 		
 		this.loader = loader;
 		
 		this.z = z;
 		program = 0;
+		currentSim = -1;
 		
 		this.window = window;
 		this.screenWidth = screenWidth;
@@ -112,8 +154,12 @@ public class CustomizedScreen {
 	public void render(Renderer renderer) {
 		
 		toolbar.render(renderer);
+		sidebar.render(renderer);
 		simulation.render(renderer);
 		renderer.renderGUI(guiComponents);
+		
+		if (currentSim == -1)
+			renderer.render(selectASimLabel);
 		
 		if (program == 1 || program == 3)
 			moveEntity();
@@ -367,50 +413,149 @@ public class CustomizedScreen {
 						
 				}
 				
+				// loop through buttons of sidebar
+				for (int i = 0; i < sidebar.getButtons().size(); i++) {
+					
+					Button button = sidebar.getButtons().get(i);
+					
+					
+					// check if this button was clicked
+					if (button.getAabb().intersects(x, y)) {
+					
+						simulation.setPause(false);
+						simulation.pausePlaySimulation();
+						
+						// create new simulation button
+						if (button.equals(sidebar.getCreateNewSimulationButton())) {
+						
+							String fileName = "./data/customized_" + 
+									sidebar.getButtons().size() + ".txt";
+							
+							sidebar.getSimulationsData().add(fileName);
+							
+							IO.createOutputFile(fileName);
+							IO.println("0");
+							IO.closeOutputFile();
+							
+							// add to customized data file
+							IO.createOutputFile("./data/customized_data_files.txt");
+							IO.println(Integer.toString(sidebar.getSimulationsData().size()));
+							
+							for (int j = 0; j < sidebar.getSimulationsData().size(); j++) {
+								
+								IO.println(sidebar.getSimulationsData().get(j));
+							}
+							IO.closeOutputFile();
+							
+							sidebar.createSimulationButton(z);
+							
+							// change to current simulation
+							simulation.getEntities().clear();
+							currentSim = sidebar.getSimulationsData().size();
+							return;
+						}
+						
+						// simulation button
+						else {
+							simulation.loadSimulation(sidebar.getSimulationsData().get(i - 1));
+							currentSim = i;
+							return;
+						}
+					}
+					
+				}
+				
 				// save button
 				if (saveButton.getAabb().intersects(x, y)) {
 					
-					// save data into text file
-					IO.createOutputFile("./data/customized_test.txt");
+					if (currentSim != -1) {
 					
-					// number of entities
-					IO.println(Integer.toString(simulation.getEntities().size()));
-					
-					// loop through entities
-					for (Entity entity: simulation.getEntities()) {
-							
-						// line buffer
-						IO.println("");
+						// save data into text file
+						IO.createOutputFile("./data/customized_" + currentSim + ".txt");
 						
-						// rectangle
-						if (entity instanceof Rectangle) {
+						// number of entities
+						IO.println(Integer.toString(simulation.getEntities().size()));
+						
+						// loop through entities
+						for (Entity entity: simulation.getEntities()) {
 								
-							Rectangle r = (Rectangle) entity;
-								
-							IO.println("RECTANGLE");
-							IO.println(Float.toString(r.getWidth()));
-							IO.println(Float.toString(r.getPosition().x));
-							IO.println(Float.toString(r.getPosition().y));
-							IO.println(Float.toString(r.getMass()));
-							IO.println(Float.toString(r.getCoefficientOfRestitution()));
-						}
+							// line buffer
+							IO.println("");
 							
-						// circle
-						else if (entity instanceof Circle) {
+							// rectangle
+							if (entity instanceof Rectangle) {
+									
+								Rectangle r = (Rectangle) entity;
+									
+								IO.println("RECTANGLE");
+								IO.println(Float.toString(r.getWidth()));
+								IO.println(Float.toString(r.getPosition().x));
+								IO.println(Float.toString(r.getPosition().y));
+								IO.println(Float.toString(r.getMass()));
+								IO.println(Float.toString(r.getCoefficientOfRestitution()));
+							}
 								
-							Circle c = (Circle) entity;
-								
-							IO.println("CIRCLE");
-							IO.println(Float.toString(c.getRadius()));
-							IO.println(Float.toString(c.getPosition().x));
-							IO.println(Float.toString(c.getPosition().y));
-							IO.println(Float.toString(c.getMass()));
-							IO.println(Float.toString(c.getCoefficientOfRestitution()));
+							// circle
+							else if (entity instanceof Circle) {
+									
+								Circle c = (Circle) entity;
+									
+								IO.println("CIRCLE");
+								IO.println(Float.toString(c.getRadius()));
+								IO.println(Float.toString(c.getPosition().x));
+								IO.println(Float.toString(c.getPosition().y));
+								IO.println(Float.toString(c.getMass()));
+								IO.println(Float.toString(c.getCoefficientOfRestitution()));
+							}
 						}
+						IO.closeOutputFile();
+						
+						System.out.println("Simulation saved!");
 					}
-					IO.closeOutputFile();
+					return;
+				}
+				
+				// delete button
+				if (deleteButton.getAabb().intersects(x, y)) {
 					
-					System.out.println("Simulation saved!");
+					if (currentSim != -1) {
+						
+						// delete file
+						File file = new File(sidebar.getSimulationsData().get(currentSim - 1));
+						file.delete();
+						sidebar.getSimulationsData().remove(currentSim - 1);
+						
+						// loop through files and rename them
+						for (int i = currentSim - 1; i < sidebar.getSimulationsData().size(); i++) {
+							
+							file = new File(sidebar.getSimulationsData().get(i));
+							File newFile = new File("./data/customized_" + (i + 1) + ".txt");
+							
+							file.renameTo(newFile);
+							
+							sidebar.getSimulationsData().remove(i);
+							sidebar.getSimulationsData().add(i, "./data/customized_" + (i + 1) + ".txt");
+						}
+						
+						// edit customized_data_files.txt data
+						IO.createOutputFile("./data/customized_data_files.txt");
+						IO.println(Integer.toString(sidebar.getSimulationsData().size()));
+						
+						for (String fileName: sidebar.getSimulationsData())
+							IO.println(fileName);
+						
+						IO.closeOutputFile();
+						
+						// delete simulation button
+						Button button = sidebar.getButtons().get(sidebar.getButtons().size() - 1);
+						sidebar.getButtons().remove(button);
+						sidebar.getGUIComponents().remove(button);
+						
+						// clear simulation data
+						simulation.getEntities().clear();
+						
+						currentSim = -1;
+					}
 					return;
 				}
 				
@@ -480,8 +625,11 @@ public class CustomizedScreen {
 	public void keyboardInput(int key) {
 		
 		// space bar
-		if(key == Main.KEY_SPACE)
-			simulation.pausePlaySimulation();
+		if(key == Main.KEY_SPACE) {
+			
+			if (program == 0)
+				simulation.pausePlaySimulation();
+		}
 	}
 
 	/**

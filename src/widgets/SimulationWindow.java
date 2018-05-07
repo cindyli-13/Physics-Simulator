@@ -1,9 +1,11 @@
 package widgets;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.joml.Vector3f;
 
+import io.IO;
 import objects.Circle;
 import objects.Entity;
 import objects.Loader;
@@ -378,6 +380,64 @@ public class SimulationWindow {
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * Loads the specified simulation into the simulation 
+	 * window.
+	 * 
+	 * @param filename		where the simulation data is stored
+	 */
+	public void loadSimulation(String fileName) {
+		
+		// clear current simulation data
+		entities.clear();
+		
+		try {
+			IO.openInputFile(fileName);
+				
+			// get number of entities
+			int numEntities = Integer.parseInt(IO.readLine());
+					
+			// line buffer
+			IO.readLine();
+					
+			for (int i = 0; i < numEntities; i++) {
+						
+				String type = IO.readLine();
+						
+				// rectangle
+				if (type.equals("RECTANGLE")) {
+							
+					float sideLength = Float.parseFloat(IO.readLine());
+					float x = Float.parseFloat(IO.readLine());
+					float y = Float.parseFloat(IO.readLine());
+					float mass = Float.parseFloat(IO.readLine());
+					float e = Float.parseFloat(IO.readLine());
+					
+					createCrateEntity(sideLength, x, y, z, mass, e);
+				}
+						
+				// circle
+				else if (type.equals("CIRCLE")) {
+							
+					float radius = Float.parseFloat(IO.readLine());
+					float x = Float.parseFloat(IO.readLine());
+					float y = Float.parseFloat(IO.readLine());
+					float mass = Float.parseFloat(IO.readLine());
+					float e = Float.parseFloat(IO.readLine());
+					
+					createBallEntity(radius, x, y, z, mass, e);
+				}
+						
+				// line buffer
+				IO.readLine();
+			}
+			IO.closeInputFile();
+					
+		} catch (IOException exception) {
+			exception.printStackTrace();
+		}
 	}
 
 	/**
