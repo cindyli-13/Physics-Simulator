@@ -86,7 +86,7 @@ public class Main {
 		GL.createCapabilities();
 		
 		// set the clear color
-		glClearColor(0.6f, 0.9f, 0.9f, 1.0f); // light blue
+		glClearColor(0.5f, 0.8f, 0.8f, 0f); // blue
 
 		// run the loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key

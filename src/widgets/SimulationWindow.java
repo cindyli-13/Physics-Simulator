@@ -30,6 +30,8 @@ public class SimulationWindow {
 	private Rectangle rightBoundary;	// r
 	private Rectangle topBoundary;		// t
 	
+	private GUIComponent sky;
+	
 	private ArrayList<Entity> entities;
 	private ArrayList<Entity> boundaries;
 	private ArrayList<GUIComponent> guiComponents;
@@ -63,6 +65,7 @@ public class SimulationWindow {
 	public static final String BALL_TEXTURE_FILE = "./res/ball.png";
 	public static final String GROUND_TEXTURE_FILE = "./res/ground.png";
 	public static final String BOUNDARY_TEXTURE_FILE = "./res/boundary.png";
+	public static final String SKY_TEXTURE_FILE = "./res/sky.png";
 	
 	public static final String PAUSE_BUTTON_TEXTURE_FILE = "./res/pauseButton.png";
 	public static final String PLAY_BUTTON_TEXTURE_FILE = "./res/playButton.png";
@@ -173,6 +176,28 @@ public class SimulationWindow {
 		// **********************************************
 		
 		
+		// ****************** SKY ***********************
+		
+		float sWidth = gWidth;
+		float sHeight = lHeight;
+		
+		float sX = gX;	// same as ground
+		float sY = lY;
+		Vector3f sPos = new Vector3f(sX, sY, z - 110f);
+		
+		vertices = Entity.getVertices(sWidth, sHeight, z - 120f);
+		textureID = loader.loadTexture(SKY_TEXTURE_FILE);
+		Model sModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+				
+		sky = new GUIComponent(sModel, sPos, rotation, scale);
+		
+		// initialize GUI components array list
+		guiComponents = new ArrayList<GUIComponent>();
+		guiComponents.add(sky);
+		
+		// **********************************************
+		
+		
 		// ************* PAUSE-PLAY BUTTON **************
 				
 		float buttonWidth = 40f;
@@ -191,9 +216,6 @@ public class SimulationWindow {
 		playButtonModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 				
 		pausePlayButton = new Button(playButtonModel, position, rotation, scale, buttonWidth, buttonHeight);
-		
-		// initialize GUI components array list
-		guiComponents = new ArrayList<GUIComponent>();
 		guiComponents.add(pausePlayButton);
 		
 		// **********************************************

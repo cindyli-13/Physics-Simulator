@@ -413,56 +413,71 @@ public class CustomizedScreen {
 						
 				}
 				
+				// create new simulation button
+				if (sidebar.getCreateNewSimulationButton().getAabb().intersects(x, y)
+						&& sidebar.getCreateNewSimulationButton().isEnabled()) {
+				
+					simulation.setPause(false);
+					simulation.pausePlaySimulation();
+					
+					String fileName = "./data/customized_" + 
+							(sidebar.getButtons().size() + 1) + ".txt";
+					
+					sidebar.getSimulationsData().add(fileName);
+					
+					IO.createOutputFile(fileName);
+					IO.println("0");
+					IO.closeOutputFile();
+					
+					// add to customized data file
+					IO.createOutputFile("./data/customized_data_files.txt");
+					IO.println(Integer.toString(sidebar.getSimulationsData().size()));
+					
+					for (String file: sidebar.getSimulationsData()) {
+						
+						IO.println(file);
+					}
+					IO.closeOutputFile();
+					
+					sidebar.createSimulationButton();
+					
+					// change to current simulation
+					simulation.getEntities().clear();
+					currentSim = sidebar.getSimulationsData().size();
+					return;
+				}
+				
 				// loop through buttons of sidebar
 				for (int i = 0; i < sidebar.getButtons().size(); i++) {
 					
 					Button button = sidebar.getButtons().get(i);
 					
-					
 					// check if this button was clicked
-					if (button.getAabb().intersects(x, y)) {
+					if (button.getAabb().intersects(x, y) && button.isEnabled()) {
 					
 						simulation.setPause(false);
 						simulation.pausePlaySimulation();
 						
-						// create new simulation button
-						if (button.equals(sidebar.getCreateNewSimulationButton())) {
-						
-							String fileName = "./data/customized_" + 
-									sidebar.getButtons().size() + ".txt";
-							
-							sidebar.getSimulationsData().add(fileName);
-							
-							IO.createOutputFile(fileName);
-							IO.println("0");
-							IO.closeOutputFile();
-							
-							// add to customized data file
-							IO.createOutputFile("./data/customized_data_files.txt");
-							IO.println(Integer.toString(sidebar.getSimulationsData().size()));
-							
-							for (int j = 0; j < sidebar.getSimulationsData().size(); j++) {
-								
-								IO.println(sidebar.getSimulationsData().get(j));
-							}
-							IO.closeOutputFile();
-							
-							sidebar.createSimulationButton(z);
-							
-							// change to current simulation
-							simulation.getEntities().clear();
-							currentSim = sidebar.getSimulationsData().size();
-							return;
-						}
-						
 						// simulation button
-						else {
-							simulation.loadSimulation(sidebar.getSimulationsData().get(i - 1));
-							currentSim = i;
-							return;
-						}
+						simulation.loadSimulation(sidebar.getSimulationsData().get(i));
+						currentSim = i + 1;
+						return;
 					}
 					
+				}
+				
+				// up button of sidebar
+				if (sidebar.getUpButton().getAabb().intersects(x, y)) {
+					
+					sidebar.updateTopSimulationIndex(true);
+					return;
+				}
+				
+				// down button of sidebar
+				if (sidebar.getDownButton().getAabb().intersects(x, y)) {
+					
+					sidebar.updateTopSimulationIndex(false);
+					return;
 				}
 				
 				// save button
@@ -547,14 +562,19 @@ public class CustomizedScreen {
 						IO.closeOutputFile();
 						
 						// delete simulation button
-						Button button = sidebar.getButtons().get(sidebar.getButtons().size() - 1);
+						Button button = sidebar.getButtons().get(currentSim - 1);
 						sidebar.getButtons().remove(button);
 						sidebar.getGUIComponents().remove(button);
 						
 						// clear simulation data
 						simulation.getEntities().clear();
 						
+						// update top simulation index
+						sidebar.updateTopSimulationIndex();
+						
 						currentSim = -1;
+						
+						System.out.println("Simulation deleted!");
 					}
 					return;
 				}

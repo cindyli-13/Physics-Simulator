@@ -22,6 +22,8 @@ public class Button extends GUIComponent {
 	private float width;
 	private float height;
 	
+	private boolean enabled;
+	
 	// constructor
 	public Button(Model model, Vector3f position, Vector3f rotation, float scale, float width, float height) {
 		
@@ -38,6 +40,7 @@ public class Button extends GUIComponent {
 		
 		this.width = width;
 		this.height = height;
+		this.enabled = true;
 	}
 	
 	/**
@@ -74,6 +77,24 @@ public class Button extends GUIComponent {
 	 */
 	public float getHeight() {
 		return height;
+	}
+
+	/**
+	 * Returns whether or not the button is enabled.
+	 * 
+	 * @return enabled
+	 */
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	/**
+	 * Sets whether or not the button is enabled.
+	 * 
+	 * @param enabled
+	 */
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 }
