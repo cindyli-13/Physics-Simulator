@@ -24,6 +24,10 @@ public class Sidebar {
 	private ArrayList<String> simulationsData;
 	
 	private Model simulationButtonModel;
+	private Model upButtonEnabledModel;
+	private Model upButtonDisabledModel;
+	private Model downButtonEnabledModel;
+	private Model downButtonDisabledModel;
 	
 	private Button createNewSimulationButton;
 	private Button downButton;
@@ -47,8 +51,10 @@ public class Sidebar {
 	private static String CREATE_NEW_SIMULATION_BUTTON_TEXTURE_FILE = "./res/createNewSimulationButton.png";
 	private static String SIMULATION_BUTTON_TEXTURE_FILE = "./res/simulationButton.png";
 	private static String SIDEBAR_PANEL_TEXTURE_FILE = "./res/sidebarPanel.png";
-	private static String UP_BUTTON_TEXTURE_FILE = "./res/Up.png";
-	private static String DOWN_BUTTON_TEXTURE_FILE = "./res/Down.png";
+	private static String UP_BUTTON_ENABLED_TEXTURE_FILE = "./res/upButtonEnabled.png";
+	private static String UP_BUTTON_DISABLED_TEXTURE_FILE = "./res/upButtonDisabled.png";
+	private static String DOWN_BUTTON_ENABLED_TEXTURE_FILE = "./res/downButtonEnabled.png";
+	private static String DOWN_BUTTON_DISABLED_TEXTURE_FILE = "./res/downButtonDisabled.png";
 	
 	// constructor
 	public Sidebar(Loader loader, float screenWidth, float screenHeight, float z, String[] files) {
@@ -143,10 +149,13 @@ public class Sidebar {
 		rotation = new Vector3f(0,0,0);
 		scale = 1f;
 						
-		textureID = loader.loadTexture(UP_BUTTON_TEXTURE_FILE);
-		Model upButtonModel = loader.loadToVAO(verticesUpDownButtons, texCoords, indices, textureID);
+		textureID = loader.loadTexture(UP_BUTTON_ENABLED_TEXTURE_FILE);
+		upButtonEnabledModel = loader.loadToVAO(verticesUpDownButtons, texCoords, indices, textureID);
+		
+		textureID = loader.loadTexture(UP_BUTTON_DISABLED_TEXTURE_FILE);
+		upButtonDisabledModel = loader.loadToVAO(verticesUpDownButtons, texCoords, indices, textureID);
 				
-		upButton = new Button(upButtonModel, position, rotation, scale, 
+		upButton = new Button(upButtonEnabledModel, position, rotation, scale, 
 				upDownButtonWidth, upDownButtonHeight); 
 						
 		guiComponents.add(upButton);
@@ -163,10 +172,13 @@ public class Sidebar {
 		rotation = new Vector3f(0,0,0);
 		scale = 1f;
 								
-		textureID = loader.loadTexture(DOWN_BUTTON_TEXTURE_FILE);
-		Model downButtonModel = loader.loadToVAO(verticesUpDownButtons, texCoords, indices, textureID);
+		textureID = loader.loadTexture(DOWN_BUTTON_ENABLED_TEXTURE_FILE);
+		downButtonEnabledModel = loader.loadToVAO(verticesUpDownButtons, texCoords, indices, textureID);
+		
+		textureID = loader.loadTexture(DOWN_BUTTON_DISABLED_TEXTURE_FILE);
+		downButtonDisabledModel = loader.loadToVAO(verticesUpDownButtons, texCoords, indices, textureID);
 						
-		downButton = new Button(downButtonModel, position, rotation, scale, 
+		downButton = new Button(downButtonEnabledModel, position, rotation, scale, 
 				upDownButtonWidth, upDownButtonHeight); 
 								
 		guiComponents.add(downButton);
@@ -181,6 +193,9 @@ public class Sidebar {
 		}
 		
 		topSimulationIndex = 0;
+		
+		// update up down button states
+		updateTopSimulationIndex(true);
 	}
 	
 	/**
@@ -304,22 +319,42 @@ public class Sidebar {
 	 */
 	public void updateTopSimulationIndex(boolean up) {
 		
+		// up button
 		if (up) {
 			
 			topSimulationIndex--;
 			
-			if (topSimulationIndex < 0)
+			if (topSimulationIndex <= 0) {
+				
 				topSimulationIndex = 0;
+				upButton.setModel(upButtonDisabledModel);
+			}
+			
+			// update down button
+			if (buttons.size() < 4)
+				downButton.setModel(downButtonDisabledModel);
+			else
+				downButton.setModel(downButtonEnabledModel);
 		}
 		
+		// down button
 		else {
 			
 			if (buttons.size() >= 3) {
 				
 				topSimulationIndex++;
 				
-				if (topSimulationIndex > buttons.size() - 3)
+				if (topSimulationIndex >= buttons.size() - 3) {
+					
 					topSimulationIndex = buttons.size() - 3;
+					downButton.setModel(downButtonDisabledModel);
+				}
+				
+				// update up button
+				if (buttons.size() < 4)
+					upButton.setModel(upButtonDisabledModel);
+				else
+					upButton.setModel(upButtonEnabledModel);
 			}
 		
 		}
@@ -342,7 +377,53 @@ public class Sidebar {
 		
 		topSimulationIndex--;
 		
-		if (topSimulationIndex < 0)
+		if (topSimulationIndex <= 0) {
+			
 			topSimulationIndex = 0;
+			upButton.setModel(upButtonDisabledModel);
+		}
+		
+		// update down button
+		if (buttons.size() < 4 || topSimulationIndex >= buttons.size() - 3)
+			downButton.setModel(downButtonDisabledModel);
+		else
+			downButton.setModel(downButtonEnabledModel);
 	}
+
+	/**
+	 * Returns the up button enabled model.
+	 * 
+	 * @return upButtonEnabledModel
+	 */
+	public Model getUpButtonEnabledModel() {
+		return upButtonEnabledModel;
+	}
+
+	/**
+	 * Returns the up button disabled model.
+	 * 
+	 * @return upButtonDisabledModel
+	 */
+	public Model getUpButtonDisabledModel() {
+		return upButtonDisabledModel;
+	}
+
+	/**
+	 * Returns the down button enabled model.
+	 * 
+	 * @return downButtonEnabledModel
+	 */
+	public Model getDownButtonEnabledModel() {
+		return downButtonEnabledModel;
+	}
+
+	/**
+	 * Returns the down button disabled model.
+	 * 
+	 * @return downButtonDisabledModel
+	 */
+	public Model getDownButtonDisabledModel() {
+		return downButtonDisabledModel;
+	}
+	
 }

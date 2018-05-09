@@ -59,6 +59,8 @@ public class Main {
 	public static final String FRAGMENT_FILE = "src/shaders/fragmentShader.fs";
 	
 	public static final int KEY_SPACE = 0;
+	public static final int KEY_UP = 1;
+	public static final int KEY_DOWN = 2;
 	
 	// main
 	public static void main(String[] args) {
@@ -163,6 +165,12 @@ public class Main {
 			
 			if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
 				this.key = KEY_SPACE;
+			
+			if (key == GLFW_KEY_UP && action == GLFW_RELEASE)
+				this.key = KEY_UP;
+			
+			if (key == GLFW_KEY_DOWN && action == GLFW_RELEASE)
+				this.key = KEY_DOWN;
 		});
 		
 		// set up a mouse button callback

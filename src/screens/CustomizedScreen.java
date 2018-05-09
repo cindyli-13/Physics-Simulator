@@ -444,6 +444,13 @@ public class CustomizedScreen {
 					// change to current simulation
 					simulation.getEntities().clear();
 					currentSim = sidebar.getSimulationsData().size();
+					
+					// update down button state
+					if (sidebar.getButtons().size() < 4)
+						sidebar.getDownButton().setModel(sidebar.getDownButtonDisabledModel());
+					else
+						sidebar.getDownButton().setModel(sidebar.getDownButtonEnabledModel());
+					
 					return;
 				}
 				
@@ -644,11 +651,19 @@ public class CustomizedScreen {
 	 */
 	public void keyboardInput(int key) {
 		
-		// space bar
-		if(key == Main.KEY_SPACE) {
-			
-			if (program == 0)
+		if (program == 0) {
+		
+			// space bar
+			if (key == Main.KEY_SPACE)
 				simulation.pausePlaySimulation();
+			
+			// up
+			else if (key == Main.KEY_UP)
+				sidebar.updateTopSimulationIndex(true);
+			
+			// down
+			else if (key == Main.KEY_DOWN)
+				sidebar.updateTopSimulationIndex(false);
 		}
 	}
 
