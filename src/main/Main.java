@@ -109,7 +109,7 @@ public class Main {
 					menuScreen.render(renderer);
 					break;
 				case 1:
-					gameScreen.input(this, window, WIDTH, HEIGHT, key, leftClick);
+					gameScreen.input(this, key, leftClick, rightClick);
 					gameScreen.update();
 					gameScreen.render(renderer);
 					break;
@@ -243,40 +243,53 @@ public class Main {
 			// menu screen
 			menuScreen = new MenuScreen(loader, WIDTH, HEIGHT, z);
 			
+			
 			// game screen
-			gameScreen = new GameScreen(window, loader, WIDTH, HEIGHT, z);
+			IO.openInputFile("./data/game_data_files.txt");
+			
+			int n = Integer.parseInt(IO.readLine());
+			String[] files = new String[n];
+			
+			for (int i = 0; i < n; i++) {
+				
+				files[i] = IO.readLine();
+			}
+			
+			gameScreen = new GameScreen(window, loader, WIDTH, HEIGHT, z, files);
+			
+			IO.closeInputFile();
+			
 			
 			// lesson screen
 			
 			IO.openInputFile("./data/lesson_data_files.txt");
 			
-			int n = Integer.parseInt(IO.readLine());
-			String[] lessonFiles = new String[n];
+			n = Integer.parseInt(IO.readLine());
+			files = new String[n];
 			
 			for (int i = 0; i < n; i++) {
 				
-				lessonFiles[i] = IO.readLine();
+				files[i] = IO.readLine();
 			}
 			
-			customizedScreen = new CustomizedScreen(window, loader, WIDTH, HEIGHT, z, lessonFiles);
+			lessonScreen = new LessonScreen(window, loader, WIDTH, HEIGHT, z, files);
 			
 			IO.closeInputFile();
 			
-			lessonScreen = new LessonScreen(window, loader, WIDTH, HEIGHT, z, lessonFiles);
 			
 			// customized screen
 			
 			IO.openInputFile("./data/customized_data_files.txt");
 			
 			n = Integer.parseInt(IO.readLine());
-			String[] customizedFiles = new String[n];
+			files = new String[n];
 			
 			for (int i = 0; i < n; i++) {
 				
-				customizedFiles[i] = IO.readLine();
+				files[i] = IO.readLine();
 			}
 			
-			customizedScreen = new CustomizedScreen(window, loader, WIDTH, HEIGHT, z, customizedFiles);
+			customizedScreen = new CustomizedScreen(window, loader, WIDTH, HEIGHT, z, files);
 			
 			IO.closeInputFile();
 			

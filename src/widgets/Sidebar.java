@@ -73,7 +73,7 @@ public class Sidebar {
 		this.buttonWidth = 100f;
 		this.buttonHeight = 100f;
 		this.x = -380f;
-		this.y = -5f;
+		this.y = -50f;
 		this.z = z - 100f;
 		
 		float[] vertices = Entity.getVertices(buttonWidth, buttonHeight, z);

@@ -62,7 +62,7 @@ public class LessonPanel {
 		
 		float[] texCoords = Entity.getTexCoords();
 		int[] indices = Entity.getIndices();
-			
+		
 		// **************************************************
 					
 		// initialize GUI components array list

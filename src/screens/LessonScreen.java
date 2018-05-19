@@ -3,6 +3,7 @@ package screens;
 import static org.lwjgl.glfw.GLFW.*;
 
 import java.nio.DoubleBuffer;
+import java.util.ArrayList;
 
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
@@ -15,6 +16,7 @@ import objects.Model;
 import objects.Rectangle;
 import renderEngine.Renderer;
 import widgets.Button;
+import widgets.GUIComponent;
 import widgets.Label;
 import widgets.LessonPanel;
 import widgets.PopUpBox;
@@ -33,6 +35,7 @@ import widgets.Toolbar;
 public class LessonScreen {
 
 	// instance variables	
+	private ArrayList<GUIComponent> guiComponents;
 	private SimulationWindow simulation;
 	private Toolbar toolbar;
 	private Sidebar sidebar;
@@ -41,6 +44,7 @@ public class LessonScreen {
 	private Entity selectedEntity;
 		
 	private Label selectASimLabel;
+	private Label title;
 		
 	private float selectedEntityOriginalX;
 	private float selectedEntityOriginalY;
@@ -69,6 +73,7 @@ public class LessonScreen {
 	public static final String FORCE_OF_GRAVITY_LESSON_TEXTURE_FILE = "./res/forceOfGravityLesson.png";
 	public static final String FRICTION_LESSON_TEXTURE_FILE = "./res/frictionLesson.png";
 	public static final String SELECT_A_SIM_LABEL_TEXTURE_FILE = "./res/selectASimulationLabel.png";
+	public static final String TITLE_TEXTURE_FILE = "./res/lessonLabel.png";
 	
 	// constructor
 	public LessonScreen(long window, Loader loader, float screenWidth, float screenHeight, float z, 
@@ -104,6 +109,27 @@ public class LessonScreen {
 		Model selectionASimModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 				
 		selectASimLabel = new Label(selectionASimModel, position, rotation, labelWidth, labelWidth, labelHeight);
+				
+		// title label
+		labelWidth = 200f;
+		labelHeight = 50f;
+						
+		vertices = Entity.getVertices(labelWidth, labelHeight, z);
+						
+		labelX = -380f;
+		labelY = 175 + labelHeight/2;
+						
+		position = new Vector3f(labelX, labelY, z);
+						
+		textureID = loader.loadTexture(TITLE_TEXTURE_FILE);
+		Model titleModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+						
+		title = new Label(titleModel, position, rotation, 1, labelWidth, labelHeight);
+				
+		// initialize GUI components array list
+		guiComponents = new ArrayList<GUIComponent>();
+		guiComponents.add(title);
+		
 				
 		// reset simulation models
 		
@@ -150,6 +176,7 @@ public class LessonScreen {
 		toolbar.render(renderer);
 		sidebar.render(renderer);
 		simulation.render(renderer);
+		renderer.renderGUI(guiComponents);
 		
 		if (currentSim == -1)
 			renderer.render(selectASimLabel);

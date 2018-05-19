@@ -45,6 +45,7 @@ public class CustomizedScreen {
 	private Entity selectedEntity;
 	
 	private Label selectASimLabel;
+	private Label title;
 	
 	private float selectedEntityOriginalX;
 	private float selectedEntityOriginalY;
@@ -72,6 +73,7 @@ public class CustomizedScreen {
 	public static final String SAVE_BUTTON_TEXTURE_FILE = "./res/Save.png";
 	public static final String DELETE_BUTTON_TEXTURE_FILE = "./res/Delete.png";
 	public static final String SELECT_A_SIM_LABEL_TEXTURE_FILE = "./res/selectASimulationLabel.png";
+	public static final String TITLE_TEXTURE_FILE = "./res/customizedLabel.png";
 		
 	// constructor
 	public CustomizedScreen(long window, Loader loader, float screenWidth, float screenHeight, float z, 
@@ -87,7 +89,7 @@ public class CustomizedScreen {
 		sidebar = new Sidebar(loader, screenWidth, screenHeight, z, files, true);
 		
 		// save button
-		float buttonX = 100;
+		float buttonX = 300;
 		float buttonY = 275;
 		
 		float buttonWidth = 70f;
@@ -107,8 +109,7 @@ public class CustomizedScreen {
 		saveButton = new Button(sButtonModel, position, rotation, scale, buttonWidth, buttonHeight);
 		
 		// delete button
-		buttonX = 100 + buttonWidth;
-		buttonY = 275;
+		buttonX = 305 + buttonWidth;
 		
 		position = new Vector3f(buttonX, buttonY, z);
 		
@@ -131,9 +132,27 @@ public class CustomizedScreen {
 		
 		selectASimLabel = new Label(selectionASimModel, position, rotation, labelWidth, labelWidth, labelHeight);
 		
+		// title label
+		labelWidth = 200f;
+		labelHeight = 50f;
+		
+		vertices = Entity.getVertices(labelWidth, labelHeight, z);
+		
+		labelX = -380f;
+		labelY = 175 + labelHeight/2;
+		
+		position = new Vector3f(labelX, labelY, z);
+		
+		textureID = loader.loadTexture(TITLE_TEXTURE_FILE);
+		Model titleModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+		
+		title = new Label(titleModel, position, rotation, 1, labelWidth, labelHeight);
+		
+		
 		guiComponents = new ArrayList<GUIComponent>();
 		guiComponents.add(saveButton);
 		guiComponents.add(deleteButton);
+		guiComponents.add(title);
 		
 		this.loader = loader;
 		
