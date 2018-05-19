@@ -114,7 +114,7 @@ public class Main {
 					gameScreen.render(renderer);
 					break;
 				case 2:
-					lessonScreen.input(this, window, WIDTH, HEIGHT, key, leftClick);
+					lessonScreen.input(this, key, leftClick, rightClick);
 					lessonScreen.update();
 					lessonScreen.render(renderer);
 					break;
@@ -247,13 +247,28 @@ public class Main {
 			gameScreen = new GameScreen(window, loader, WIDTH, HEIGHT, z);
 			
 			// lesson screen
-			lessonScreen = new LessonScreen(window, loader, WIDTH, HEIGHT, z);
+			
+			IO.openInputFile("./data/lesson_data_files.txt");
+			
+			int n = Integer.parseInt(IO.readLine());
+			String[] lessonFiles = new String[n];
+			
+			for (int i = 0; i < n; i++) {
+				
+				lessonFiles[i] = IO.readLine();
+			}
+			
+			customizedScreen = new CustomizedScreen(window, loader, WIDTH, HEIGHT, z, lessonFiles);
+			
+			IO.closeInputFile();
+			
+			lessonScreen = new LessonScreen(window, loader, WIDTH, HEIGHT, z, lessonFiles);
 			
 			// customized screen
 			
 			IO.openInputFile("./data/customized_data_files.txt");
 			
-			int n = Integer.parseInt(IO.readLine());
+			n = Integer.parseInt(IO.readLine());
 			String[] customizedFiles = new String[n];
 			
 			for (int i = 0; i < n; i++) {

@@ -96,5 +96,5 @@ public class Button extends GUIComponent {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
-
+	
 }

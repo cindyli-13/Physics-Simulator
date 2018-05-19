@@ -46,6 +46,8 @@ public class Sidebar {
 	private float z;
 	
 	private int topSimulationIndex;
+	
+	private boolean canCreateNewSimulation;
 
 	// static variables
 	private static String CREATE_NEW_SIMULATION_BUTTON_TEXTURE_FILE = "./res/createNewSimulationButton.png";
@@ -57,7 +59,8 @@ public class Sidebar {
 	private static String DOWN_BUTTON_DISABLED_TEXTURE_FILE = "./res/downButtonDisabled.png";
 	
 	// constructor
-	public Sidebar(Loader loader, float screenWidth, float screenHeight, float z, String[] files) {
+	public Sidebar(Loader loader, float screenWidth, float screenHeight, float z, String[] files, 
+			boolean canCreateNewSimulation) {
 		
 		// ******** INITIAL STATES OF BUTTONS ********
 		//
@@ -194,6 +197,8 @@ public class Sidebar {
 		
 		topSimulationIndex = 0;
 		
+		this.canCreateNewSimulation = canCreateNewSimulation;
+		
 		// update up down button states
 		updateTopSimulationIndex(true);
 	}
@@ -233,13 +238,17 @@ public class Sidebar {
 		
 		for (int i = topSimulationIndex; i < (topSimulationIndex + 4); i++) {
 			
-			// create a new simulation button
+			// end of array
 			if (i == buttons.size()) {
 				
-				createNewSimulationButton.getPosition().y = buttonY;
-				createNewSimulationButton.updateAABB();
-				createNewSimulationButton.setEnabled(true);
-				renderer.render(createNewSimulationButton);
+				// create a new simulation button
+				if (canCreateNewSimulation) {
+					
+					createNewSimulationButton.getPosition().y = buttonY;
+					createNewSimulationButton.updateAABB();
+					createNewSimulationButton.setEnabled(true);
+					renderer.render(createNewSimulationButton);
+				}
 				break;
 			}
 			
@@ -319,6 +328,10 @@ public class Sidebar {
 	 */
 	public void updateTopSimulationIndex(boolean up) {
 		
+		int n = 1;
+		if (canCreateNewSimulation)
+			n--;
+		
 		// up button
 		if (up) {
 			
@@ -331,7 +344,7 @@ public class Sidebar {
 			}
 			
 			// update down button
-			if (buttons.size() < 4)
+			if (buttons.size() < 4 + n)
 				downButton.setModel(downButtonDisabledModel);
 			else
 				downButton.setModel(downButtonEnabledModel);
@@ -340,18 +353,18 @@ public class Sidebar {
 		// down button
 		else {
 			
-			if (buttons.size() >= 3) {
+			if (buttons.size() >= 3 + n) {
 				
 				topSimulationIndex++;
 				
-				if (topSimulationIndex >= buttons.size() - 3) {
+				if (topSimulationIndex >= buttons.size() - 3 - n) {
 					
-					topSimulationIndex = buttons.size() - 3;
+					topSimulationIndex = buttons.size() - 3 - n;
 					downButton.setModel(downButtonDisabledModel);
 				}
 				
 				// update up button
-				if (buttons.size() < 4)
+				if (buttons.size() < 4 + n)
 					upButton.setModel(upButtonDisabledModel);
 				else
 					upButton.setModel(upButtonEnabledModel);
@@ -375,6 +388,10 @@ public class Sidebar {
 	 */
 	public void updateTopSimulationIndex() {
 		
+		int n = 1;
+		if (canCreateNewSimulation)
+			n--;
+		
 		topSimulationIndex--;
 		
 		if (topSimulationIndex <= 0) {
@@ -384,7 +401,7 @@ public class Sidebar {
 		}
 		
 		// update down button
-		if (buttons.size() < 4 || topSimulationIndex >= buttons.size() - 3)
+		if (buttons.size() < 4 + n || topSimulationIndex >= buttons.size() - 3 - n)
 			downButton.setModel(downButtonDisabledModel);
 		else
 			downButton.setModel(downButtonEnabledModel);
@@ -426,4 +443,21 @@ public class Sidebar {
 		return downButtonDisabledModel;
 	}
 	
+	/**
+	 * Returns the button width.
+	 * 
+	 * @return buttonWidth
+	 */
+	public float getButtonWidth() {
+		return buttonWidth;
+	}
+	
+	/**
+	 * Returns the button height.
+	 * 
+	 * @return buttonHeight
+	 */
+	public float getButtonHeight() {
+		return buttonHeight;
+	}
 }

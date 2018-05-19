@@ -84,7 +84,7 @@ public class CustomizedScreen {
 		toolbar = new Toolbar(loader, screenWidth, screenHeight, z);
 		
 		// sidebar
-		sidebar = new Sidebar(loader, screenWidth, screenHeight, z, files);
+		sidebar = new Sidebar(loader, screenWidth, screenHeight, z, files, true);
 		
 		// save button
 		float buttonX = 100;
