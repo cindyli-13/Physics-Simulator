@@ -84,6 +84,14 @@ public class LessonPanel {
 	public static String PROJECTILE_MOTION_LESSON_1_TEXTURE_FILE = "./res/projectileMotionLesson1.png";
 	public static String PROJECTILE_MOTION_LESSON_2_TEXTURE_FILE = "./res/projectileMotionLesson2.png";
 	
+	public static String NEWTONS_SECOND_LAW_LESSON_1_TEXTURE_FILE = "./res/newtonsSecondLawLesson1.png";
+	public static String NEWTONS_SECOND_LAW_LESSON_2_TEXTURE_FILE = "./res/newtonsSecondLawLesson2.png";
+	
+	public static String FORCE_OF_GRAVITY_LESSON_1_TEXTURE_FILE = "./res/forceOfGravityLesson1.png";
+	public static String FORCE_OF_GRAVITY_LESSON_2_TEXTURE_FILE = "./res/forceOfGravityLesson2.png";
+	
+	public static String FRICTION_LESSON_1_TEXTURE_FILE = "./res/frictionLesson1.png";
+	
 	// constructor
 	public LessonPanel(Loader loader, float screenWidth, float screenHeight, float z) {
 		
@@ -285,6 +293,45 @@ public class LessonPanel {
 		
 		lessons.get(1).add(new Label(labelModel, position, rotation, scale, 
 				labelWidth, labelHeight));
+		
+		// Newton's Second Law lesson
+		lessons.add(new ArrayList<GUIComponent>());
+				
+		textureID = loader.loadTexture(NEWTONS_SECOND_LAW_LESSON_1_TEXTURE_FILE);
+		labelModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+				
+		lessons.get(2).add(new Label(labelModel, position, rotation, scale, 
+				labelWidth, labelHeight));
+				
+		textureID = loader.loadTexture(NEWTONS_SECOND_LAW_LESSON_2_TEXTURE_FILE);
+		labelModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+				
+		lessons.get(2).add(new Label(labelModel, position, rotation, scale, 
+				labelWidth, labelHeight));
+		
+		// force of gravity lesson
+		lessons.add(new ArrayList<GUIComponent>());
+						
+		textureID = loader.loadTexture(FORCE_OF_GRAVITY_LESSON_1_TEXTURE_FILE);
+		labelModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+						
+		lessons.get(3).add(new Label(labelModel, position, rotation, scale, 
+				labelWidth, labelHeight));
+						
+		textureID = loader.loadTexture(FORCE_OF_GRAVITY_LESSON_2_TEXTURE_FILE);
+		labelModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+						
+		lessons.get(3).add(new Label(labelModel, position, rotation, scale, 
+				labelWidth, labelHeight));
+		
+		// friction lesson
+		lessons.add(new ArrayList<GUIComponent>());
+								
+		textureID = loader.loadTexture(FRICTION_LESSON_1_TEXTURE_FILE);
+		labelModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+		
+		lessons.get(4).add(new Label(labelModel, position, rotation, scale, 
+				labelWidth, labelHeight));
 	}
 	
 	/**
@@ -369,7 +416,9 @@ public class LessonPanel {
 		
 		this.lessonIndex = lessonIndex;
 		pageIndex = 0;
+		
 		showPanel = true;
+		showHideButton.setModel(hideButtonModel);
 		
 		switch (lessonIndex) {
 			case 0:
@@ -392,8 +441,16 @@ public class LessonPanel {
 		leftButton.setEnabled(false);
 		leftButton.setModel(leftButtonDisabledModel);
 		
-		rightButton.setEnabled(true);
-		rightButton.setModel(rightButtonEnabledModel);
+		if (lessons.get(lessonIndex).size() > 1) {
+			
+			rightButton.setEnabled(true);
+			rightButton.setModel(rightButtonEnabledModel);
+		}
+		else {
+			
+			rightButton.setEnabled(false);
+			rightButton.setModel(rightButtonDisabledModel);
+		}
 	}
 	
 	/**
