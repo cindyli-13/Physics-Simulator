@@ -449,6 +449,7 @@ public class LessonScreen {
 						// simulation button
 						simulation.loadSimulation(sidebar.getSimulationsData().get(i));
 						currentSim = i + 1;
+						lessonPanel.setLesson(i);
 						return;
 					}
 							
@@ -479,6 +480,20 @@ public class LessonScreen {
 				if (lessonPanel.getShowHideButton().getAabb().intersects(x, y)) {
 					
 					lessonPanel.showHidePanel();
+					return;
+				}
+				
+				// left button
+				if (lessonPanel.getLeftButton().getAabb().intersects(x, y)) {
+					
+					lessonPanel.updatePageIndex(true);
+					return;
+				}
+				
+				// right button
+				if (lessonPanel.getRightButton().getAabb().intersects(x, y)) {
+					
+					lessonPanel.updatePageIndex(false);
 					return;
 				}
 						
