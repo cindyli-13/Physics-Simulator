@@ -339,6 +339,22 @@ public class Main {
 	public void setCurrScreen(int currScreen) {
 		
 		this.currScreen = currScreen;
+		
+		// reset the simulation window of that screen (if not menu screen)
+		switch (currScreen) {
+			case 1:
+				gameScreen.setCurrentSim(-1);
+				gameScreen.getSimulationWindow().getEntities().clear();
+				break;
+			case 2:
+				lessonScreen.setCurrentSim(-1);
+				lessonScreen.getSimulationWindow().getEntities().clear();
+				break;
+			case 3:
+				customizedScreen.setCurrentSim(-1);
+				customizedScreen.getSimulationWindow().getEntities().clear();
+				break;
+		}
 	}
 	
 }
