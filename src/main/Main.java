@@ -61,6 +61,8 @@ public class Main {
 	public static final int KEY_SPACE = 0;
 	public static final int KEY_UP = 1;
 	public static final int KEY_DOWN = 2;
+	public static final int KEY_LEFT = 3;
+	public static final int KEY_RIGHT = 4;
 	
 	// main
 	public static void main(String[] args) {
@@ -171,6 +173,12 @@ public class Main {
 			
 			if (key == GLFW_KEY_DOWN && action == GLFW_RELEASE)
 				this.key = KEY_DOWN;
+			
+			if (key == GLFW_KEY_LEFT && action == GLFW_RELEASE)
+				this.key = KEY_LEFT;
+			
+			if (key == GLFW_KEY_RIGHT && action == GLFW_RELEASE)
+				this.key = KEY_RIGHT;
 		});
 		
 		// set up a mouse button callback

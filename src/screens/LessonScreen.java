@@ -567,6 +567,14 @@ public class LessonScreen {
 			// down
 			else if (key == Main.KEY_DOWN)
 				sidebar.updateTopSimulationIndex(false);
+			
+			// left
+			else if (key == Main.KEY_LEFT && lessonPanel.isShowPanel())
+				lessonPanel.updatePageIndex(true);
+			
+			// right
+			else if (key == Main.KEY_RIGHT && lessonPanel.isShowPanel())
+				lessonPanel.updatePageIndex(false);
 		}
 	}
 	

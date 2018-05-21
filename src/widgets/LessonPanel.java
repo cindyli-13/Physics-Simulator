@@ -492,4 +492,13 @@ public class LessonPanel {
 		}
 	}
 	
+	/**
+	 * Returns whether or not the panel is shown.
+	 * 
+	 * @return showPanel
+	 */
+	public boolean isShowPanel() {
+		return showPanel;
+	}
+	
 }
