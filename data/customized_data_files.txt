@@ -1,4 +1,5 @@
-3
+4
 ./data/customized_1.txt
 ./data/customized_2.txt
 ./data/customized_3.txt
+./data/customized_4.txt

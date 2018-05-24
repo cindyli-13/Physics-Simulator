@@ -9,6 +9,7 @@ import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
 import main.Main;
+import objects.Circle;
 import objects.Entity;
 import objects.Loader;
 import objects.Model;
@@ -16,6 +17,7 @@ import objects.Rectangle;
 import renderEngine.Renderer;
 import widgets.Button;
 import widgets.ForceOfGravityLessonDisplayPanel;
+import widgets.FrictionLessonDisplayPanel;
 import widgets.GUIComponent;
 import widgets.Label;
 import widgets.LessonPanel;
@@ -50,17 +52,25 @@ public class LessonScreen {
 	private ProjectileMotionLessonDisplayPanel projectileMotionLessonDisplayPanel;
 	private NewtonsSecondLawLessonDisplayPanel newtonsSecondLawLessonDisplayPanel;
 	private ForceOfGravityLessonDisplayPanel forceOfGravityLessonDisplayPanel;
+	private FrictionLessonDisplayPanel frictionLessonDisplayPanel;
 		
 	private int currentSim;
 	
 	// only for Newton's Second Law lesson
 	private float netForce;
 	private GUIComponent netForceArrow; 
+	
+	// only for force of gravity lesson
+	private float forceOfGravity;
+	private GUIComponent forceOfGravityArrow;
+	
+	// only for friction lesson
+	private GUIComponent frictionArrow;
 		
 	private long window;
 	private float screenWidth;
 	private float screenHeight;
-		
+	
 	// static variables
 	public static final String MOTION_LESSON_TEXTURE_FILE = "./res/motionLesson.png";
 	public static final String PROJECTILE_MOTION_LESSON_TEXTURE_FILE = "./res/projectileMotionLesson.png";
@@ -93,6 +103,7 @@ public class LessonScreen {
 		projectileMotionLessonDisplayPanel = new ProjectileMotionLessonDisplayPanel(loader, 115f, 120f, z);
 		newtonsSecondLawLessonDisplayPanel = new NewtonsSecondLawLessonDisplayPanel(loader, 115f, 120f, z);
 		forceOfGravityLessonDisplayPanel = new ForceOfGravityLessonDisplayPanel(loader, 115f, 120f, z);
+		frictionLessonDisplayPanel = new FrictionLessonDisplayPanel(loader, 115f, 120f, z);
 		
 		// select a simulation label
 		float labelWidth = 200f;
@@ -144,6 +155,15 @@ public class LessonScreen {
 		Model arrowModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 						
 		netForceArrow = new GUIComponent(arrowModel, new Vector3f(0,0,z), rotation, 1);
+		
+		
+		// force of gravity arrow								
+		forceOfGravityArrow = new GUIComponent(arrowModel, new Vector3f(0,0,z), 
+				new Vector3f(0,0,270), 1);
+		
+		
+		// friction arrow								
+		frictionArrow = new GUIComponent(arrowModel, new Vector3f(0,0,z), rotation, 1);
 		
 				
 		// reset simulation models
@@ -216,6 +236,15 @@ public class LessonScreen {
 			// force of gravity lesson
 			case 4:
 				forceOfGravityLessonDisplayPanel.render(renderer);
+				renderer.render(forceOfGravityArrow);
+				break;
+				
+			// friction lesson
+			case 5:
+				frictionLessonDisplayPanel.render(renderer);
+				
+				if (!simulation.isPaused() && simulation.getEntities().get(0).getVelocity().x != 0)
+					renderer.render(frictionArrow);
 				break;
 		}
 	}
@@ -227,26 +256,123 @@ public class LessonScreen {
 		
 		if (!simulation.isPaused()) {
 			
-			// only for Newton's Second Law (apply net force)
-			if (currentSim == 3) {
-				
-				// update acceleration
-				float acceleration = netForce / simulation.getEntities().get(0).getMass();
-				simulation.getEntities().get(0).getAcceleration().x = acceleration;
-			}
-			
 			simulation.update();
 			
-			// only for Newton's Second Law (update net force arrow)
-			if (currentSim == 3) {
+			if (currentSim != -1) {
+			
+				Entity entity = simulation.getEntities().get(0);
 				
-				Rectangle r = (Rectangle) simulation.getEntities().get(0);
+				// update based on current lesson
+				switch (currentSim) {
 					
-				float arrowX = r.getPosition().x + r.getWidth()/2 + 20f;
-				float arrowY = r.getPosition().y;
-				
-				netForceArrow.getPosition().x = arrowX;
-				netForceArrow.getPosition().y = arrowY;
+					// motion lesson
+					case 1:
+						
+						// update velocity button states
+						if (entity.getVelocity().x < 95)
+							motionLessonDisplayPanel.setIncreaseVelocityButtonState(true);
+						else
+							motionLessonDisplayPanel.setIncreaseVelocityButtonState(false);
+						
+						if (entity.getVelocity().x > -95)
+							motionLessonDisplayPanel.setDecreaseVelocityButtonState(true);
+						else
+							motionLessonDisplayPanel.setDecreaseVelocityButtonState(false);
+						
+						break;
+						
+					// projectile motion
+					case 2:
+						
+						// update velocity x button states
+						if (entity.getVelocity().x < 95)
+							projectileMotionLessonDisplayPanel.setIncreaseVelocityXButtonState(true);
+						else
+							projectileMotionLessonDisplayPanel.setIncreaseVelocityXButtonState(false);
+						
+						if (entity.getVelocity().x > -95)
+							projectileMotionLessonDisplayPanel.setDecreaseVelocityXButtonState(true);
+						else
+							projectileMotionLessonDisplayPanel.setDecreaseVelocityXButtonState(false);
+						
+						// update velocity y button states
+						if (entity.getVelocity().y < 95)
+							projectileMotionLessonDisplayPanel.setIncreaseVelocityYButtonState(true);
+						else
+							projectileMotionLessonDisplayPanel.setIncreaseVelocityYButtonState(false);
+						
+						if (entity.getVelocity().y > -95)
+							projectileMotionLessonDisplayPanel.setDecreaseVelocityYButtonState(true);
+						else
+							projectileMotionLessonDisplayPanel.setDecreaseVelocityYButtonState(false);
+						
+						break;
+						
+					// Newton's Second Law lesson
+					case 3:
+						
+						// update net force arrow
+						Rectangle r1 = (Rectangle) entity;
+						
+						float arrowX = r1.getPosition().x + r1.getWidth()/2 + 20f;
+						float arrowY = r1.getPosition().y;
+						
+						netForceArrow.getPosition().x = arrowX;
+						netForceArrow.getPosition().y = arrowY;
+						
+						break;
+					
+					// force of gravity lesson
+					case 4:
+						
+						// update force of gravity arrow
+						Circle c = (Circle) entity;
+						
+						arrowX = c.getPosition().x;
+						arrowY = c.getPosition().y - c.getRadius() - 20f * forceOfGravityArrow.getScale();
+						
+						forceOfGravityArrow.getPosition().x = arrowX;
+						forceOfGravityArrow.getPosition().y = arrowY;
+						
+						break;
+						
+					// friction lesson
+					case 5:
+						
+						// update velocity button states
+						if (entity.getVelocity().x < 190)
+							frictionLessonDisplayPanel.setIncreaseVelocityButtonState(true);
+						else
+							frictionLessonDisplayPanel.setIncreaseVelocityButtonState(false);
+						
+						if (entity.getVelocity().x > -190)
+							frictionLessonDisplayPanel.setDecreaseVelocityButtonState(true);
+						else
+							frictionLessonDisplayPanel.setDecreaseVelocityButtonState(false);
+						
+						// update friction arrow
+						Rectangle r2 = (Rectangle) simulation.getEntities().get(0);
+						
+						arrowX = 0;
+						
+						// object traveling right
+						if (r2.getVelocity().x > 0) {
+							
+							arrowX = r2.getPosition().x - r2.getWidth()/2 - 20f;
+							frictionArrow.setRotation(new Vector3f(0,0,180));
+						}
+						
+						// object traveling left
+						else if (r2.getVelocity().x < 0) {
+							
+							arrowX = r2.getPosition().x + r2.getWidth()/2 + 20f;
+							frictionArrow.setRotation(new Vector3f(0,0,0));
+						}
+						
+						frictionArrow.getPosition().x = arrowX;
+						
+						break;
+				}
 			}
 		}
 	}
@@ -344,22 +470,12 @@ public class LessonScreen {
 						case 0:
 							simulation.getEntities().get(0).getAcceleration().y = 0f;
 							simulation.getEntities().get(0).getVelocity().x = 10f;
-								
-							motionLessonDisplayPanel.setIncreaseVelocityButtonState(true);
-							motionLessonDisplayPanel.setDecreaseVelocityButtonState(true);
-							motionLessonDisplayPanel.setIncreaseAccelerationButtonState(true);
-							motionLessonDisplayPanel.setDecreaseAccelerationButtonState(false);
 							break;
 							
 						// projectile motion lesson
 						case 1:
 							simulation.getEntities().get(0).getVelocity().x = 20f;
 							simulation.getEntities().get(0).getVelocity().y = 50f;
-							
-							projectileMotionLessonDisplayPanel.setIncreaseVelocityXButtonState(true);
-							projectileMotionLessonDisplayPanel.setDecreaseVelocityXButtonState(true);
-							projectileMotionLessonDisplayPanel.setIncreaseVelocityYButtonState(true);
-							projectileMotionLessonDisplayPanel.setIncreaseVelocityYButtonState(true);
 							break;
 							
 						// Newton's Second Law lesson
@@ -368,15 +484,61 @@ public class LessonScreen {
 							simulation.getEntities().get(0).getAcceleration().x = 5f;
 							netForce = 50f;
 							
-							Rectangle r = (Rectangle) simulation.getEntities().get(0);
+							Rectangle r1 = (Rectangle) simulation.getEntities().get(0);
 									
-							float arrowX = r.getPosition().x + r.getWidth()/2 + 20f;
-							float arrowY = r.getPosition().y;
+							float arrowX = r1.getPosition().x + r1.getWidth()/2 + 20f;
+							float arrowY = r1.getPosition().y;
 								
 							netForceArrow.getPosition().x = arrowX;
 							netForceArrow.getPosition().y = arrowY;
 							
 							break;
+						
+						// force of gravity lesson
+						case 3:
+							
+							// force of gravity arrow
+							forceOfGravity = simulation.getEntities().get(0).getMass() *
+								simulation.getEntities().get(0).getAcceleration().y;
+							
+							forceOfGravityArrow.setScale(Math.abs(forceOfGravity) / 60f);
+							
+							Circle c = (Circle) simulation.getEntities().get(0);
+							
+							arrowX = c.getPosition().x;
+							arrowY = c.getPosition().y - c.getRadius() - 20f * forceOfGravityArrow.getScale();
+							
+							forceOfGravityArrow.getPosition().x = arrowX;
+							forceOfGravityArrow.getPosition().y = arrowY;
+							
+							break;
+						
+						// friction lesson
+						case 4:
+							
+							// friction arrow
+							
+							Rectangle r2 = (Rectangle) simulation.getEntities().get(0);
+							
+							arrowX = 0;
+							arrowY = r2.getPosition().y - 15f;
+							
+							// object traveling right
+							if (r2.getVelocity().x > 0) {
+								
+								arrowX = r2.getPosition().x - r2.getWidth()/2 - 20f;
+								frictionArrow.setRotation(new Vector3f(0,0,180));
+							}
+							
+							// object traveling left
+							else if (r2.getVelocity().x < 0) {
+								
+								arrowX = r2.getPosition().x + r2.getWidth()/2 + 20f;
+								frictionArrow.setRotation(new Vector3f(0,0,0));
+							}
+							
+							frictionArrow.getPosition().x = arrowX;
+							frictionArrow.getPosition().y = arrowY;
 					}
 						
 					return;
@@ -483,9 +645,9 @@ public class LessonScreen {
 						simulation.getEntities().get(0).getAcceleration().x -= 5f;
 						motionLessonDisplayPanel.setIncreaseAccelerationButtonState(true);
 							
-						if (simulation.getEntities().get(0).getAcceleration().x < 5f) {
+						if (simulation.getEntities().get(0).getAcceleration().x < -95f) {
 								
-							simulation.getEntities().get(0).getAcceleration().x = 0f;
+							simulation.getEntities().get(0).getAcceleration().x = -100f;
 							motionLessonDisplayPanel.setDecreaseAccelerationButtonState(false);
 						}
 					}
@@ -566,6 +728,10 @@ public class LessonScreen {
 							simulation.getEntities().get(0).setMass(100f);
 							newtonsSecondLawLessonDisplayPanel.setIncreaseMassButtonState(false);
 						}
+						
+						// update acceleration
+						float acceleration = netForce / simulation.getEntities().get(0).getMass();
+						simulation.getEntities().get(0).getAcceleration().x = acceleration;
 					}
 						
 					// decrease mass button
@@ -577,43 +743,98 @@ public class LessonScreen {
 							
 						if (simulation.getEntities().get(0).getMass() < 10f) {
 								
-							simulation.getEntities().get(0).setMass(50f);
+							simulation.getEntities().get(0).setMass(5f);
 							newtonsSecondLawLessonDisplayPanel.setDecreaseMassButtonState(false);
 						}
+						
+						// update acceleration
+						float acceleration = netForce / simulation.getEntities().get(0).getMass();
+						simulation.getEntities().get(0).getAcceleration().x = acceleration;
+					}
+				}
+					
+				// force of gravity lesson
+				else if (currentSim == 4) {
+						
+					// increase mass button
+					if (forceOfGravityLessonDisplayPanel.getIncreaseMassButton().getAabb().intersects(x, y)) {
+							
+						// increase object mass
+						simulation.getEntities().get(0).setMass(simulation.getEntities().get(0).getMass() + 1f);
+						forceOfGravityLessonDisplayPanel.setDecreaseMassButtonState(true);
+						forceOfGravityArrow.setScale(forceOfGravityArrow.getScale() + 0.05f);
+								
+						if (simulation.getEntities().get(0).getMass() > 19f) {
+									
+							simulation.getEntities().get(0).setMass(20f);
+							forceOfGravityLessonDisplayPanel.setIncreaseMassButtonState(false);
+							forceOfGravityArrow.setScale(forceOfGravityArrow.getScale() - 0.05f);
+						}
+					}
+							
+					// decrease mass button
+					else if (forceOfGravityLessonDisplayPanel.getDecreaseMassButton().getAabb().intersects(x, y)) {
+								
+						// decrease object mass
+						simulation.getEntities().get(0).setMass(simulation.getEntities().get(0).getMass() - 1f);
+						forceOfGravityLessonDisplayPanel.setIncreaseMassButtonState(true);
+						forceOfGravityArrow.setScale(forceOfGravityArrow.getScale() - 0.05f);
+
+						if (simulation.getEntities().get(0).getMass() < 2f) {
+									
+							simulation.getEntities().get(0).setMass(1f);
+							forceOfGravityLessonDisplayPanel.setDecreaseMassButtonState(false);
+							forceOfGravityArrow.setScale(forceOfGravityArrow.getScale() + 0.05f);
+						}	
 					}
 					
-					// force of gravity lesson
-					else if (currentSim == 4) {
+					// update force of gravity
+					forceOfGravity = simulation.getEntities().get(0).getMass() * 
+							simulation.getEntities().get(0).getAcceleration().y;	
+					
+					// update force of gravity arrow
+					
+					Circle c = (Circle) simulation.getEntities().get(0);
+					
+					float arrowX = c.getPosition().x;
+					float arrowY = c.getPosition().y - c.getRadius() - 20f * forceOfGravityArrow.getScale();
+					
+					forceOfGravityArrow.getPosition().x = arrowX;
+					forceOfGravityArrow.getPosition().y = arrowY;
 						
-						// increase mass button
-						if (forceOfGravityLessonDisplayPanel.getIncreaseMassButton().getAabb().intersects(x, y)) {
-								
-							// increase object mass
-							simulation.getEntities().get(0).setMass(simulation.getEntities().get(0).getMass() + 5f);
-							forceOfGravityLessonDisplayPanel.setDecreaseMassButtonState(true);
-								
-							if (simulation.getEntities().get(0).getMass() > 95f) {
-									
-								simulation.getEntities().get(0).setMass(100f);
-								forceOfGravityLessonDisplayPanel.setIncreaseMassButtonState(false);
-							}
-						}
+				}
+				
+				// friction lesson
+				else if (currentSim == 5) {
+						
+					// increase velocity button
+					if (frictionLessonDisplayPanel.getIncreaseVelocityButton().getAabb().intersects(x, y)) {
 							
-						// decrease mass button
-						else if (forceOfGravityLessonDisplayPanel.getDecreaseMassButton().getAabb().intersects(x, y)) {
+						// increase object velocity
+						simulation.getEntities().get(0).getVelocity().x += 10f;
+						frictionLessonDisplayPanel.setDecreaseVelocityButtonState(true);
+							
+						if (simulation.getEntities().get(0).getVelocity().x > 190f) {
 								
-							// decrease object mass
-							simulation.getEntities().get(0).setMass(simulation.getEntities().get(0).getMass() - 5f);
-							forceOfGravityLessonDisplayPanel.setIncreaseMassButtonState(true);
-								
-							if (simulation.getEntities().get(0).getMass() < 10f) {
-									
-								simulation.getEntities().get(0).setMass(50f);
-								forceOfGravityLessonDisplayPanel.setDecreaseMassButtonState(false);
-							}
+							simulation.getEntities().get(0).getVelocity().x = 200f;
+							frictionLessonDisplayPanel.setIncreaseVelocityButtonState(false);
 						}
-						
 					}
+						
+					// decrease velocity button
+					else if (frictionLessonDisplayPanel.getDecreaseVelocityButton().getAabb().intersects(x, y)) {
+							
+						// decrease object velocity
+						simulation.getEntities().get(0).getVelocity().x -= 10f;
+						frictionLessonDisplayPanel.setIncreaseVelocityButtonState(true);
+							
+						if (simulation.getEntities().get(0).getVelocity().x < -190f) {
+								
+							simulation.getEntities().get(0).getVelocity().x = -200f;
+							frictionLessonDisplayPanel.setDecreaseVelocityButtonState(false);
+						}
+					}
+						
 				}
 				
 			}

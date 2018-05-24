@@ -70,17 +70,17 @@ public class SimulationWindow {
 	public static final String PAUSE_BUTTON_TEXTURE_FILE = "./res/pauseButton.png";
 	public static final String PLAY_BUTTON_TEXTURE_FILE = "./res/playButton.png";
 	
-	public static final float CRATE_STATIC_FRICTION = 0.4f;
+	public static final float CRATE_STATIC_FRICTION = 0.2f;
 	public static final float METAL_BOX_STATIC_FRICTION = 0.3f;
-	public static final float BALL_STATIC_FRICTION = 0.1f;
-	public static final float GROUND_STATIC_FRICTION = 0.4f;
-	public static final float BOUNDARY_STATIC_FRICTION = 0.2f;
+	public static final float BALL_STATIC_FRICTION = 0.05f;
+	public static final float GROUND_STATIC_FRICTION = 0.2f;
+	public static final float BOUNDARY_STATIC_FRICTION = 0.1f;
 	
-	public static final float CRATE_KINETIC_FRICTION = 0.3f;
+	public static final float CRATE_KINETIC_FRICTION = 0.1f;
 	public static final float METAL_BOX_KINETIC_FRICTION = 0.2f;
-	public static final float BALL_KINETIC_FRICTION = 0.05f;
-	public static final float GROUND_KINETIC_FRICTION = 0.3f;
-	public static final float BOUNDARY_KINETIC_FRICTION = 0.1f;
+	public static final float BALL_KINETIC_FRICTION = 0.02f;
+	public static final float GROUND_KINETIC_FRICTION = 0.1f;
+	public static final float BOUNDARY_KINETIC_FRICTION = 0.05f;
 	
 	private static final float maximumMass = Float.MAX_VALUE;
 	
