@@ -9,17 +9,19 @@ import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
 import main.Main;
-import objects.Circle;
 import objects.Entity;
 import objects.Loader;
 import objects.Model;
 import objects.Rectangle;
 import renderEngine.Renderer;
 import widgets.Button;
+import widgets.ForceOfGravityLessonDisplayPanel;
 import widgets.GUIComponent;
 import widgets.Label;
 import widgets.LessonPanel;
-import widgets.PopUpBox;
+import widgets.MotionLessonDisplayPanel;
+import widgets.NewtonsSecondLawLessonDisplayPanel;
+import widgets.ProjectileMotionLessonDisplayPanel;
 import widgets.Sidebar;
 import widgets.SimulationWindow;
 import widgets.Toolbar;
@@ -40,27 +42,20 @@ public class LessonScreen {
 	private Toolbar toolbar;
 	private Sidebar sidebar;
 	private LessonPanel lessonPanel;
-	private PopUpBox popUpBox;
-	private Entity selectedEntity;
 		
 	private Label selectASimLabel;
 	private Label title;
-		
-	private float selectedEntityOriginalX;
-	private float selectedEntityOriginalY;
-		
-	private Loader loader;
-		
-	private float z;
-		
-	// specifies the program:
-	// 0 = default
-	// 1 = new entity created
-	// 2 = pop-up box created
-	// 3 = entity selected
-	private int program;
+	
+	private MotionLessonDisplayPanel motionLessonDisplayPanel;
+	private ProjectileMotionLessonDisplayPanel projectileMotionLessonDisplayPanel;
+	private NewtonsSecondLawLessonDisplayPanel newtonsSecondLawLessonDisplayPanel;
+	private ForceOfGravityLessonDisplayPanel forceOfGravityLessonDisplayPanel;
 		
 	private int currentSim;
+	
+	// only for Newton's Second Law lesson
+	private float netForce;
+	private GUIComponent netForceArrow; 
 		
 	private long window;
 	private float screenWidth;
@@ -74,6 +69,8 @@ public class LessonScreen {
 	public static final String FRICTION_LESSON_TEXTURE_FILE = "./res/frictionLesson.png";
 	public static final String SELECT_A_SIM_LABEL_TEXTURE_FILE = "./res/selectASimulationLabel.png";
 	public static final String TITLE_TEXTURE_FILE = "./res/lessonLabel.png";
+	public static final String NET_FORCE_ARROW_TEXTURE_FILE = "./res/netForceArrow.png";
+	public static final String ARROW_TEXTURE_FILE = "./res/arrow.png";
 	
 	// constructor
 	public LessonScreen(long window, Loader loader, float screenWidth, float screenHeight, float z, 
@@ -83,19 +80,25 @@ public class LessonScreen {
 		simulation = new SimulationWindow(window, loader, screenWidth, screenHeight, z);
 				
 		// toolbar
-		toolbar = new Toolbar(loader, screenWidth, screenHeight, z);
+		toolbar = new Toolbar(loader, z);
 		
 		// sidebar
-		sidebar = new Sidebar(loader, screenWidth, screenHeight, z, files, false);
+		sidebar = new Sidebar(loader, z, files, false);
 		
 		// lesson panel
-		lessonPanel = new LessonPanel(loader, screenWidth, screenHeight, z);
+		lessonPanel = new LessonPanel(loader, z);
+		
+		// display panels
+		motionLessonDisplayPanel = new MotionLessonDisplayPanel(loader, 115f, 120f, z);
+		projectileMotionLessonDisplayPanel = new ProjectileMotionLessonDisplayPanel(loader, 115f, 120f, z);
+		newtonsSecondLawLessonDisplayPanel = new NewtonsSecondLawLessonDisplayPanel(loader, 115f, 120f, z);
+		forceOfGravityLessonDisplayPanel = new ForceOfGravityLessonDisplayPanel(loader, 115f, 120f, z);
 		
 		// select a simulation label
-		float labelWidth = 3f;
-		float labelHeight = 3f;
-				
-		float[] vertices = Entity.getVertices(70, 70, z);
+		float labelWidth = 200f;
+		float labelHeight = 200f;
+		
+		float[] vertices = Entity.getVertices(labelWidth, labelHeight, z);
 		float[] texCoords = Entity.getTexCoords();
 		int[] indices = Entity.getIndices();
 		
@@ -108,13 +111,13 @@ public class LessonScreen {
 		int textureID = loader.loadTexture(SELECT_A_SIM_LABEL_TEXTURE_FILE);
 		Model selectionASimModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 				
-		selectASimLabel = new Label(selectionASimModel, position, rotation, labelWidth, labelWidth, labelHeight);
+		selectASimLabel = new Label(selectionASimModel, position, rotation, 1, labelWidth, labelHeight);
 				
 		// title label
 		labelWidth = 200f;
 		labelHeight = 50f;
 						
-		vertices = Entity.getVertices(labelWidth, labelHeight, z);
+		vertices = Entity.getVertices(labelWidth, labelHeight, z - 100f);
 						
 		labelX = -380f;
 		labelY = 175 + labelHeight/2;
@@ -129,6 +132,18 @@ public class LessonScreen {
 		// initialize GUI components array list
 		guiComponents = new ArrayList<GUIComponent>();
 		guiComponents.add(title);
+		
+		
+		// net force arrow
+		float arrowWidth = 40f;
+		float arrowHeight = 40f;
+		
+		vertices = Entity.getVertices(arrowWidth, arrowHeight, z - 100f);
+						
+		textureID = loader.loadTexture(ARROW_TEXTURE_FILE);
+		Model arrowModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+						
+		netForceArrow = new GUIComponent(arrowModel, new Vector3f(0,0,z), rotation, 1);
 		
 				
 		// reset simulation models
@@ -155,10 +170,6 @@ public class LessonScreen {
 		sidebar.getButtons().get(4).setModel(loader.loadToVAO(vertices, texCoords, indices, 
 				loader.loadTexture(FRICTION_LESSON_TEXTURE_FILE)));
 		
-		this.loader = loader;
-				
-		this.z = z;
-		program = 0;
 		currentSim = -1;
 				
 		this.window = window;
@@ -183,32 +194,29 @@ public class LessonScreen {
 		else
 			lessonPanel.render(renderer);
 		
-		if (program == 1 || program == 3)
-			moveEntity();
-		
-		else if (program == 2) {
+		// display panel
+		switch (currentSim) {
 			
-			float x = 0f;
-			float y = 0f;
-			
-			if (selectedEntity instanceof Rectangle) {
+			// motion lesson
+			case 1:
+				motionLessonDisplayPanel.render(renderer);
+				break;
 				
-				x = ((Rectangle) selectedEntity).getWidth()/2;
-				y = ((Rectangle) selectedEntity).getHeight()/2;
-			}
-			else if (selectedEntity instanceof Circle) {
-				x = ((Circle) selectedEntity).getRadius();
-				y = x;
-			}
-			
-			float offsetX = selectedEntity.getPosition().x - 
-					(popUpBox.getPosition().x + popUpBox.getWidth()/2 + x + 5f);
-			
-			float offsetY = selectedEntity.getPosition().y - 
-					(popUpBox.getPosition().y - popUpBox.getHeight()/2 - y - 5f);
-			
-			popUpBox.update(offsetX, offsetY);
-			popUpBox.render(renderer);
+			// projectile motion lesson
+			case 2:
+				projectileMotionLessonDisplayPanel.render(renderer);
+				break;
+				
+			// Newton's Second Law lesson
+			case 3:
+				newtonsSecondLawLessonDisplayPanel.render(renderer);
+				renderer.render(netForceArrow);
+				break;
+				
+			// force of gravity lesson
+			case 4:
+				forceOfGravityLessonDisplayPanel.render(renderer);
+				break;
 		}
 	}
 	
@@ -217,8 +225,30 @@ public class LessonScreen {
 	 */
 	public void update() {
 		
-		if (!simulation.isPaused())
+		if (!simulation.isPaused()) {
+			
+			// only for Newton's Second Law (apply net force)
+			if (currentSim == 3) {
+				
+				// update acceleration
+				float acceleration = netForce / simulation.getEntities().get(0).getMass();
+				simulation.getEntities().get(0).getAcceleration().x = acceleration;
+			}
+			
 			simulation.update();
+			
+			// only for Newton's Second Law (update net force arrow)
+			if (currentSim == 3) {
+				
+				Rectangle r = (Rectangle) simulation.getEntities().get(0);
+					
+				float arrowX = r.getPosition().x + r.getWidth()/2 + 20f;
+				float arrowY = r.getPosition().y;
+				
+				netForceArrow.getPosition().x = arrowX;
+				netForceArrow.getPosition().y = arrowY;
+			}
+		}
 	}
 	
 	/**
@@ -227,12 +257,11 @@ public class LessonScreen {
 	 * @param main				where the main loop is
 	 * @param key				the key that was pressed
 	 * @param leftClick			whether the left mouse button was pressed
-	 * @param rightClick		whether the right mouse button was pressed
 	 */
-	public void input(Main main, int key, boolean leftClick, boolean rightClick) {
+	public void input(Main main, int key, boolean leftClick) {
 		
 		// mouse input
-		mouseInput(main, leftClick, rightClick);
+		mouseInput(main, leftClick);
 		
 		// keyboard input
 		keyboardInput(key);
@@ -245,7 +274,7 @@ public class LessonScreen {
 	 * @param leftClick			whether the left mouse button was pressed
 	 * @param rightClick		whether the right mouse button was pressed
 	 */
-	public void mouseInput(Main main, boolean leftClick, boolean rightClick) {
+	public void mouseInput(Main main, boolean leftClick) {
 			
 		// get cursor coordinate
 		
@@ -265,286 +294,331 @@ public class LessonScreen {
 				
 		// if left mouse button was pressed
 		if (leftClick) {
-					
-			// place entity
-			if (program == 1 || program == 3) {
 						
-				placeEntity();
-				program = 0;
-				return;
-			}
-					
-			// pop-up box
-			else if (program == 2) {
-						
-				// close button
-				if (popUpBox.getCloseButton().getAabb().intersects(x, y)) {
-							
-					popUpBox = null;
-					selectedEntity = null;
-					program = 0;
-					return;
-				}
-						
-				// delete entity button
-				else if (popUpBox.getDeleteEntityButton().getAabb().intersects(x, y)) {
-							
-					// find and remove entity from array list
-					for (int i = 0; i < simulation.getEntities().size(); i++) {
+			// loop through buttons of toolbar
+			for (Button button: toolbar.getButtons()) {
 								
-						if (selectedEntity.equals(simulation.getEntities().get(i))) {
-							simulation.getEntities().remove(i);
-							break;
-						}
-					}
-							
-					popUpBox = null;
-					selectedEntity = null;
-					program = 0;
-					return;
-				}
-						
-				// increase size button
-				else if (popUpBox.getIncreaseSizeButton().getAabb().intersects(x, y)) {
-							
-					// increase entity's scale
-					selectedEntity.setScale(selectedEntity.getScale() + 10f);
-							
-					if (selectedEntity.getScale() >= 100f) {
-								
-						selectedEntity.setScale(100f);
-						popUpBox.setIncreaseSizeButtonState(false);
-					}
-					else {
-						popUpBox.setDecreaseSizeButtonState(true);
-					}
-							
-					// rectangle
-					if (selectedEntity instanceof Rectangle) {
-								
-						Rectangle r = (Rectangle) selectedEntity;
-								
-						r.setWidth(r.getScale());
-						r.setHeight(r.getScale());
-								
-						r.updateAABB();
-					}
-							
-					// circle
-					else if (selectedEntity instanceof Circle) {
-								
-						Circle c = (Circle) selectedEntity;
-								
-						c.setRadius(c.getScale()/2);
-					}
-				}
-						
-				// decrease size button
-				else if (popUpBox.getDecreaseSizeButton().getAabb().intersects(x, y)) {
-							
-					// increase entity's scale
-					selectedEntity.setScale(selectedEntity.getScale() - 10f);
-							
-					if (selectedEntity.getScale() <= 30f) {
-								
-						selectedEntity.setScale(30f);
-						popUpBox.setDecreaseSizeButtonState(false);
-					}
-					else {
-						popUpBox.setIncreaseSizeButtonState(true);
-					}
-							
-					// rectangle
-					if (selectedEntity instanceof Rectangle) {
-								
-						Rectangle r = (Rectangle) selectedEntity;
-								
-						r.setWidth(r.getScale());
-						r.setHeight(r.getScale());
-								
-						r.updateAABB();
-					}
-							
-					// circle
-					else if (selectedEntity instanceof Circle) {
-								
-						Circle c = (Circle) selectedEntity;
-								
-						c.setRadius(c.getScale()/2);
-					}
-				}
-			}
-					
-			else {
-						
-				// loop through buttons of toolbar
-				for (Button button: toolbar.getButtons()) {
-								
-					// check if this button was clicked
-					if (button.getAabb().intersects(x, y)) {
+				// check if this button was clicked
+				if (button.getAabb().intersects(x, y)) {
 													
-						// menu button
-						if (button.equals(toolbar.getMenuButton())) {
+					// menu button
+					if (button.equals(toolbar.getMenuButton())) {
 										
-							// pause simulation
-							simulation.setPause(true);
-													
-							main.setCurrScreen(0);
-							return;
-						}
-									
-						// info button
-						else if (button.equals(toolbar.getInfoButton())) {
-										
-							UserGuideScreen.showUserGuide();
-							return;
-						}
-								
-						// rectangle button
-						else if (button.equals(toolbar.getRectangleButton()) && simulation.isPaused()) {
-										
-							// generate a crate
-							float sideLength = 50;
-							float posX = toolbar.getRectangleButton().getPosition().x;
-							float posY = toolbar.getRectangleButton().getPosition().y;
-							float mass = 20;
-							float e = -0.3f;
-										
-							selectedEntity = simulation.createCrateEntity(sideLength, posX, posY, z, mass, e);
-									
-							program = 1;
-							return;
-						}
-								
-						// circle button
-						else if (button.equals(toolbar.getCircleButton()) && simulation.isPaused()) {
-										
-							// generate a ball
-							float radius = 25;
-							float posX = toolbar.getCircleButton().getPosition().x;
-							float posY = toolbar.getCircleButton().getPosition().y;
-							float mass = 20;
-							float e = -0.7f;
-										
-							selectedEntity = simulation.createBallEntity(radius, posX, posY, z, mass, e);
-						
-							program = 1;
-							return;
-						}
-					}
-								
-				}
-						
-				// loop through buttons of sidebar
-				for (int i = 0; i < sidebar.getButtons().size(); i++) {
+						// pause simulation
+						simulation.setPause(true);
 							
-					Button button = sidebar.getButtons().get(i);
-							
-					// check if this button was clicked
-					if (button.getAabb().intersects(x, y) && button.isEnabled()) {
-							
-						simulation.setPause(false);
-						simulation.pausePlaySimulation();
-								
-						// simulation button
-						simulation.loadSimulation(sidebar.getSimulationsData().get(i));
-						currentSim = i + 1;
-						lessonPanel.setLesson(i);
+						main.setCurrScreen(0);
 						return;
 					}
-							
+									
+					// info button
+					else if (button.equals(toolbar.getInfoButton())) {
+										
+						UserGuideScreen.showUserGuide();
+						return;
+					}
 				}
+								
+			}
 						
-				// up button of sidebar
-				if (sidebar.getUpButton().getAabb().intersects(x, y)) {
+			// loop through buttons of sidebar
+			for (int i = 0; i < sidebar.getButtons().size(); i++) {
 							
-					sidebar.updateTopSimulationIndex(true);
-					return;
-				}
-						
-				// down button of sidebar
-				if (sidebar.getDownButton().getAabb().intersects(x, y)) {
+				Button button = sidebar.getButtons().get(i);
 							
-					sidebar.updateTopSimulationIndex(false);
-					return;
-				}
-						
-				// pause-play button
-				if (simulation.getPausePlayButton().getAabb().intersects(x, y)) {
+				// check if this button was clicked
+				if (button.getAabb().intersects(x, y) && button.isEnabled()) {
 							
+					simulation.setPause(false);
 					simulation.pausePlaySimulation();
-					return;
-				}
-				
-				// show hide lesson panel button
-				if (lessonPanel.getShowHideButton().getAabb().intersects(x, y)) {
-					
-					lessonPanel.showHidePanel();
-					return;
-				}
-				
-				// left button
-				if (lessonPanel.getLeftButton().getAabb().intersects(x, y)) {
-					
-					lessonPanel.updatePageIndex(true);
-					return;
-				}
-				
-				// right button
-				if (lessonPanel.getRightButton().getAabb().intersects(x, y)) {
-					
-					lessonPanel.updatePageIndex(false);
-					return;
-				}
+								
+					// simulation button
+					simulation.loadSimulation(sidebar.getSimulationsData().get(i));
+					currentSim = i + 1;
+					lessonPanel.setLesson(i);
 						
-				// selecting an object
-				if (simulation.isPaused()) {
-							
-					// loop through entities of simulation
-					for (Entity entity: simulation.getEntities()) {
-							
-						if (entity.intersects(x, y)) {
+					// edit if needed
+					switch (i) {
+						
+						// motion lesson
+						case 0:
+							simulation.getEntities().get(0).getAcceleration().y = 0f;
+							simulation.getEntities().get(0).getVelocity().x = 10f;
 								
-							// select entity
-							selectedEntity = entity;
-							selectedEntityOriginalX = selectedEntity.getPosition().x;
-							selectedEntityOriginalY = selectedEntity.getPosition().y;
+							motionLessonDisplayPanel.setIncreaseVelocityButtonState(true);
+							motionLessonDisplayPanel.setDecreaseVelocityButtonState(true);
+							motionLessonDisplayPanel.setIncreaseAccelerationButtonState(true);
+							motionLessonDisplayPanel.setDecreaseAccelerationButtonState(false);
+							break;
+							
+						// projectile motion lesson
+						case 1:
+							simulation.getEntities().get(0).getVelocity().x = 20f;
+							simulation.getEntities().get(0).getVelocity().y = 50f;
+							
+							projectileMotionLessonDisplayPanel.setIncreaseVelocityXButtonState(true);
+							projectileMotionLessonDisplayPanel.setDecreaseVelocityXButtonState(true);
+							projectileMotionLessonDisplayPanel.setIncreaseVelocityYButtonState(true);
+							projectileMotionLessonDisplayPanel.setIncreaseVelocityYButtonState(true);
+							break;
+							
+						// Newton's Second Law lesson
+						case 2:
+							simulation.getEntities().get(0).getAcceleration().y = 0f;
+							simulation.getEntities().get(0).getAcceleration().x = 5f;
+							netForce = 50f;
+							
+							Rectangle r = (Rectangle) simulation.getEntities().get(0);
+									
+							float arrowX = r.getPosition().x + r.getWidth()/2 + 20f;
+							float arrowY = r.getPosition().y;
 								
-							program = 3;						
-							return;
+							netForceArrow.getPosition().x = arrowX;
+							netForceArrow.getPosition().y = arrowY;
+							
+							break;
+					}
+						
+					return;
+				}
+							
+			}
+					
+			// up button of sidebar
+			if (sidebar.getUpButton().getAabb().intersects(x, y)) {
+							
+				sidebar.updateTopSimulationIndex(true);
+				return;
+			}
+						
+			// down button of sidebar
+			if (sidebar.getDownButton().getAabb().intersects(x, y)) {
+							
+				sidebar.updateTopSimulationIndex(false);
+				return;
+			}
+						
+			// pause-play button
+			if (simulation.getPausePlayButton().getAabb().intersects(x, y)  && currentSim != -1) {
+							
+				simulation.pausePlaySimulation();
+				return;
+			}
+				
+			// show hide lesson panel button
+			if (lessonPanel.getShowHideButton().getAabb().intersects(x, y)) {
+					
+				lessonPanel.showHidePanel();
+				return;
+			}
+				
+			// left button
+			if (lessonPanel.getLeftButton().getAabb().intersects(x, y)) {
+					
+				lessonPanel.updatePageIndex(true);
+				return;
+			}
+				
+			// right button
+			if (lessonPanel.getRightButton().getAabb().intersects(x, y)) {
+					
+				lessonPanel.updatePageIndex(false);
+				return;
+			}
+						
+			// editing an object
+			if (simulation.isPaused()) {
+					
+				// buttons in display panel
+				
+				// motion lesson
+				if (currentSim == 1) {
+						
+					// increase velocity button
+					if (motionLessonDisplayPanel.getIncreaseVelocityButton().getAabb().intersects(x, y)) {
+							
+						// increase object velocity
+						simulation.getEntities().get(0).getVelocity().x += 5f;
+						motionLessonDisplayPanel.setDecreaseVelocityButtonState(true);
+							
+						if (simulation.getEntities().get(0).getVelocity().x > 95f) {
+								
+							simulation.getEntities().get(0).getVelocity().x = 100f;
+							motionLessonDisplayPanel.setIncreaseVelocityButtonState(false);
+						}
+					}
+						
+					// decrease velocity button
+					else if (motionLessonDisplayPanel.getDecreaseVelocityButton().getAabb().intersects(x, y)) {
+							
+						// decrease object velocity
+						simulation.getEntities().get(0).getVelocity().x -= 5f;
+						motionLessonDisplayPanel.setIncreaseVelocityButtonState(true);
+							
+						if (simulation.getEntities().get(0).getVelocity().x < -95f) {
+								
+							simulation.getEntities().get(0).getVelocity().x = -100f;
+							motionLessonDisplayPanel.setDecreaseVelocityButtonState(false);
+						}
+					}
+						
+					// increase acceleration button
+					else if (motionLessonDisplayPanel.getIncreaseAccelerationButton().getAabb().intersects(x, y)) {
+							
+						// increase object acceleration
+						simulation.getEntities().get(0).getAcceleration().x += 5f;
+						motionLessonDisplayPanel.setDecreaseAccelerationButtonState(true);
+							
+						if (simulation.getEntities().get(0).getAcceleration().x > 95f) {
+								
+							simulation.getEntities().get(0).getAcceleration().x = 100f;
+							motionLessonDisplayPanel.setIncreaseAccelerationButtonState(false);
+						}
+					}
+						
+					// decrease acceleration button
+					else if (motionLessonDisplayPanel.getDecreaseAccelerationButton().getAabb().intersects(x, y)) {
+							
+						// decrease object acceleration
+						simulation.getEntities().get(0).getAcceleration().x -= 5f;
+						motionLessonDisplayPanel.setIncreaseAccelerationButtonState(true);
+							
+						if (simulation.getEntities().get(0).getAcceleration().x < 5f) {
+								
+							simulation.getEntities().get(0).getAcceleration().x = 0f;
+							motionLessonDisplayPanel.setDecreaseAccelerationButtonState(false);
 						}
 					}
 				}
+				
+				// projectile motion lesson
+				else if (currentSim == 2) {
 						
-			}
-		}
-		
-		// if right mouse button was pressed
-		else if (rightClick && simulation.isPaused()) {
-					
-			// loop through entities of simulation
-			for (Entity entity: simulation.getEntities()) {
+					// increase velocity x button
+					if (projectileMotionLessonDisplayPanel.getIncreaseVelocityXButton().getAabb().intersects(x, y)) {
+							
+						// increase object velocity x
+						simulation.getEntities().get(0).getVelocity().x += 5f;
+						projectileMotionLessonDisplayPanel.setDecreaseVelocityXButtonState(true);
+							
+						if (simulation.getEntities().get(0).getVelocity().x > 95f) {
+								
+							simulation.getEntities().get(0).getVelocity().x = 100f;
+							projectileMotionLessonDisplayPanel.setIncreaseVelocityXButtonState(false);
+						}
+					}
 						
-				if (entity.intersects(x, y)) {
+					// decrease velocity x button
+					else if (projectileMotionLessonDisplayPanel.getDecreaseVelocityXButton().getAabb().intersects(x, y)) {
 							
-					// create pop-up box
-					popUpBox = createPopUpBox(entity);
-					selectedEntity = entity;
-					program = 2;
+						// decrease object velocity x
+						simulation.getEntities().get(0).getVelocity().x -= 5f;
+						projectileMotionLessonDisplayPanel.setIncreaseVelocityXButtonState(true);
 							
-					// set states of increase and decrease size button
+						if (simulation.getEntities().get(0).getVelocity().x < -95f) {
+								
+							simulation.getEntities().get(0).getVelocity().x = -100f;
+							projectileMotionLessonDisplayPanel.setDecreaseVelocityXButtonState(false);
+						}
+					}
+						
+					// increase velocity y button
+					else if (projectileMotionLessonDisplayPanel.getIncreaseVelocityYButton().getAabb().intersects(x, y)) {
 							
-					if (selectedEntity.getScale() == 100f)
-						popUpBox.setIncreaseSizeButtonState(false);
+						// increase object velocity y
+						simulation.getEntities().get(0).getVelocity().y += 5f;
+						projectileMotionLessonDisplayPanel.setDecreaseVelocityYButtonState(true);
 							
-					else if (selectedEntity.getScale() == 30f)
-						popUpBox.setDecreaseSizeButtonState(false);
+						if (simulation.getEntities().get(0).getVelocity().y > 95f) {
+								
+							simulation.getEntities().get(0).getVelocity().y = 100f;
+							projectileMotionLessonDisplayPanel.setIncreaseVelocityYButtonState(false);
+						}
+					}
+						
+					// decrease velocity y button
+					else if (projectileMotionLessonDisplayPanel.getDecreaseVelocityYButton().getAabb().intersects(x, y)) {
 							
-					return;
+						// decrease object velocity y
+						simulation.getEntities().get(0).getVelocity().y -= 5f;
+						projectileMotionLessonDisplayPanel.setIncreaseVelocityYButtonState(true);
+							
+						if (simulation.getEntities().get(0).getVelocity().y < 5f) {
+								
+							simulation.getEntities().get(0).getVelocity().y = 0f;
+							projectileMotionLessonDisplayPanel.setDecreaseVelocityYButtonState(false);
+						}
+					}
 				}
+				
+				// Newton's Second Law lesson
+				else if (currentSim == 3) {
+					
+					// increase mass button
+					if (newtonsSecondLawLessonDisplayPanel.getIncreaseMassButton().getAabb().intersects(x, y)) {
+							
+						// increase object mass
+						simulation.getEntities().get(0).setMass(simulation.getEntities().get(0).getMass() + 5f);
+						newtonsSecondLawLessonDisplayPanel.setDecreaseMassButtonState(true);
+							
+						if (simulation.getEntities().get(0).getMass() > 95f) {
+								
+							simulation.getEntities().get(0).setMass(100f);
+							newtonsSecondLawLessonDisplayPanel.setIncreaseMassButtonState(false);
+						}
+					}
+						
+					// decrease mass button
+					else if (newtonsSecondLawLessonDisplayPanel.getDecreaseMassButton().getAabb().intersects(x, y)) {
+							
+						// decrease object mass
+						simulation.getEntities().get(0).setMass(simulation.getEntities().get(0).getMass() - 5f);
+						newtonsSecondLawLessonDisplayPanel.setIncreaseMassButtonState(true);
+							
+						if (simulation.getEntities().get(0).getMass() < 10f) {
+								
+							simulation.getEntities().get(0).setMass(50f);
+							newtonsSecondLawLessonDisplayPanel.setDecreaseMassButtonState(false);
+						}
+					}
+					
+					// force of gravity lesson
+					else if (currentSim == 4) {
+						
+						// increase mass button
+						if (forceOfGravityLessonDisplayPanel.getIncreaseMassButton().getAabb().intersects(x, y)) {
+								
+							// increase object mass
+							simulation.getEntities().get(0).setMass(simulation.getEntities().get(0).getMass() + 5f);
+							forceOfGravityLessonDisplayPanel.setDecreaseMassButtonState(true);
+								
+							if (simulation.getEntities().get(0).getMass() > 95f) {
+									
+								simulation.getEntities().get(0).setMass(100f);
+								forceOfGravityLessonDisplayPanel.setIncreaseMassButtonState(false);
+							}
+						}
+							
+						// decrease mass button
+						else if (forceOfGravityLessonDisplayPanel.getDecreaseMassButton().getAabb().intersects(x, y)) {
+								
+							// decrease object mass
+							simulation.getEntities().get(0).setMass(simulation.getEntities().get(0).getMass() - 5f);
+							forceOfGravityLessonDisplayPanel.setIncreaseMassButtonState(true);
+								
+							if (simulation.getEntities().get(0).getMass() < 10f) {
+									
+								simulation.getEntities().get(0).setMass(50f);
+								forceOfGravityLessonDisplayPanel.setDecreaseMassButtonState(false);
+							}
+						}
+						
+					}
+				}
+				
 			}
+						
 		}
-			
 	}
 	
 	/**
@@ -554,28 +628,25 @@ public class LessonScreen {
 	 */
 	public void keyboardInput(int key) {
 		
-		if (program == 0) {
+		// space bar
+		if (key == Main.KEY_SPACE && currentSim != -1)
+			simulation.pausePlaySimulation();
 			
-			// space bar
-			if (key == Main.KEY_SPACE)
-				simulation.pausePlaySimulation();
+		// up
+		else if (key == Main.KEY_UP)
+			sidebar.updateTopSimulationIndex(true);
 			
-			// up
-			else if (key == Main.KEY_UP)
-				sidebar.updateTopSimulationIndex(true);
+		// down
+		else if (key == Main.KEY_DOWN)
+			sidebar.updateTopSimulationIndex(false);
 			
-			// down
-			else if (key == Main.KEY_DOWN)
-				sidebar.updateTopSimulationIndex(false);
+		// left
+		else if (key == Main.KEY_LEFT && lessonPanel.isShowPanel())
+			lessonPanel.updatePageIndex(true);
 			
-			// left
-			else if (key == Main.KEY_LEFT && lessonPanel.isShowPanel())
-				lessonPanel.updatePageIndex(true);
-			
-			// right
-			else if (key == Main.KEY_RIGHT && lessonPanel.isShowPanel())
-				lessonPanel.updatePageIndex(false);
-		}
+		// right
+		else if (key == Main.KEY_RIGHT && lessonPanel.isShowPanel())
+			lessonPanel.updatePageIndex(false);
 	}
 	
 	/**
@@ -588,139 +659,12 @@ public class LessonScreen {
 	}
 	
 	/**
-	 * Moves the selected entity following the position of the cursor.
-	 */
-	public void moveEntity() {
-	
-		// get cursor coordinate
-		
-		DoubleBuffer cursorPosX = BufferUtils.createDoubleBuffer(1);
-		DoubleBuffer cursorPosY = BufferUtils.createDoubleBuffer(1);
-		
-		glfwGetCursorPos(window, cursorPosX, cursorPosY);
-				
-		float x = (float) cursorPosX.get(0);
-		float y = (float) cursorPosY.get(0);
-				
-				
-		// convert cursor coordinate to OpenGL world coordinate
-		x -= screenWidth/2;
-		y *= -1;
-		y += screenHeight/2;
-		
-		// set position of entity
-		selectedEntity.setPosition(new Vector3f(x,y, selectedEntity.getPosition().z));
-				
-		// update AABB if entity is a rectangle
-		if (selectedEntity instanceof Rectangle) {
-			Rectangle r = (Rectangle) selectedEntity;
-					
-			r.updateAABB();
-		}
-			
-	}
-	
-	/**
-	 * Checks whether or not a selected entity can 
-	 * be placed at the location of the cursor. If yes,
-	 * places the entity at the location. If no, deletes 
-	 * the entity.
-	 */
-	public void placeEntity() {
-			
-		// check if entity can be placed
-		if (!simulation.isWithinBounds(selectedEntity)) {
-				
-			if (program == 1)
-				simulation.getEntities().remove(simulation.getEntities().size()-1);
-				
-			else if (program == 3) {
-					
-				selectedEntity.setPosition(new Vector3f(selectedEntityOriginalX, selectedEntityOriginalY, 
-						selectedEntity.getPosition().z));
-					
-				// update AABB if selected entity is a rectangle
-				if (selectedEntity instanceof Rectangle) {
-					
-					Rectangle r = (Rectangle) selectedEntity;
-					r.updateAABB();
-				}
-			}
-			
-			return;
-		}
-		
-		// loop through entities
-		for (Entity entity : simulation.getEntities()) {
-			
-			// check that the entities to check collision for are not the same entity
-			if (!selectedEntity.equals(entity)) {
-				
-				if (selectedEntity.intersects(entity)) {
-					
-					if (program == 1)
-						simulation.getEntities().remove(simulation.getEntities().size()-1);
-					
-					else if (program == 3) {
-						
-						selectedEntity.setPosition(new Vector3f(selectedEntityOriginalX, selectedEntityOriginalY, 
-								selectedEntity.getPosition().z));
-						
-						// update AABB if selected entity is a rectangle
-						if (selectedEntity instanceof Rectangle) {
-							
-							Rectangle r = (Rectangle) selectedEntity;
-							
-							r.updateAABB();
-						}
-						
-					}
-					
-					return;
-				}
-			}
-		}
-		
-	}
-	
-	/**
-	 * Creates a pop-up box for the given entity.
+	 * Sets the current simulation index.
 	 * 
-	 * @param entity
+	 * @param currentSim
 	 */
-	public PopUpBox createPopUpBox(Entity entity) {
-		
-		float offsetX = 0f;
-		float offsetY = 0f;
-		
-		if (entity instanceof Rectangle) {
-			
-			offsetX = ((Rectangle) entity).getWidth()/2;
-			offsetY = ((Rectangle) entity).getHeight()/2;
-		}
-		else if (entity instanceof Circle) {
-			offsetX = ((Circle) entity).getRadius();
-			offsetY = offsetX;
-		}
-		
-		float width = 200f;
-		float height = 120f;
-		
-		float x = entity.getPosition().x - width/2 - offsetX - 5f;
-		float y = entity.getPosition().y + height/2 + offsetY + 5f;
-				
-		float[] vertices = Entity.getVertices(width, height, z);
-		float[] texCoords = Entity.getTexCoords();
-		int[] indices = Entity.getIndices();
-				
-		Vector3f position = new Vector3f(x, y, z);
-		Vector3f rotation = new Vector3f(0,0,0);
-		float scale = 1f;
-		
-		int textureID = loader.loadTexture(PopUpBox.POP_UP_BOX_TEXTURE_FILE);
-		Model model = loader.loadToVAO(vertices, texCoords, indices, textureID);
-		
-		return new PopUpBox(loader, model, position, rotation, scale, width, height, z);
+	public void setCurrentSim(int currentSim) {
+		this.currentSim = currentSim;
 	}
 	
 }

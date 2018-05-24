@@ -38,7 +38,7 @@ public class Toolbar {
 	public static String RAMP_BUTTON_TEXTURE_FILE = "./res/Ramp.png";
 
 	// constructor
-	public  Toolbar(Loader loader, float screenWidth, float screenHeight, float z) {
+	public  Toolbar(Loader loader, float z) {
 		
 		// ******** INITIAL STATES OF BUTTONS ********
 		//
@@ -48,10 +48,10 @@ public class Toolbar {
 		// 	y			the y coordinate of the center of the button (in OpenGL world coordinates)
 			
 		// the following will be the same for each button
-		float buttonY = 275;
+		float buttonY = 265;
 		
 		float buttonWidth = 70f;
-		float buttonHeight = 70f;
+		float buttonHeight = 50f;
 		
 		float[] vertices = Entity.getVertices(buttonWidth, buttonHeight, z - 100f);
 		float[] texCoords = Entity.getTexCoords();
@@ -64,16 +64,16 @@ public class Toolbar {
 		float mButtonX = -450;
 		Vector3f mButtonPos = new Vector3f(mButtonX, buttonY, z - 100f);
 		
-		float iButtonX = mButtonX+buttonWidth ;
+		float iButtonX = mButtonX + buttonWidth + 2f;
 		Vector3f iButtonPos = new Vector3f(iButtonX, buttonY, z - 100f);
 		
-		float rButtonX = iButtonX+buttonWidth;
+		float rButtonX = iButtonX + buttonWidth + 2f;
 		Vector3f rButtonPos = new Vector3f(rButtonX, buttonY, z - 100f);
 		
-		float cButtonX = rButtonX +buttonWidth;
+		float cButtonX = rButtonX + buttonWidth + 2f;
 		Vector3f cButtonPos = new Vector3f(cButtonX, buttonY, z - 100f);
 		
-		float raButtonX = cButtonX +buttonWidth;
+		float raButtonX = cButtonX + buttonWidth + 2f;
 		Vector3f raButtonPos = new Vector3f(raButtonX, buttonY, z - 100f);
 		
 		// **************************************************

@@ -55,22 +55,22 @@ public class MenuScreen {
 		// 	y			the y coordinate of the center of the button (in OpenGL world coordinates)
 		
 		float buttonWidth = 300f;
-		float buttonHeight = 100f;
+		float buttonHeight = 80f;
 		
 		float gButtonX = 0;
 		float gButtonY = screenHeight/2 - 100f;  // 100 pixels down from the top of the screen
 		Vector3f gButtonPos = new Vector3f(gButtonX, gButtonY, z);
 		
 		float lButtonX = 0;
-		float lButtonY = gButtonY - buttonHeight/2 - 50f;  // 50 pixels down from gButton
+		float lButtonY = gButtonY - buttonHeight - 20f;  // 20 pixels down from gButton
 		Vector3f lButtonPos = new Vector3f(lButtonX, lButtonY, z);
 		
 		float cButtonX = 0;
-		float cButtonY = lButtonY - buttonHeight/2 - 50f;  // 50 pixels down from lButton
+		float cButtonY = lButtonY - buttonHeight - 20f;  // 20 pixels down from lButton
 		Vector3f cButtonPos = new Vector3f(cButtonX, cButtonY, z);
 		
 		float hButtonX = 0;
-		float hButtonY = cButtonY - buttonHeight/2 - 50f;  // 50 pixels down from cButton
+		float hButtonY = cButtonY - buttonHeight - 20f;  // 20 pixels down from cButton
 		Vector3f hButtonPos = new Vector3f(hButtonX, hButtonY, z);
 		
 		

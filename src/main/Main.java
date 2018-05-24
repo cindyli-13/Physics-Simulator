@@ -116,7 +116,7 @@ public class Main {
 					gameScreen.render(renderer);
 					break;
 				case 2:
-					lessonScreen.input(this, key, leftClick, rightClick);
+					lessonScreen.input(this, key, leftClick);
 					lessonScreen.update();
 					lessonScreen.render(renderer);
 					break;

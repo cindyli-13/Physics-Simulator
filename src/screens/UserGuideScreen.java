@@ -37,7 +37,7 @@ public class UserGuideScreen {
            "<pre>            Objective : using the objects try to get the ball to the target " +
            "<pre>Lesson Mode " +
            "<pre>            Click on the different lessons to learn about the basic laws of motion" +
-           "<pre>Custimized System Mode " +
+           "<pre>Customized System Mode " +
            "<pre>            Create your own simulations and save it for later " ;
 
 

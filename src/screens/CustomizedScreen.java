@@ -83,17 +83,17 @@ public class CustomizedScreen {
 		simulation = new SimulationWindow(window, loader, screenWidth, screenHeight, z);
 		
 		// toolbar
-		toolbar = new Toolbar(loader, screenWidth, screenHeight, z);
+		toolbar = new Toolbar(loader, z);
 		
 		// sidebar
-		sidebar = new Sidebar(loader, screenWidth, screenHeight, z, files, true);
+		sidebar = new Sidebar(loader, z, files, true);
 		
 		// save button
 		float buttonX = 300;
-		float buttonY = 275;
+		float buttonY = 260;
 		
-		float buttonWidth = 70f;
-		float buttonHeight = 70f;
+		float buttonWidth = 60f;
+		float buttonHeight = 40f;
 		
 		float[] vertices = Entity.getVertices(buttonWidth, buttonHeight, z);
 		float[] texCoords = Entity.getTexCoords();
@@ -101,7 +101,7 @@ public class CustomizedScreen {
 				
 		Vector3f position = new Vector3f(buttonX, buttonY, z);
 		Vector3f rotation = new Vector3f(0,0,0);
-		float scale = 0.7f;
+		float scale = 1f;
 		
 		int textureID = loader.loadTexture(SAVE_BUTTON_TEXTURE_FILE);
 		Model sButtonModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
@@ -109,7 +109,7 @@ public class CustomizedScreen {
 		saveButton = new Button(sButtonModel, position, rotation, scale, buttonWidth, buttonHeight);
 		
 		// delete button
-		buttonX = 305 + buttonWidth;
+		buttonX += buttonWidth + 4f;
 		
 		position = new Vector3f(buttonX, buttonY, z);
 		
@@ -119,9 +119,11 @@ public class CustomizedScreen {
 		deleteButton = new Button(dButtonModel, position, rotation, scale, buttonWidth, buttonHeight);
 		
 		// select a simulation label
-		float labelWidth = 3f;
-		float labelHeight = 3f;
+		float labelWidth = 200f;
+		float labelHeight = 200f;
 		
+		vertices = Entity.getVertices(labelWidth, labelHeight, z);
+				
 		float labelX = (simulation.getMax().x + simulation.getMin().x) / 2;
 		float labelY = (simulation.getMax().y + simulation.getMin().y) / 2;
 		
@@ -130,13 +132,13 @@ public class CustomizedScreen {
 		textureID = loader.loadTexture(SELECT_A_SIM_LABEL_TEXTURE_FILE);
 		Model selectionASimModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 		
-		selectASimLabel = new Label(selectionASimModel, position, rotation, labelWidth, labelWidth, labelHeight);
+		selectASimLabel = new Label(selectionASimModel, position, rotation, scale, labelWidth, labelHeight);
 		
 		// title label
 		labelWidth = 200f;
 		labelHeight = 50f;
 		
-		vertices = Entity.getVertices(labelWidth, labelHeight, z);
+		vertices = Entity.getVertices(labelWidth, labelHeight, z - 100f);
 		
 		labelX = -380f;
 		labelY = 175 + labelHeight/2;
@@ -186,23 +188,20 @@ public class CustomizedScreen {
 		else if (program == 2) {
 			
 			float x = 0f;
-			float y = 0f;
 			
 			if (selectedEntity instanceof Rectangle) {
 				
 				x = ((Rectangle) selectedEntity).getWidth()/2;
-				y = ((Rectangle) selectedEntity).getHeight()/2;
 			}
 			else if (selectedEntity instanceof Circle) {
 				x = ((Circle) selectedEntity).getRadius();
-				y = x;
 			}
 			
 			float offsetX = selectedEntity.getPosition().x - 
 					(popUpBox.getPosition().x + popUpBox.getWidth()/2 + x + 5f);
 			
 			float offsetY = selectedEntity.getPosition().y - 
-					(popUpBox.getPosition().y - popUpBox.getHeight()/2 - y - 5f);
+					(popUpBox.getPosition().y - popUpBox.getHeight()/2 - 5f);
 			
 			popUpBox.update(offsetX, offsetY);
 			popUpBox.render(renderer);
@@ -385,7 +384,7 @@ public class CustomizedScreen {
 								
 							// pause simulation
 							simulation.setPause(true);
-											
+							
 							main.setCurrScreen(0);
 							return;
 						}
@@ -397,36 +396,39 @@ public class CustomizedScreen {
 							return;
 						}
 						
-						// rectangle button
-						else if (button.equals(toolbar.getRectangleButton()) && simulation.isPaused()) {
-								
-							// generate a crate
-							float sideLength = 50;
-							float posX = toolbar.getRectangleButton().getPosition().x;
-							float posY = toolbar.getRectangleButton().getPosition().y;
-							float mass = 20;
-							float e = -0.3f;
-								
-							selectedEntity = simulation.createCrateEntity(sideLength, posX, posY, z, mass, e);
+						else if (currentSim != -1) {
 							
-							program = 1;
-							return;
-						}
-						
-						// circle button
-						else if (button.equals(toolbar.getCircleButton()) && simulation.isPaused()) {
+							// rectangle button
+							if (button.equals(toolbar.getRectangleButton()) && simulation.isPaused()) {
+									
+								// generate a crate
+								float sideLength = 50;
+								float posX = toolbar.getRectangleButton().getPosition().x;
+								float posY = toolbar.getRectangleButton().getPosition().y;
+								float mass = 20;
+								float e = -0.3f;
+									
+								selectedEntity = simulation.createCrateEntity(sideLength, posX, posY, z, mass, e);
 								
-							// generate a ball
-							float radius = 25;
-							float posX = toolbar.getCircleButton().getPosition().x;
-							float posY = toolbar.getCircleButton().getPosition().y;
-							float mass = 20;
-							float e = -0.7f;
-								
-							selectedEntity = simulation.createBallEntity(radius, posX, posY, z, mass, e);
+								program = 1;
+								return;
+							}
 							
-							program = 1;
-							return;
+							// circle button
+							else if (button.equals(toolbar.getCircleButton()) && simulation.isPaused()) {
+									
+								// generate a ball
+								float radius = 25;
+								float posX = toolbar.getCircleButton().getPosition().x;
+								float posY = toolbar.getCircleButton().getPosition().y;
+								float mass = 20;
+								float e = -0.7f;
+									
+								selectedEntity = simulation.createBallEntity(radius, posX, posY, z, mass, e);
+								
+								program = 1;
+								return;
+							}
 						}
 					}
 						
@@ -606,7 +608,7 @@ public class CustomizedScreen {
 				}
 				
 				// pause-play button
-				if (simulation.getPausePlayButton().getAabb().intersects(x, y)) {
+				if (simulation.getPausePlayButton().getAabb().intersects(x, y) && currentSim != -1) {
 					
 					simulation.pausePlaySimulation();
 					return;
@@ -673,7 +675,7 @@ public class CustomizedScreen {
 		if (program == 0) {
 		
 			// space bar
-			if (key == Main.KEY_SPACE)
+			if (key == Main.KEY_SPACE && currentSim != -1)
 				simulation.pausePlaySimulation();
 			
 			// up
@@ -799,23 +801,20 @@ public class CustomizedScreen {
 	public PopUpBox createPopUpBox(Entity entity) {
 		
 		float offsetX = 0f;
-		float offsetY = 0f;
 		
 		if (entity instanceof Rectangle) {
 			
 			offsetX = ((Rectangle) entity).getWidth()/2;
-			offsetY = ((Rectangle) entity).getHeight()/2;
 		}
 		else if (entity instanceof Circle) {
 			offsetX = ((Circle) entity).getRadius();
-			offsetY = offsetX;
 		}
 		
 		float width = 200f;
 		float height = 120f;
 		
 		float x = entity.getPosition().x - width/2 - offsetX - 5f;
-		float y = entity.getPosition().y + height/2 + offsetY + 5f;
+		float y = entity.getPosition().y + height/2 + 5f;
 				
 		float[] vertices = Entity.getVertices(width, height, z);
 		float[] texCoords = Entity.getTexCoords();
@@ -829,6 +828,15 @@ public class CustomizedScreen {
 		Model model = loader.loadToVAO(vertices, texCoords, indices, textureID);
 		
 		return new PopUpBox(loader, model, position, rotation, scale, width, height, z);
+	}
+	
+	/**
+	 * Sets the current simulation index.
+	 * 
+	 * @param currentSim
+	 */
+	public void setCurrentSim(int currentSim) {
+		this.currentSim = currentSim;
 	}
 	
 }

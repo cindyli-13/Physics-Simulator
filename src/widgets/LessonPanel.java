@@ -93,14 +93,14 @@ public class LessonPanel {
 	public static String FRICTION_LESSON_1_TEXTURE_FILE = "./res/frictionLesson1.png";
 	
 	// constructor
-	public LessonPanel(Loader loader, float screenWidth, float screenHeight, float z) {
+	public LessonPanel(Loader loader, float z) {
 		
 		this.lessonIndex = -1;
 		this.pageIndex = 0;
 		this.showPanel = true;
 		this.x = 330f;
 		this.y = -55f;
-		this.z = z;
+		this.z = z + 0.5f;
 		
 		float[] texCoords = Entity.getTexCoords();
 		int[] indices = Entity.getIndices();
