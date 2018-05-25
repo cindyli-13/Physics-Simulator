@@ -24,29 +24,45 @@ public class PopUpBox extends GUIComponent {
 	// instance variables
 	private Button closeButton;
 	private Button deleteEntityButton;
+	
 	private Button increaseSizeButton;
 	private Button decreaseSizeButton;
-	private GUIComponent sizeLabel;
+	private Label sizeLabel;
+	
+	private Button increaseVelocityXButton;
+	private Button decreaseVelocityXButton;
+	private Label velocityXLabel;
+	
+	private Button increaseVelocityYButton;
+	private Button decreaseVelocityYButton;
+	private Label velocityYLabel;
+	
+	private Button increaseMassButton;
+	private Button decreaseMassButton;
+	private Label massLabel;
 	
 	private ArrayList<GUIComponent> guiComponents;
 	
 	private float width;
 	private float height;
 	
-	private Model increaseSizeButtonEnabledModel;
-	private Model increaseSizeButtonDisabledModel;
-	private Model decreaseSizeButtonEnabledModel;
-	private Model decreaseSizeButtonDisabledModel;
+	private Model increaseButtonEnabledModel;
+	private Model increaseButtonDisabledModel;
+	private Model decreaseButtonEnabledModel;
+	private Model decreaseButtonDisabledModel;
 	
 	// static variables
 	public static final String CLOSE_BUTTON_TEXTURE_FILE = "./res/closeButton.png";
 	public static final String DELETE_ENTITY_BUTTON_TEXTURE_FILE = "./res/deleteEntityButton.png";
 	public static final String POP_UP_BOX_TEXTURE_FILE = "./res/popUpBox.png";
-	public static final String INCREASE_SIZE_BUTTON_ENABLED_TEXTURE_FILE = "./res/increaseSizeButtonEnabled.png";
-	public static final String DECREASE_SIZE_BUTTON_ENABLED_TEXTURE_FILE = "./res/decreaseSizeButtonEnabled.png";
-	public static final String INCREASE_SIZE_BUTTON_DISABLED_TEXTURE_FILE = "./res/increaseSizeButtonDisabled.png";
-	public static final String DECREASE_SIZE_BUTTON_DISABLED_TEXTURE_FILE = "./res/decreaseSizeButtonDisabled.png";
+	public static final String INCREASE_BUTTON_ENABLED_TEXTURE_FILE = "./res/increaseSizeButtonEnabled.png";
+	public static final String DECREASE_BUTTON_ENABLED_TEXTURE_FILE = "./res/decreaseSizeButtonEnabled.png";
+	public static final String INCREASE_BUTTON_DISABLED_TEXTURE_FILE = "./res/increaseSizeButtonDisabled.png";
+	public static final String DECREASE_BUTTON_DISABLED_TEXTURE_FILE = "./res/decreaseSizeButtonDisabled.png";
 	public static final String SIZE_LABEL_TEXTURE_FILE = "./res/sizeLabel.png";
+	public static final String VELOCITY_X_LABEL_TEXTURE_FILE = "./res/velocityXLabel.png";
+	public static final String VELOCITY_Y_LABEL_TEXTURE_FILE = "./res/velocityYLabel.png";
+	public static final String MASS_LABEL_TEXTURE_FILE = "./res/massLabel.png";
 	
 	// constructor
 	public PopUpBox(Loader loader, Model model, Vector3f position, Vector3f rotation, float scale, 
@@ -85,7 +101,7 @@ public class PopUpBox extends GUIComponent {
 		buttonHeight = 30f;
 		
 		buttonX = position.x;
-		buttonY = position.y - 20f;
+		buttonY = position.y - height/2 + buttonHeight/2 + 10f;
 		
 		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
 		pos = new Vector3f(buttonX, buttonY, z);
@@ -95,51 +111,47 @@ public class PopUpBox extends GUIComponent {
 		
 		deleteEntityButton = new Button(buttonModel, pos, rot, s, buttonWidth, buttonHeight);
 		
-		// increase size button
-		
-		buttonWidth = 25f;
-		buttonHeight = 25f;
-				
-		buttonX = position.x + 10f;
-		buttonY = position.y + 25f;
-				
-		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
-		pos = new Vector3f(buttonX, buttonY, z);
-				
-		textureID = loader.loadTexture(INCREASE_SIZE_BUTTON_ENABLED_TEXTURE_FILE);
-		increaseSizeButtonEnabledModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
-		
-		textureID = loader.loadTexture(INCREASE_SIZE_BUTTON_DISABLED_TEXTURE_FILE);
-		increaseSizeButtonDisabledModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
-				
-		increaseSizeButton = new Button(increaseSizeButtonEnabledModel, pos, rot, s, buttonWidth, buttonHeight);
-		
 		// decrease size button
 		
 		buttonWidth = 25f;
 		buttonHeight = 25f;
-						
-		buttonX = position.x + 40f;
-		buttonY = position.y + 25f;
+				
+		buttonX = position.x + 20f;
+		buttonY = position.y + 60f;
+				
+		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
+		pos = new Vector3f(buttonX, buttonY, z);
+				
+		textureID = loader.loadTexture(DECREASE_BUTTON_ENABLED_TEXTURE_FILE);
+		decreaseButtonEnabledModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+		
+		textureID = loader.loadTexture(DECREASE_BUTTON_DISABLED_TEXTURE_FILE);
+		decreaseButtonDisabledModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+				
+		decreaseSizeButton = new Button(decreaseButtonEnabledModel, pos, rot, s, buttonWidth, buttonHeight);
+		
+		// increase size button
+		
+		buttonX = position.x + 50f;
 						
 		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
 		pos = new Vector3f(buttonX, buttonY, z);
 						
-		textureID = loader.loadTexture(DECREASE_SIZE_BUTTON_ENABLED_TEXTURE_FILE);
-		decreaseSizeButtonEnabledModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+		textureID = loader.loadTexture(INCREASE_BUTTON_ENABLED_TEXTURE_FILE);
+		increaseButtonEnabledModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 		
-		textureID = loader.loadTexture(DECREASE_SIZE_BUTTON_DISABLED_TEXTURE_FILE);
-		decreaseSizeButtonDisabledModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+		textureID = loader.loadTexture(INCREASE_BUTTON_DISABLED_TEXTURE_FILE);
+		increaseButtonDisabledModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 						
-		decreaseSizeButton = new Button(decreaseSizeButtonEnabledModel, pos, rot, s, buttonWidth, buttonHeight);
+		increaseSizeButton = new Button(increaseButtonEnabledModel, pos, rot, s, buttonWidth, buttonHeight);
 		
 		// size label
 		
-		float labelWidth = 50f;
+		float labelWidth = 70f;
 		float labelHeight = 25f;
 								
 		float labelX = position.x - 40f;
-		float labelY = position.y + 25f;
+		float labelY = position.y + 60f;
 								
 		vertices = Entity.getVertices(labelWidth, labelHeight, z + 0.01f);
 		pos = new Vector3f(labelX, labelY, z);
@@ -151,6 +163,108 @@ public class PopUpBox extends GUIComponent {
 		
 		// *************************************
 		
+		// decrease velocity x button
+						
+		buttonX = position.x + 20f;
+		buttonY -= buttonHeight + 5f;
+						
+		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
+		pos = new Vector3f(buttonX, buttonY, z);
+						
+		decreaseVelocityXButton = new Button(decreaseButtonEnabledModel, pos, rot, s, buttonWidth, buttonHeight);
+				
+		
+		// increase velocity x button
+		buttonX = position.x + 50f;
+								
+		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
+		pos = new Vector3f(buttonX, buttonY, z);
+								
+		increaseVelocityXButton = new Button(increaseButtonEnabledModel, pos, rot, s, buttonWidth, buttonHeight);
+		
+		
+		// velocity x label
+									
+		labelY = buttonY;
+										
+		vertices = Entity.getVertices(labelWidth, labelHeight, z + 0.01f);
+		pos = new Vector3f(labelX, labelY, z);
+										
+		textureID = loader.loadTexture(VELOCITY_X_LABEL_TEXTURE_FILE);
+		labelModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+										
+		velocityXLabel = new Label(labelModel, pos, rot, s, labelWidth, labelHeight);
+				
+		// *************************************
+		
+		// decrease velocity y button
+		
+		buttonX = position.x + 20f;
+		buttonY -= buttonHeight + 5f;
+								
+		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
+		pos = new Vector3f(buttonX, buttonY, z);
+								
+		decreaseVelocityYButton = new Button(decreaseButtonEnabledModel, pos, rot, s, buttonWidth, buttonHeight);
+						
+				
+		// increase velocity y button
+		buttonX = position.x + 50f;
+										
+		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
+		pos = new Vector3f(buttonX, buttonY, z);
+										
+		increaseVelocityYButton = new Button(increaseButtonEnabledModel, pos, rot, s, buttonWidth, buttonHeight);
+				
+				
+		// velocity y label
+											
+		labelY = buttonY;
+												
+		vertices = Entity.getVertices(labelWidth, labelHeight, z + 0.01f);
+		pos = new Vector3f(labelX, labelY, z);
+												
+		textureID = loader.loadTexture(VELOCITY_Y_LABEL_TEXTURE_FILE);
+		labelModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+												
+		velocityYLabel = new Label(labelModel, pos, rot, s, labelWidth, labelHeight);
+						
+		// *************************************
+		
+		// decrease mass button
+		
+		buttonX = position.x + 20f;
+		buttonY -= buttonHeight + 5f;
+										
+		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
+		pos = new Vector3f(buttonX, buttonY, z);
+										
+		decreaseMassButton = new Button(decreaseButtonEnabledModel, pos, rot, s, buttonWidth, buttonHeight);
+								
+						
+		// increase mass button
+		buttonX = position.x + 50f;
+												
+		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
+		pos = new Vector3f(buttonX, buttonY, z);
+												
+		increaseMassButton = new Button(increaseButtonEnabledModel, pos, rot, s, buttonWidth, buttonHeight);
+						
+						
+		// mass label
+													
+		labelY = buttonY;
+														
+		vertices = Entity.getVertices(labelWidth, labelHeight, z + 0.01f);
+		pos = new Vector3f(labelX, labelY, z);
+														
+		textureID = loader.loadTexture(MASS_LABEL_TEXTURE_FILE);
+		labelModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+														
+		massLabel = new Label(labelModel, pos, rot, s, labelWidth, labelHeight);
+								
+		// *************************************
+		
 		
 		// initialize GUI components array list
 		guiComponents = new ArrayList<GUIComponent>();
@@ -159,6 +273,15 @@ public class PopUpBox extends GUIComponent {
 		guiComponents.add(increaseSizeButton);
 		guiComponents.add(decreaseSizeButton);
 		guiComponents.add(sizeLabel);
+		guiComponents.add(increaseVelocityXButton);
+		guiComponents.add(decreaseVelocityXButton);
+		guiComponents.add(velocityXLabel);
+		guiComponents.add(increaseVelocityYButton);
+		guiComponents.add(decreaseVelocityYButton);
+		guiComponents.add(velocityYLabel);
+		guiComponents.add(increaseMassButton);
+		guiComponents.add(decreaseMassButton);
+		guiComponents.add(massLabel);
 		guiComponents.add(this);
 		
 		this.width = width;
@@ -202,6 +325,60 @@ public class PopUpBox extends GUIComponent {
 	}
 	
 	/**
+	 * Returns the increase velocity x button.
+	 * 
+	 * @return increaseVelocityXButton
+	 */
+	public Button getIncreaseVelocityXButton() {
+		return increaseVelocityXButton;
+	}
+	
+	/**
+	 * Returns the decrease velocity x button.
+	 * 
+	 * @return decreaseVelocityXButton
+	 */
+	public Button getDecreaseVelocityXButton() {
+		return decreaseVelocityXButton;
+	}
+	
+	/**
+	 * Returns the increase velocity y button.
+	 * 
+	 * @return increaseVelocityYButton
+	 */
+	public Button getIncreaseVelocityYButton() {
+		return increaseVelocityYButton;
+	}
+	
+	/**
+	 * Returns the decrease velocity y button.
+	 * 
+	 * @return decreaseVelocityYButton
+	 */
+	public Button getDecreaseVelocityYButton() {
+		return decreaseVelocityYButton;
+	}
+	
+	/**
+	 * Returns the increase mass button.
+	 * 
+	 * @return increaseMassButton
+	 */
+	public Button getIncreaseMassButton() {
+		return increaseMassButton;
+	}
+	
+	/**
+	 * Returns the decrease mass button.
+	 * 
+	 * @return decreaseMassButton
+	 */
+	public Button getDecreaseMassButton() {
+		return decreaseMassButton;
+	}
+	
+	/**
 	 * Renders the objects of the simulation window.
 	 * 
 	 * @param renderer		the renderer
@@ -220,65 +397,63 @@ public class PopUpBox extends GUIComponent {
 	 */
 	public void update(float offsetX, float offsetY) {
 		
-		// pop-up box
-		
+		// update pop-up box
 		this.getPosition().x += offsetX;
 		this.getPosition().y += offsetY;
 		
-		// close button
+		// update buttons
+		updateButton(closeButton, offsetX, offsetY);
+		updateButton(deleteEntityButton, offsetX, offsetY);
+		updateButton(increaseSizeButton, offsetX, offsetY);
+		updateButton(decreaseSizeButton, offsetX, offsetY);
+		updateButton(increaseVelocityXButton, offsetX, offsetY);
+		updateButton(decreaseVelocityXButton, offsetX, offsetY);
+		updateButton(increaseVelocityYButton, offsetX, offsetY);
+		updateButton(decreaseVelocityYButton, offsetX, offsetY);
+		updateButton(increaseMassButton, offsetX, offsetY);
+		updateButton(decreaseMassButton, offsetX, offsetY);
 		
-		closeButton.getPosition().x += offsetX;
-		closeButton.getPosition().y += offsetY;
+		// update labels
+		updateLabel(sizeLabel, offsetX, offsetY);
+		updateLabel(velocityXLabel, offsetX, offsetY);
+		updateLabel(velocityYLabel, offsetX, offsetY);
+		updateLabel(massLabel, offsetX, offsetY);
+	}
+	
+	/**
+	 * Updates the button's position by the 
+	 * given offsets.
+	 * 
+	 * @param button
+	 * @param offsetX
+	 * @param offsetY
+	 */
+	private void updateButton(Button button, float offsetX, float offsetY) {
 		
-		closeButton.getAabb().setMin(new Vector2f(closeButton.getPosition().x - closeButton.getWidth()/2, 
-				closeButton.getPosition().y - closeButton.getHeight()/2)); 
-		
-		closeButton.getAabb().setMax(new Vector2f(closeButton.getPosition().x + closeButton.getWidth()/2, 
-				closeButton.getPosition().y + closeButton.getHeight()/2));
-		
-		// delete entity button
-		
-		deleteEntityButton.getPosition().x += offsetX;
-		deleteEntityButton.getPosition().y += offsetY;
-				
-		deleteEntityButton.getAabb().setMin(new Vector2f(deleteEntityButton.getPosition().x 
-				- deleteEntityButton.getWidth()/2, 
-				deleteEntityButton.getPosition().y - deleteEntityButton.getHeight()/2)); 
-				
-		deleteEntityButton.getAabb().setMax(new Vector2f(deleteEntityButton.getPosition().x 
-				+ deleteEntityButton.getWidth()/2, 
-				deleteEntityButton.getPosition().y + deleteEntityButton.getHeight()/2));
-		
-		// increase size button
-		
-		increaseSizeButton.getPosition().x += offsetX;
-		increaseSizeButton.getPosition().y += offsetY;
+		button.getPosition().x += offsetX;
+		button.getPosition().y += offsetY;
 						
-		increaseSizeButton.getAabb().setMin(new Vector2f(increaseSizeButton.getPosition().x 
-				- increaseSizeButton.getWidth()/2, 
-				increaseSizeButton.getPosition().y - increaseSizeButton.getHeight()/2)); 
+		button.getAabb().setMin(new Vector2f(button.getPosition().x 
+				- button.getWidth()/2, 
+				button.getPosition().y - button.getHeight()/2)); 
 						
-		increaseSizeButton.getAabb().setMax(new Vector2f(increaseSizeButton.getPosition().x 
-				+ increaseSizeButton.getWidth()/2, 
-				increaseSizeButton.getPosition().y + increaseSizeButton.getHeight()/2));
+		button.getAabb().setMax(new Vector2f(button.getPosition().x 
+				+ button.getWidth()/2, 
+				button.getPosition().y + button.getHeight()/2));
+	}
+	
+	/**
+	 * Updates the label's position by the 
+	 * given offsets.
+	 * 
+	 * @param label
+	 * @param offsetX
+	 * @param offsetY
+	 */
+	private void updateLabel(Label label, float offsetX, float offsetY) {
 		
-		// decrease size button
-		
-		decreaseSizeButton.getPosition().x += offsetX;
-		decreaseSizeButton.getPosition().y += offsetY;
-								
-		decreaseSizeButton.getAabb().setMin(new Vector2f(decreaseSizeButton.getPosition().x 
-				- decreaseSizeButton.getWidth()/2, 
-				decreaseSizeButton.getPosition().y - decreaseSizeButton.getHeight()/2)); 
-								
-		decreaseSizeButton.getAabb().setMax(new Vector2f(decreaseSizeButton.getPosition().x 
-				+ decreaseSizeButton.getWidth()/2, 
-				decreaseSizeButton.getPosition().y + decreaseSizeButton.getHeight()/2));
-		
-		// size label
-		
-		sizeLabel.getPosition().x += offsetX;
-		sizeLabel.getPosition().y += offsetY;
+		label.getPosition().x += offsetX;
+		label.getPosition().y += offsetY;
 	}
 	
 	/**
@@ -310,10 +485,10 @@ public class PopUpBox extends GUIComponent {
 		
 		if (enabled) {
 			
-			increaseSizeButton.setModel(increaseSizeButtonEnabledModel);
+			increaseSizeButton.setModel(increaseButtonEnabledModel);
 		}
 		else {
-			increaseSizeButton.setModel(increaseSizeButtonDisabledModel);
+			increaseSizeButton.setModel(increaseButtonDisabledModel);
 		}
 	}
 	
@@ -328,10 +503,118 @@ public class PopUpBox extends GUIComponent {
 		
 		if (enabled) {
 			
-			decreaseSizeButton.setModel(decreaseSizeButtonEnabledModel);
+			decreaseSizeButton.setModel(decreaseButtonEnabledModel);
 		}
 		else {
-			decreaseSizeButton.setModel(decreaseSizeButtonDisabledModel);
+			decreaseSizeButton.setModel(decreaseButtonDisabledModel);
+		}
+	}
+	
+	/**
+	 * Sets the state of the increase velocity x
+	 * button to either enabled or disabled.
+	 * 
+	 * @param enabled 	specifies whether to set it 
+	 * to enabled or disabled
+	 */
+	public void setIncreaseVelocityXButtonState(boolean enabled) {
+		
+		if (enabled) {
+			
+			increaseVelocityXButton.setModel(increaseButtonEnabledModel);
+		}
+		else {
+			increaseVelocityXButton.setModel(increaseButtonDisabledModel);
+		}
+	}
+	
+	/**
+	 * Sets the state of the decrease velocity x 
+	 * button to either enabled or disabled.
+	 * 
+	 * @param enabled 	specifies whether to set it 
+	 * to enabled or disabled
+	 */
+	public void setDecreaseVelocityXButtonState(boolean enabled) {
+		
+		if (enabled) {
+			
+			decreaseVelocityXButton.setModel(decreaseButtonEnabledModel);
+		}
+		else {
+			decreaseVelocityXButton.setModel(decreaseButtonDisabledModel);
+		}
+	}
+	
+	/**
+	 * Sets the state of the increase velocity y
+	 * button to either enabled or disabled.
+	 * 
+	 * @param enabled 	specifies whether to set it 
+	 * to enabled or disabled
+	 */
+	public void setIncreaseVelocityYButtonState(boolean enabled) {
+		
+		if (enabled) {
+			
+			increaseVelocityYButton.setModel(increaseButtonEnabledModel);
+		}
+		else {
+			increaseVelocityYButton.setModel(increaseButtonDisabledModel);
+		}
+	}
+	
+	/**
+	 * Sets the state of the decrease velocity y 
+	 * button to either enabled or disabled.
+	 * 
+	 * @param enabled 	specifies whether to set it 
+	 * to enabled or disabled
+	 */
+	public void setDecreaseVelocityYButtonState(boolean enabled) {
+		
+		if (enabled) {
+			
+			decreaseVelocityYButton.setModel(decreaseButtonEnabledModel);
+		}
+		else {
+			decreaseVelocityYButton.setModel(decreaseButtonDisabledModel);
+		}
+	}
+	
+	/**
+	 * Sets the state of the increase mass button to 
+	 * either enabled or disabled.
+	 * 
+	 * @param enabled 	specifies whether to set it 
+	 * to enabled or disabled
+	 */
+	public void setIncreaseMassButtonState(boolean enabled) {
+		
+		if (enabled) {
+			
+			increaseMassButton.setModel(increaseButtonEnabledModel);
+		}
+		else {
+			increaseMassButton.setModel(increaseButtonDisabledModel);
+		}
+	}
+	
+	/**
+	 * Sets the state of the decrease mass button to 
+	 * either enabled or disabled.
+	 * 
+	 * @param enabled 	specifies whether to set it 
+	 * to enabled or disabled
+	 */
+	public void setDecreaseMassButtonState(boolean enabled) {
+		
+		if (enabled) {
+			
+			decreaseMassButton.setModel(decreaseButtonEnabledModel);
+		}
+		else {
+			decreaseMassButton.setModel(decreaseButtonDisabledModel);
 		}
 	}
 

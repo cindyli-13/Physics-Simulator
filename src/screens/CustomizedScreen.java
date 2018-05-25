@@ -201,7 +201,7 @@ public class CustomizedScreen {
 					(popUpBox.getPosition().x + popUpBox.getWidth()/2 + x + 5f);
 			
 			float offsetY = selectedEntity.getPosition().y - 
-					(popUpBox.getPosition().y - popUpBox.getHeight()/2 - 5f);
+					(popUpBox.getPosition().y - 20f);
 			
 			popUpBox.update(offsetX, offsetY);
 			popUpBox.render(renderer);
@@ -306,7 +306,7 @@ public class CustomizedScreen {
 					// increase entity's scale
 					selectedEntity.setScale(selectedEntity.getScale() + 10f);
 					
-					if (selectedEntity.getScale() >= 100f) {
+					if (selectedEntity.getScale() > 90f) {
 						
 						selectedEntity.setScale(100f);
 						popUpBox.setIncreaseSizeButtonState(false);
@@ -338,10 +338,10 @@ public class CustomizedScreen {
 				// decrease size button
 				else if (popUpBox.getDecreaseSizeButton().getAabb().intersects(x, y)) {
 					
-					// increase entity's scale
+					// decrease entity's scale
 					selectedEntity.setScale(selectedEntity.getScale() - 10f);
 					
-					if (selectedEntity.getScale() <= 30f) {
+					if (selectedEntity.getScale() < 40f) {
 						
 						selectedEntity.setScale(30f);
 						popUpBox.setDecreaseSizeButtonState(false);
@@ -367,6 +367,102 @@ public class CustomizedScreen {
 						Circle c = (Circle) selectedEntity;
 						
 						c.setRadius(c.getScale()/2);
+					}
+				}
+				
+				// increase velocity x button
+				else if (popUpBox.getIncreaseVelocityXButton().getAabb().intersects(x, y)) {
+					
+					// increase entity's horizontal velocity
+					selectedEntity.getVelocity().x += 5f;
+					
+					if (selectedEntity.getVelocity().x > 95f) {
+						
+						selectedEntity.getVelocity().x = 100f;
+						popUpBox.setIncreaseVelocityXButtonState(false);
+					}
+					else {
+						popUpBox.setDecreaseVelocityXButtonState(true);
+					}
+				}
+				
+				// decrease velocity x button
+				else if (popUpBox.getDecreaseVelocityXButton().getAabb().intersects(x, y)) {
+					
+					// decrease entity's horizontal velocity
+					selectedEntity.getVelocity().x -= 5f;
+					
+					if (selectedEntity.getVelocity().x < -95) {
+						
+						selectedEntity.getVelocity().x = -100f;
+						popUpBox.setDecreaseVelocityXButtonState(false);
+					}
+					else {
+						popUpBox.setIncreaseVelocityXButtonState(true);
+					}
+				}
+				
+				// increase velocity y button
+				else if (popUpBox.getIncreaseVelocityYButton().getAabb().intersects(x, y)) {
+					
+					// increase entity's vertical velocity
+					selectedEntity.getVelocity().y += 5f;
+					
+					if (selectedEntity.getVelocity().y > 95f) {
+						
+						selectedEntity.getVelocity().y = 100f;
+						popUpBox.setIncreaseVelocityYButtonState(false);
+					}
+					else {
+						popUpBox.setDecreaseVelocityYButtonState(true);
+					}
+				}
+				
+				// decrease velocity y button
+				else if (popUpBox.getDecreaseVelocityYButton().getAabb().intersects(x, y)) {
+					
+					// decrease entity's vertical velocity
+					selectedEntity.getVelocity().y -= 5f;
+					
+					if (selectedEntity.getVelocity().y < -95) {
+						
+						selectedEntity.getVelocity().y = -100f;
+						popUpBox.setDecreaseVelocityYButtonState(false);
+					}
+					else {
+						popUpBox.setIncreaseVelocityYButtonState(true);
+					}
+				}
+				
+				// increase mass button
+				else if (popUpBox.getIncreaseMassButton().getAabb().intersects(x, y)) {
+					
+					// increase entity's mass
+					selectedEntity.setMass(selectedEntity.getMass() + 10f);
+					
+					if (selectedEntity.getMass() > 90f) {
+						
+						selectedEntity.setMass(100f);
+						popUpBox.setIncreaseMassButtonState(false);
+					}
+					else {
+						popUpBox.setDecreaseMassButtonState(true);
+					}
+				}
+				
+				// decrease mass button
+				else if (popUpBox.getDecreaseMassButton().getAabb().intersects(x, y)) {
+					
+					// decrease entity's mass
+					selectedEntity.setMass(selectedEntity.getMass() - 10f);
+					
+					if (selectedEntity.getMass() < 20f) {
+						
+						selectedEntity.setMass(10f);
+						popUpBox.setDecreaseMassButtonState(false);
+					}
+					else {
+						popUpBox.setIncreaseMassButtonState(true);
 					}
 				}
 			}
@@ -647,6 +743,53 @@ public class CustomizedScreen {
 					
 					// create pop-up box
 					popUpBox = createPopUpBox(entity);
+					
+					// edit button states
+					
+					// size
+					if (entity.getScale() > 95)
+						popUpBox.setIncreaseSizeButtonState(false);
+					else 
+						popUpBox.setIncreaseSizeButtonState(true);
+					
+					if (entity.getScale() < 40)
+						popUpBox.setDecreaseMassButtonState(false);
+					else 
+						popUpBox.setDecreaseMassButtonState(true);
+					
+					// velocity x
+					if (entity.getVelocity().x > 95)
+						popUpBox.setIncreaseVelocityXButtonState(false);
+					else 
+						popUpBox.setIncreaseVelocityXButtonState(true);
+					
+					if (entity.getVelocity().x < -95)
+						popUpBox.setDecreaseVelocityXButtonState(false);
+					else 
+						popUpBox.setDecreaseVelocityXButtonState(true);
+					
+					// velocity y
+					if (entity.getVelocity().y > 95)
+						popUpBox.setIncreaseVelocityYButtonState(false);
+					else 
+						popUpBox.setIncreaseVelocityYButtonState(true);
+					
+					if (entity.getVelocity().y < -95)
+						popUpBox.setDecreaseVelocityYButtonState(false);
+					else 
+						popUpBox.setDecreaseVelocityYButtonState(true);
+					
+					// mass
+					if (entity.getMass() > 90)
+						popUpBox.setIncreaseMassButtonState(false);
+					else 
+						popUpBox.setIncreaseMassButtonState(true);
+					
+					if (entity.getMass() < 20)
+						popUpBox.setDecreaseMassButtonState(false);
+					else 
+						popUpBox.setDecreaseMassButtonState(true);
+					
 					selectedEntity = entity;
 					program = 2;
 					
@@ -811,10 +954,10 @@ public class CustomizedScreen {
 		}
 		
 		float width = 200f;
-		float height = 120f;
+		float height = 200f;
 		
 		float x = entity.getPosition().x - width/2 - offsetX - 5f;
-		float y = entity.getPosition().y + height/2 + 5f;
+		float y = entity.getPosition().y + 20f;
 				
 		float[] vertices = Entity.getVertices(width, height, z);
 		float[] texCoords = Entity.getTexCoords();
