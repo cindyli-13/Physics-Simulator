@@ -49,4 +49,13 @@ public class Model {
 		return textureID;
 	}
 	
+	/**
+	 * Sets the model's texture ID
+	 * @param texture	the texture file
+	 * @param loader
+	 */
+	public void setTextureID(String texture, Loader loader) {
+		this.textureID = loader.loadTexture(texture);
+	}
+	
 }

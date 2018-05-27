@@ -8,6 +8,7 @@ import objects.Entity;
 import objects.Loader;
 import objects.Model;
 import renderEngine.Renderer;
+import textRender.Text;
 
 /**
  * This class contains the components of the motion lesson
@@ -42,6 +43,11 @@ public class MotionLessonDisplayPanel {
 	private Label positionLabel;
 	private Label velocityLabel;
 	private Label accelerationLabel;
+	
+	private Text timeText;
+	private Text positionText;
+	private Text velocityText;
+	private Text accelerationText;
 		
 	private GUIComponent displayPanel;
 		
@@ -189,7 +195,7 @@ public class MotionLessonDisplayPanel {
 		guiComponents.add(decreaseVelocityButton);
 		
 		
-		offsetX += buttonWidth + 3f;
+		offsetX += 40f + buttonWidth + 3f;
 		
 		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.01f);
 		
@@ -199,7 +205,7 @@ public class MotionLessonDisplayPanel {
 		
 		
 		// for acceleration
-		offsetX -= buttonWidth + 3f;
+		offsetX = 10f + labelWidth + 5f + buttonWidth/2;
 		offsetY += 10f + labelHeight;
 				
 		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.01f);
@@ -209,13 +215,47 @@ public class MotionLessonDisplayPanel {
 		guiComponents.add(decreaseAccelerationButton);
 				
 				
-		offsetX += buttonWidth + 3f;
+		offsetX += 40f + buttonWidth + 3f;
 				
 		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.01f);
 				
 		increaseAccelerationButton = new Button(increaseButtonEnabledModel, position, rotation, scale, buttonWidth, buttonHeight);
 				
 		guiComponents.add(increaseAccelerationButton);
+		
+		// **************************************************
+		
+		
+		float textWidth = 20f;
+		float textHeight = 20f;
+		
+		// time text
+		
+		float textX = timeLabel.getPosition().x + labelWidth/2 + 3f + buttonWidth + 3f;
+		float textY = timeLabel.getPosition().y - labelHeight/2;
+		
+		timeText = new Text("0", textX, textY, z + 0.01f, textWidth, textHeight, loader);
+		
+		// position text
+		
+		textX = positionLabel.getPosition().x + labelWidth/2 + 3f + buttonWidth + 3f;
+		textY = positionLabel.getPosition().y - labelHeight/2;
+				
+		positionText = new Text("0", textX, textY, z + 0.01f, textWidth, textHeight, loader);
+		
+		// velocity text
+		
+		textX = velocityLabel.getPosition().x + labelWidth/2 + 3f + buttonWidth + 3f;
+		textY = velocityLabel.getPosition().y - labelHeight/2;
+						
+		velocityText = new Text("0", textX, textY, z + 0.01f, textWidth, textHeight, loader);
+		
+		// acceleration text
+		
+		textX = accelerationLabel.getPosition().x + labelWidth/2 + 3f + buttonWidth + 3f;
+		textY = accelerationLabel.getPosition().y - labelHeight/2;
+								
+		accelerationText = new Text("0", textX, textY, z + 0.01f, textWidth, textHeight, loader);
 	}
 	
 	/**
@@ -226,6 +266,10 @@ public class MotionLessonDisplayPanel {
 	public void render (Renderer renderer) {
 		
 		renderer.renderGUI(guiComponents);
+		renderer.renderGUI(timeText.getGUIlist());
+		renderer.renderGUI(positionText.getGUIlist());
+		renderer.renderGUI(velocityText.getGUIlist());
+		renderer.renderGUI(accelerationText.getGUIlist());
 	}
 
 	/**
@@ -342,5 +386,73 @@ public class MotionLessonDisplayPanel {
 			decreaseAccelerationButton.setEnabled(false);
 			decreaseAccelerationButton.setModel(decreaseButtonDisabledModel);
 		}
+	}
+	
+	/**
+	 * Updates the text for time.
+	 * 
+	 * @param time
+	 */
+	public void updateTimeText(int time) {
+		
+		if (time <= 999)
+			timeText.changeStr(intToText(time));
+	}
+	
+	/**
+	 * Updates the text for position.
+	 * 
+	 * @param position
+	 */
+	public void updatePositionText(int position) {
+		
+		if (position <= 999 && position >= -999)		
+			positionText.changeStr(intToText(position));
+	}
+	
+	/**
+	 * Updates the text for velocity.
+	 * 
+	 * @param velocity
+	 */
+	public void updateVelocityText(int velocity) {
+		
+		if (velocity <= 999 && velocity >= -999) 			
+			velocityText.changeStr(intToText(velocity));
+	}
+	
+	/**
+	 * Updates the text for acceleration.
+	 * 
+	 * @param acceleration
+	 */
+	public void updateAccelerationText(int acceleration) {
+		
+		if (acceleration <= 999 && acceleration >= -999)
+			accelerationText.changeStr(intToText(acceleration));
+	}
+	
+	/**
+	 * Converts an integer to text (a string).
+	 * @param n
+	 */
+	private String intToText(int n) {
+		
+		String s = "";
+		String temp = Integer.toString(n);
+				
+		if (n < 0) {
+			s += "-";
+			temp = temp.substring(1);
+		}
+		else
+			s += " ";
+				
+		for (int i = 0; i < 3 - temp.length(); i ++)
+			s += " ";
+				
+		s += temp;
+		
+		return s;
 	}
 }

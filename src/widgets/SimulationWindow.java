@@ -560,4 +560,13 @@ public class SimulationWindow {
 	public Vector3f getMax() {
 		return max;
 	}
+	
+	/**
+	 * Returns the time step.
+	 * 
+	 * @return dt
+	 */
+	public float getDt() {
+		return dt;
+	}
 }

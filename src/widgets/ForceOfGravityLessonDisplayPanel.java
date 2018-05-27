@@ -8,6 +8,7 @@ import objects.Entity;
 import objects.Loader;
 import objects.Model;
 import renderEngine.Renderer;
+import textRender.Text;
 
 /**
  * This class contains the components of the force of 
@@ -42,6 +43,11 @@ public class ForceOfGravityLessonDisplayPanel {
 	private Label massLabel;
 	private Label forceOfGravityLabel;
 	private Label accelerationLabel;
+	
+	private Text timeText;
+	private Text massText;
+	private Text forceOfGravityText;
+	private Text accelerationText;
 		
 	private GUIComponent displayPanel;
 		
@@ -189,7 +195,7 @@ public class ForceOfGravityLessonDisplayPanel {
 		guiComponents.add(decreaseMassButton);
 		
 		
-		offsetX += buttonWidth + 3f;
+		offsetX += 40f + buttonWidth + 3f;
 		
 		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.01f);
 		
@@ -197,10 +203,39 @@ public class ForceOfGravityLessonDisplayPanel {
 		
 		guiComponents.add(increaseMassButton);
 		
+		// **************************************************
 		
-		// initial button states
-		decreaseMassButton.setEnabled(false);
-		decreaseMassButton.setModel(decreaseButtonDisabledModel);
+		
+		float textWidth = 20f;
+		float textHeight = 20f;
+						
+		// time text
+						
+		float textX = timeLabel.getPosition().x + labelWidth/2 + 3f + buttonWidth + 3f;
+		float textY = timeLabel.getPosition().y - labelHeight/2;
+						
+		timeText = new Text("0", textX, textY, z + 0.01f, textWidth, textHeight, loader);
+						
+		// mass text
+						
+		textX = massLabel.getPosition().x + labelWidth/2 + 3f + buttonWidth + 3f;
+		textY = massLabel.getPosition().y - labelHeight/2;
+								
+		massText = new Text("0", textX, textY, z + 0.01f, textWidth, textHeight, loader);
+						
+		// force of gravity text
+						
+		textX = forceOfGravityLabel.getPosition().x + labelWidth/2 + 3f + buttonWidth + 3f;
+		textY = forceOfGravityLabel.getPosition().y - labelHeight/2;
+										
+		forceOfGravityText = new Text("0", textX, textY, z + 0.01f, textWidth, textHeight, loader);
+						
+		// acceleration text
+						
+		textX = accelerationLabel.getPosition().x + labelWidth/2 + 3f + buttonWidth + 3f;
+		textY = accelerationLabel.getPosition().y - labelHeight/2;
+												
+		accelerationText = new Text("0", textX, textY, z + 0.01f, textWidth, textHeight, loader);
 	}
 	
 	/**
@@ -211,6 +246,10 @@ public class ForceOfGravityLessonDisplayPanel {
 	public void render (Renderer renderer) {
 		
 		renderer.renderGUI(guiComponents);
+		renderer.renderGUI(timeText.getGUIlist());
+		renderer.renderGUI(massText.getGUIlist());
+		renderer.renderGUI(forceOfGravityText.getGUIlist());
+		renderer.renderGUI(accelerationText.getGUIlist());
 	}
 
 	/**
@@ -269,6 +308,74 @@ public class ForceOfGravityLessonDisplayPanel {
 			decreaseMassButton.setEnabled(false);
 			decreaseMassButton.setModel(decreaseButtonDisabledModel);
 		}
+	}
+	
+	/**
+	 * Updates the text for time.
+	 * 
+	 * @param time
+	 */
+	public void updateTimeText(int time) {
+		
+		if (time <= 999)
+			timeText.changeStr(intToText(time));
+	}
+	
+	/**
+	 * Updates the text for mass.
+	 * 
+	 * @param mass
+	 */
+	public void updateMassText(int mass) {
+		
+		if (mass <= 999 && mass >= -999)		
+			massText.changeStr(intToText(mass));
+	}
+	
+	/**
+	 * Updates the text for force of gravity.
+	 * 
+	 * @param forceOfGravity
+	 */
+	public void updateForceOfGravityText(int forceOfGravity) {
+		
+		if (forceOfGravity <= 999 && forceOfGravity >= -999) 			
+			forceOfGravityText.changeStr(intToText(forceOfGravity));
+	}
+	
+	/**
+	 * Updates the text for acceleration.
+	 * 
+	 * @param acceleration
+	 */
+	public void updateAccelerationText(int acceleration) {
+		
+		if (acceleration <= 999 && acceleration >= -999)
+			accelerationText.changeStr(intToText(acceleration));
+	}
+	
+	/**
+	 * Converts an integer to text (a string).
+	 * @param n
+	 */
+	private String intToText(int n) {
+		
+		String s = "";
+		String temp = Integer.toString(n);
+				
+		if (n < 0) {
+			s += "-";
+			temp = temp.substring(1);
+		}
+		else
+			s += " ";
+				
+		for (int i = 0; i < 3 - temp.length(); i ++)
+			s += " ";
+				
+		s += temp;
+		
+		return s;
 	}
 	
 }

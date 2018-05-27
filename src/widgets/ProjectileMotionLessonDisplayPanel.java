@@ -8,6 +8,7 @@ import objects.Entity;
 import objects.Loader;
 import objects.Model;
 import renderEngine.Renderer;
+import textRender.Text;
 
 /**
  * This class contains the components of the projectile motion 
@@ -44,6 +45,14 @@ public class ProjectileMotionLessonDisplayPanel {
 	private Label velocityYLabel;
 	private Label accelerationXLabel;
 	private Label accelerationYLabel;
+	
+	private Text timeText;
+	private Text positionXText;
+	private Text velocityXText;
+	private Text accelerationXText;
+	private Text positionYText;
+	private Text velocityYText;
+	private Text accelerationYText;
 		
 	private GUIComponent displayPanel;
 		
@@ -224,7 +233,7 @@ public class ProjectileMotionLessonDisplayPanel {
 		guiComponents.add(decreaseVelocityXButton);
 		
 		
-		offsetX += buttonWidth + 3f;
+		offsetX += 40f + buttonWidth + 3f;
 		
 		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.01f);
 		
@@ -244,13 +253,68 @@ public class ProjectileMotionLessonDisplayPanel {
 		
 		
 		
-		offsetX += buttonWidth + 3f;
+		offsetX += 40f + buttonWidth + 3f;
 		
 		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.01f);
 		
 		increaseVelocityYButton = new Button(increaseButtonEnabledModel, position, rotation, scale, buttonWidth, buttonHeight);
 		
 		guiComponents.add(increaseVelocityYButton);
+		
+		// **************************************************
+		
+		
+		float textWidth = 20f;
+		float textHeight = 20f;
+				
+		// time text
+				
+		float textX = timeLabel.getPosition().x + labelWidth/2 + 3f + buttonWidth + 3f;
+		float textY = timeLabel.getPosition().y - labelHeight/2;
+				
+		timeText = new Text("0", textX, textY, z + 0.01f, textWidth, textHeight, loader);
+				
+		// position x text
+				
+		textX = positionXLabel.getPosition().x + labelWidth/2 + 3f + buttonWidth + 3f;
+		textY = positionXLabel.getPosition().y - labelHeight/2;
+						
+		positionXText = new Text("0", textX, textY, z + 0.01f, textWidth, textHeight, loader);
+				
+		// velocity x text
+				
+		textX = velocityXLabel.getPosition().x + labelWidth/2 + 3f + buttonWidth + 3f;
+		textY = velocityXLabel.getPosition().y - labelHeight/2;
+								
+		velocityXText = new Text("0", textX, textY, z + 0.01f, textWidth, textHeight, loader);
+				
+		// acceleration x text
+		
+		textX = accelerationXLabel.getPosition().x + labelWidth/2 + 3f + buttonWidth + 3f;
+		textY = accelerationXLabel.getPosition().y - labelHeight/2;
+										
+		accelerationXText = new Text("0", textX, textY, z + 0.01f, textWidth, textHeight, loader);
+		
+		// position y text
+		
+		textX = positionYLabel.getPosition().x + labelWidth/2 + 3f + buttonWidth + 3f;
+		textY = positionYLabel.getPosition().y - labelHeight/2;
+								
+		positionYText = new Text("0", textX, textY, z + 0.01f, textWidth, textHeight, loader);
+						
+		// velocity y text
+						
+		textX = velocityYLabel.getPosition().x + labelWidth/2 + 3f + buttonWidth + 3f;
+		textY = velocityYLabel.getPosition().y - labelHeight/2;
+										
+		velocityYText = new Text("0", textX, textY, z + 0.01f, textWidth, textHeight, loader);
+						
+		// acceleration y text
+		
+		textX = accelerationYLabel.getPosition().x + labelWidth/2 + 3f + buttonWidth + 3f;
+		textY = accelerationYLabel.getPosition().y - labelHeight/2;
+												
+		accelerationYText = new Text("0", textX, textY, z + 0.01f, textWidth, textHeight, loader);
 	}
 	
 	/**
@@ -261,6 +325,13 @@ public class ProjectileMotionLessonDisplayPanel {
 	public void render (Renderer renderer) {
 		
 		renderer.renderGUI(guiComponents);
+		renderer.renderGUI(timeText.getGUIlist());
+		renderer.renderGUI(positionXText.getGUIlist());
+		renderer.renderGUI(velocityXText.getGUIlist());
+		renderer.renderGUI(accelerationXText.getGUIlist());
+		renderer.renderGUI(positionYText.getGUIlist());
+		renderer.renderGUI(velocityYText.getGUIlist());
+		renderer.renderGUI(accelerationYText.getGUIlist());
 	}
 
 	/**
@@ -379,4 +450,104 @@ public class ProjectileMotionLessonDisplayPanel {
 		}
 	}
 	
+	/**
+	 * Updates the text for time.
+	 * 
+	 * @param time
+	 */
+	public void updateTimeText(int time) {
+		
+		if (time <= 999)
+			timeText.changeStr(intToText(time));
+	}
+	
+	/**
+	 * Updates the text for position x.
+	 * 
+	 * @param positionX
+	 */
+	public void updatePositionXText(int positionX) {
+		
+		if (positionX <= 999 && positionX >= -999)		
+			positionXText.changeStr(intToText(positionX));
+	}
+	
+	/**
+	 * Updates the text for velocity x.
+	 * 
+	 * @param velocityX
+	 */
+	public void updateVelocityXText(int velocityX) {
+		
+		if (velocityX <= 999 && velocityX >= -999) 			
+			velocityXText.changeStr(intToText(velocityX));
+	}
+	
+	/**
+	 * Updates the text for acceleration x.
+	 * 
+	 * @param accelerationX
+	 */
+	public void updateAccelerationXText(int accelerationX) {
+		
+		if (accelerationX <= 999 && accelerationX >= -999)
+			accelerationXText.changeStr(intToText(accelerationX));
+	}
+	
+	/**
+	 * Updates the text for position y.
+	 * 
+	 * @param positionY
+	 */
+	public void updatePositionYText(int positionY) {
+		
+		if (positionY <= 999 && positionY >= -999)		
+			positionYText.changeStr(intToText(positionY));
+	}
+	
+	/**
+	 * Updates the text for velocity y.
+	 * 
+	 * @param velocityY
+	 */
+	public void updateVelocityYText(int velocityY) {
+		
+		if (velocityY <= 999 && velocityY >= -999) 			
+			velocityYText.changeStr(intToText(velocityY));
+	}
+	
+	/**
+	 * Updates the text for acceleration y.
+	 * 
+	 * @param accelerationY
+	 */
+	public void updateAccelerationYText(int accelerationY) {
+		
+		if (accelerationY <= 999 && accelerationY >= -999)
+			accelerationYText.changeStr(intToText(accelerationY));
+	}
+	
+	/**
+	 * Converts an integer to text (a string).
+	 * @param n
+	 */
+	private String intToText(int n) {
+		
+		String s = "";
+		String temp = Integer.toString(n);
+				
+		if (n < 0) {
+			s += "-";
+			temp = temp.substring(1);
+		}
+		else
+			s += " ";
+				
+		for (int i = 0; i < 3 - temp.length(); i ++)
+			s += " ";
+				
+		s += temp;
+		
+		return s;
+	}
 }
