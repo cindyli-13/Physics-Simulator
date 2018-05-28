@@ -9,6 +9,7 @@ import objects.Entity;
 import objects.Loader;
 import objects.Model;
 import renderEngine.Renderer;
+import textRender.Text;
 
 /**
  * This class is the blueprint for pop-up boxes 
@@ -41,6 +42,16 @@ public class PopUpBox extends GUIComponent {
 	private Button decreaseMassButton;
 	private Label massLabel;
 	
+	private Text sizeText;
+	private Text massText;
+	private Text velocityXText;
+	private Text velocityYText;
+	
+	private Label sizeBlankLabel;
+	private Label massBlankLabel;
+	private Label velocityXBlankLabel;
+	private Label velocityYBlankLabel;
+	
 	private ArrayList<GUIComponent> guiComponents;
 	
 	private float width;
@@ -63,6 +74,7 @@ public class PopUpBox extends GUIComponent {
 	public static final String VELOCITY_X_LABEL_TEXTURE_FILE = "./res/velocityXLabel.png";
 	public static final String VELOCITY_Y_LABEL_TEXTURE_FILE = "./res/velocityYLabel.png";
 	public static final String MASS_LABEL_TEXTURE_FILE = "./res/massLabel.png";
+	public static final String BLANK_LABEL_TEXTURE_FILE = "./res/blankLabel.png";
 	
 	// constructor
 	public PopUpBox(Loader loader, Model model, Vector3f position, Vector3f rotation, float scale, 
@@ -113,10 +125,10 @@ public class PopUpBox extends GUIComponent {
 		
 		// decrease size button
 		
-		buttonWidth = 25f;
-		buttonHeight = 25f;
+		buttonWidth = 20f;
+		buttonHeight = 20f;
 				
-		buttonX = position.x + 20f;
+		buttonX = position.x + 5f;
 		buttonY = position.y + 60f;
 				
 		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
@@ -132,7 +144,7 @@ public class PopUpBox extends GUIComponent {
 		
 		// increase size button
 		
-		buttonX = position.x + 50f;
+		buttonX = position.x + 87f;
 						
 		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
 		pos = new Vector3f(buttonX, buttonY, z);
@@ -150,7 +162,7 @@ public class PopUpBox extends GUIComponent {
 		float labelWidth = 70f;
 		float labelHeight = 25f;
 								
-		float labelX = position.x - 40f;
+		float labelX = position.x - 55f;
 		float labelY = position.y + 60f;
 								
 		vertices = Entity.getVertices(labelWidth, labelHeight, z + 0.01f);
@@ -165,7 +177,7 @@ public class PopUpBox extends GUIComponent {
 		
 		// decrease velocity x button
 						
-		buttonX = position.x + 20f;
+		buttonX = position.x + 5f;
 		buttonY -= buttonHeight + 5f;
 						
 		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
@@ -175,7 +187,7 @@ public class PopUpBox extends GUIComponent {
 				
 		
 		// increase velocity x button
-		buttonX = position.x + 50f;
+		buttonX = position.x + 87f;
 								
 		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
 		pos = new Vector3f(buttonX, buttonY, z);
@@ -199,7 +211,7 @@ public class PopUpBox extends GUIComponent {
 		
 		// decrease velocity y button
 		
-		buttonX = position.x + 20f;
+		buttonX = position.x + 5f;
 		buttonY -= buttonHeight + 5f;
 								
 		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
@@ -209,7 +221,7 @@ public class PopUpBox extends GUIComponent {
 						
 				
 		// increase velocity y button
-		buttonX = position.x + 50f;
+		buttonX = position.x + 87f;
 										
 		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
 		pos = new Vector3f(buttonX, buttonY, z);
@@ -233,7 +245,7 @@ public class PopUpBox extends GUIComponent {
 		
 		// decrease mass button
 		
-		buttonX = position.x + 20f;
+		buttonX = position.x + 5f;
 		buttonY -= buttonHeight + 5f;
 										
 		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
@@ -243,7 +255,7 @@ public class PopUpBox extends GUIComponent {
 								
 						
 		// increase mass button
-		buttonX = position.x + 50f;
+		buttonX = position.x + 87f;
 												
 		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
 		pos = new Vector3f(buttonX, buttonY, z);
@@ -265,6 +277,77 @@ public class PopUpBox extends GUIComponent {
 								
 		// *************************************
 		
+		float textWidth = 20f;
+		float textHeight = 20f;
+		
+		// size text
+		
+		float textX = position.x + 5f + buttonWidth/2 + 3f;
+		float textY = sizeLabel.getPosition().y - labelHeight/2;
+		
+		sizeText = new Text("0", textX, textY, z + 0.01f, textWidth, textHeight, loader);
+		
+		// mass text
+		
+		textY = massLabel.getPosition().y - labelHeight/2;
+				
+		massText = new Text("0", textX, textY, z + 0.01f, textWidth, textHeight, loader);
+		
+		// velocity x text
+		
+		textY = velocityXLabel.getPosition().y - labelHeight/2;
+						
+		velocityXText = new Text("0", textX, textY, z + 0.01f, textWidth, textHeight, loader);
+		
+		// velocity y text
+		
+		textY = velocityYLabel.getPosition().y - labelHeight/2;
+								
+		velocityYText = new Text("0", textX, textY, z + 0.01f, textWidth, textHeight, loader);
+		
+		// **************************************************
+		
+		// blank labels
+				
+		float blanklabelWidth = 57f;
+		float blanklabelHeight = 20f;
+		
+		vertices = Entity.getVertices(blanklabelWidth, blanklabelHeight, z);
+				
+		textureID = loader.loadTexture(BLANK_LABEL_TEXTURE_FILE);
+		model = loader.loadToVAO(vertices, texCoords, indices, textureID);
+				
+		// size blank label
+		labelX = position.x + 5f + buttonWidth/2 + 3f + blanklabelWidth/2;
+		labelY = sizeLabel.getPosition().y;
+		
+		position = new Vector3f(labelX, labelY, z + 0.005f);
+				
+		sizeBlankLabel = new Label(model, position, rotation, scale, labelWidth, labelHeight);
+		
+		// mass blank label
+		labelY = massLabel.getPosition().y;
+						
+		position = new Vector3f(labelX, labelY, z + 0.005f);
+								
+		massBlankLabel = new Label(model, position, rotation, scale, labelWidth, labelHeight);
+		
+		// velocity x blank label
+		labelY = velocityXLabel.getPosition().y;
+								
+		position = new Vector3f(labelX, labelY, z + 0.005f);
+										
+		velocityXBlankLabel = new Label(model, position, rotation, scale, labelWidth, labelHeight);
+				
+		// velocity y blank label
+		labelY = velocityYLabel.getPosition().y;
+										
+		position = new Vector3f(labelX, labelY, z + 0.005f);
+												
+		velocityYBlankLabel = new Label(model, position, rotation, scale, labelWidth, labelHeight);
+		
+		// **************************************************
+		
 		
 		// initialize GUI components array list
 		guiComponents = new ArrayList<GUIComponent>();
@@ -282,6 +365,12 @@ public class PopUpBox extends GUIComponent {
 		guiComponents.add(increaseMassButton);
 		guiComponents.add(decreaseMassButton);
 		guiComponents.add(massLabel);
+		
+		guiComponents.add(sizeBlankLabel);
+		guiComponents.add(massBlankLabel);
+		guiComponents.add(velocityXBlankLabel);
+		guiComponents.add(velocityYBlankLabel);
+		
 		guiComponents.add(this);
 		
 		this.width = width;
@@ -386,6 +475,10 @@ public class PopUpBox extends GUIComponent {
 	public void render(Renderer renderer) {
 		
 		renderer.renderGUI(guiComponents);
+		renderer.renderGUI(sizeText.getGUIlist());
+		renderer.renderGUI(massText.getGUIlist());
+		renderer.renderGUI(velocityXText.getGUIlist());
+		renderer.renderGUI(velocityYText.getGUIlist());
 	}
 	
 	/**
@@ -418,6 +511,17 @@ public class PopUpBox extends GUIComponent {
 		updateLabel(velocityXLabel, offsetX, offsetY);
 		updateLabel(velocityYLabel, offsetX, offsetY);
 		updateLabel(massLabel, offsetX, offsetY);
+		
+		updateLabel(sizeBlankLabel, offsetX, offsetY);
+		updateLabel(velocityXBlankLabel, offsetX, offsetY);
+		updateLabel(velocityYBlankLabel, offsetX, offsetY);
+		updateLabel(massBlankLabel, offsetX, offsetY);
+		
+		// update text
+		sizeText.updatePosition(offsetX, offsetY);
+		massText.updatePosition(offsetX, offsetY);
+		velocityXText.updatePosition(offsetX, offsetY);
+		velocityYText.updatePosition(offsetX, offsetY);
 	}
 	
 	/**
@@ -618,4 +722,76 @@ public class PopUpBox extends GUIComponent {
 		}
 	}
 
+	/**
+	 * Updates the text for size.
+	 * 
+	 * @param size
+	 */
+	public void updateSizeText(float size) {
+		
+		if (size <= 999.9)
+			sizeText.changeStr(floatToText(size));
+	}
+	
+	/**
+	 * Updates the text for mass.
+	 * 
+	 * @param mass
+	 */
+	public void updateMassText(float mass) {
+		
+		if (mass <= 999.9 && mass >= -999.9)		
+			massText.changeStr(floatToText(mass));
+	}
+	
+	/**
+	 * Updates the text for velocity x.
+	 * 
+	 * @param velocityX
+	 */
+	public void updateVelocityXText(float velocityX) {
+		
+		if (velocityX <= 999.9 && velocityX >= -999.9) 			
+			velocityXText.changeStr(floatToText(velocityX));
+	}
+	
+	/**
+	 * Updates the text for velocity y.
+	 * 
+	 * @param velocityY
+	 */
+	public void updateVelocityYText(float velocityY) {
+		
+		if (velocityY <= 999.9 && velocityY >= -999.9)
+			velocityYText.changeStr(floatToText(velocityY));
+	}
+	
+	/**
+	 * Converts a float to text (a string).
+	 * @param f
+	 */
+	private String floatToText(float f) {
+		
+		String s = "";
+		
+		// round float to 1 decimal places
+		f = Math.round(f * 10.0f) / 10.0f;
+		
+		String temp = Float.toString(f);
+				
+		if (f < 0f) {
+			s += "-";
+			temp = temp.substring(1);
+		}
+		else
+			s += " ";
+				
+		for (int i = 0; i < 6 - temp.length(); i ++)
+			s += " ";
+				
+		s += temp;
+		
+		return s;
+	}
+	
 }

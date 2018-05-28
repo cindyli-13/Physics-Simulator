@@ -304,9 +304,9 @@ public class CustomizedScreen {
 				else if (popUpBox.getIncreaseSizeButton().getAabb().intersects(x, y)) {
 					
 					// increase entity's scale
-					selectedEntity.setScale(selectedEntity.getScale() + 10f);
+					selectedEntity.setScale(selectedEntity.getScale() + 5f);
 					
-					if (selectedEntity.getScale() > 90f) {
+					if (selectedEntity.getScale() > 95f) {
 						
 						selectedEntity.setScale(100f);
 						popUpBox.setIncreaseSizeButtonState(false);
@@ -315,6 +315,8 @@ public class CustomizedScreen {
 						popUpBox.setDecreaseSizeButtonState(true);
 					}
 					
+					float size = 1f;
+					
 					// rectangle
 					if (selectedEntity instanceof Rectangle) {
 						
@@ -324,6 +326,8 @@ public class CustomizedScreen {
 						r.setHeight(r.getScale());
 						
 						r.updateAABB();
+						
+						size = r.getWidth();
 					}
 					
 					// circle
@@ -332,16 +336,21 @@ public class CustomizedScreen {
 						Circle c = (Circle) selectedEntity;
 						
 						c.setRadius(c.getScale()/2);
+						
+						size = c.getRadius() * 2;
 					}
+					
+					// update text
+					popUpBox.updateSizeText(size);
 				}
 				
 				// decrease size button
 				else if (popUpBox.getDecreaseSizeButton().getAabb().intersects(x, y)) {
 					
 					// decrease entity's scale
-					selectedEntity.setScale(selectedEntity.getScale() - 10f);
+					selectedEntity.setScale(selectedEntity.getScale() - 5f);
 					
-					if (selectedEntity.getScale() < 40f) {
+					if (selectedEntity.getScale() < 35f) {
 						
 						selectedEntity.setScale(30f);
 						popUpBox.setDecreaseSizeButtonState(false);
@@ -350,6 +359,8 @@ public class CustomizedScreen {
 						popUpBox.setIncreaseSizeButtonState(true);
 					}
 					
+					float size = 1f;
+					
 					// rectangle
 					if (selectedEntity instanceof Rectangle) {
 						
@@ -359,6 +370,8 @@ public class CustomizedScreen {
 						r.setHeight(r.getScale());
 						
 						r.updateAABB();
+						
+						size = r.getWidth();
 					}
 					
 					// circle
@@ -367,7 +380,12 @@ public class CustomizedScreen {
 						Circle c = (Circle) selectedEntity;
 						
 						c.setRadius(c.getScale()/2);
+						
+						size = c.getRadius() * 2;
 					}
+					
+					// update text
+					popUpBox.updateSizeText(size);
 				}
 				
 				// increase velocity x button
@@ -384,6 +402,9 @@ public class CustomizedScreen {
 					else {
 						popUpBox.setDecreaseVelocityXButtonState(true);
 					}
+					
+					// update text
+					popUpBox.updateVelocityXText(selectedEntity.getVelocity().x);
 				}
 				
 				// decrease velocity x button
@@ -400,6 +421,9 @@ public class CustomizedScreen {
 					else {
 						popUpBox.setIncreaseVelocityXButtonState(true);
 					}
+					
+					// update text
+					popUpBox.updateVelocityXText(selectedEntity.getVelocity().x);
 				}
 				
 				// increase velocity y button
@@ -416,6 +440,9 @@ public class CustomizedScreen {
 					else {
 						popUpBox.setDecreaseVelocityYButtonState(true);
 					}
+					
+					// update text
+					popUpBox.updateVelocityYText(selectedEntity.getVelocity().y);
 				}
 				
 				// decrease velocity y button
@@ -432,15 +459,18 @@ public class CustomizedScreen {
 					else {
 						popUpBox.setIncreaseVelocityYButtonState(true);
 					}
+					
+					// update text
+					popUpBox.updateVelocityYText(selectedEntity.getVelocity().y);
 				}
 				
 				// increase mass button
 				else if (popUpBox.getIncreaseMassButton().getAabb().intersects(x, y)) {
 					
 					// increase entity's mass
-					selectedEntity.setMass(selectedEntity.getMass() + 10f);
+					selectedEntity.setMass(selectedEntity.getMass() + 1f);
 					
-					if (selectedEntity.getMass() > 90f) {
+					if (selectedEntity.getMass() > 99f) {
 						
 						selectedEntity.setMass(100f);
 						popUpBox.setIncreaseMassButtonState(false);
@@ -448,22 +478,28 @@ public class CustomizedScreen {
 					else {
 						popUpBox.setDecreaseMassButtonState(true);
 					}
+					
+					// update text
+					popUpBox.updateMassText(selectedEntity.getMass());
 				}
 				
 				// decrease mass button
 				else if (popUpBox.getDecreaseMassButton().getAabb().intersects(x, y)) {
 					
 					// decrease entity's mass
-					selectedEntity.setMass(selectedEntity.getMass() - 10f);
+					selectedEntity.setMass(selectedEntity.getMass() - 1f);
 					
-					if (selectedEntity.getMass() < 20f) {
+					if (selectedEntity.getMass() < 2f) {
 						
-						selectedEntity.setMass(10f);
+						selectedEntity.setMass(1f);
 						popUpBox.setDecreaseMassButtonState(false);
 					}
 					else {
 						popUpBox.setIncreaseMassButtonState(true);
 					}
+					
+					// update text
+					popUpBox.updateMassText(selectedEntity.getMass());
 				}
 			}
 			
@@ -944,16 +980,20 @@ public class CustomizedScreen {
 	public PopUpBox createPopUpBox(Entity entity) {
 		
 		float offsetX = 0f;
+		float size = 1f;
 		
 		if (entity instanceof Rectangle) {
 			
 			offsetX = ((Rectangle) entity).getWidth()/2;
+			size = ((Rectangle) entity).getWidth();
 		}
 		else if (entity instanceof Circle) {
+			
 			offsetX = ((Circle) entity).getRadius();
+			size = ((Circle) entity).getRadius() * 2;
 		}
 		
-		float width = 200f;
+		float width = 230f;
 		float height = 200f;
 		
 		float x = entity.getPosition().x - width/2 - offsetX - 5f;
@@ -970,7 +1010,17 @@ public class CustomizedScreen {
 		int textureID = loader.loadTexture(PopUpBox.POP_UP_BOX_TEXTURE_FILE);
 		Model model = loader.loadToVAO(vertices, texCoords, indices, textureID);
 		
-		return new PopUpBox(loader, model, position, rotation, scale, width, height, z);
+		
+		// create pop-up box
+		PopUpBox p = new PopUpBox(loader, model, position, rotation, scale, width, height, z);
+		
+		// set values
+		p.updateSizeText(size);
+		p.updateMassText(entity.getMass());
+		p.updateVelocityXText(entity.getVelocity().x);
+		p.updateVelocityYText(entity.getVelocity().y);
+		
+		return p;
 	}
 	
 	/**

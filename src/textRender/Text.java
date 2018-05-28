@@ -33,6 +33,24 @@ public class Text {
 
 
 	}
+	
+	/**
+	 * Updates the position of the text.
+	 * 
+	 * @param offsetX  offset in horizontal direction 
+	 * from current horizontal position
+	 * @param offsetY  offset in vertical direction 
+	 * from current vertical position
+	 */
+	public void updatePosition(float offsetX, float offsetY) {
+		
+		for (GUIComponent guiComponent: GUIlist) {
+			
+			guiComponent.getPosition().x += offsetX;
+			guiComponent.getPosition().y += offsetY;
+		}
+	}
+	
 	private ArrayList<String> changeText()
 	{
 		int sizeS = this.str.length();
