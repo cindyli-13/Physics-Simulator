@@ -160,7 +160,7 @@ public class PopUpBox extends GUIComponent {
 		// size label
 		
 		float labelWidth = 70f;
-		float labelHeight = 25f;
+		float labelHeight = 20f;
 								
 		float labelX = position.x - 55f;
 		float labelY = position.y + 60f;

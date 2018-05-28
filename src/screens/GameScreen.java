@@ -435,12 +435,8 @@ public class GameScreen {
 					// check if this button was clicked
 					if (button.getAabb().intersects(x, y) && button.isEnabled()) {
 							
-						simulation.setPause(false);
-						simulation.pausePlaySimulation();
-								
-						// simulation button
-						simulation.loadSimulation(sidebar.getSimulationsData().get(i));
 						currentSim = i + 1;
+						resetSimulation();
 						return;
 					}
 							
@@ -464,6 +460,13 @@ public class GameScreen {
 				if (simulation.getPausePlayButton().getAabb().intersects(x, y)  && currentSim != -1) {
 							
 					simulation.pausePlaySimulation();
+					return;
+				}
+				
+				// reset button
+				if (simulation.getResetButton().getAabb().intersects(x, y)  && currentSim != -1) {
+							
+					resetSimulation();
 					return;
 				}
 						
@@ -689,6 +692,17 @@ public class GameScreen {
 	 */
 	public void setCurrentSim(int currentSim) {
 		this.currentSim = currentSim;
+	}
+	
+	/**
+	 * Resets the current simulation.
+	 */
+	public void resetSimulation() {
+		
+		simulation.setPause(false);
+		simulation.pausePlaySimulation();
+				
+		simulation.loadSimulation(sidebar.getSimulationsData().get(currentSim - 1));
 	}
 	
 }

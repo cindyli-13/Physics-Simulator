@@ -89,7 +89,7 @@ public class CustomizedScreen {
 		sidebar = new Sidebar(loader, z, files, true);
 		
 		// save button
-		float buttonX = 300;
+		float buttonX = 250;
 		float buttonY = 260;
 		
 		float buttonWidth = 60f;
@@ -394,9 +394,9 @@ public class CustomizedScreen {
 					// increase entity's horizontal velocity
 					selectedEntity.getVelocity().x += 5f;
 					
-					if (selectedEntity.getVelocity().x > 95f) {
+					if (selectedEntity.getVelocity().x > 995f) {
 						
-						selectedEntity.getVelocity().x = 100f;
+						selectedEntity.getVelocity().x = 999.9f;
 						popUpBox.setIncreaseVelocityXButtonState(false);
 					}
 					else {
@@ -413,9 +413,9 @@ public class CustomizedScreen {
 					// decrease entity's horizontal velocity
 					selectedEntity.getVelocity().x -= 5f;
 					
-					if (selectedEntity.getVelocity().x < -95) {
+					if (selectedEntity.getVelocity().x < -995) {
 						
-						selectedEntity.getVelocity().x = -100f;
+						selectedEntity.getVelocity().x = -999.9f;
 						popUpBox.setDecreaseVelocityXButtonState(false);
 					}
 					else {
@@ -432,9 +432,9 @@ public class CustomizedScreen {
 					// increase entity's vertical velocity
 					selectedEntity.getVelocity().y += 5f;
 					
-					if (selectedEntity.getVelocity().y > 95f) {
+					if (selectedEntity.getVelocity().y > 995f) {
 						
-						selectedEntity.getVelocity().y = 100f;
+						selectedEntity.getVelocity().y = 999.9f;
 						popUpBox.setIncreaseVelocityYButtonState(false);
 					}
 					else {
@@ -451,9 +451,9 @@ public class CustomizedScreen {
 					// decrease entity's vertical velocity
 					selectedEntity.getVelocity().y -= 5f;
 					
-					if (selectedEntity.getVelocity().y < -95) {
+					if (selectedEntity.getVelocity().y < -995) {
 						
-						selectedEntity.getVelocity().y = -100f;
+						selectedEntity.getVelocity().y = -999.9f;
 						popUpBox.setDecreaseVelocityYButtonState(false);
 					}
 					else {
@@ -615,12 +615,8 @@ public class CustomizedScreen {
 					// check if this button was clicked
 					if (button.getAabb().intersects(x, y) && button.isEnabled()) {
 					
-						simulation.setPause(false);
-						simulation.pausePlaySimulation();
-						
-						// simulation button
-						simulation.loadSimulation(sidebar.getSimulationsData().get(i));
 						currentSim = i + 1;
+						resetSimulation();
 						return;
 					}
 					
@@ -743,6 +739,13 @@ public class CustomizedScreen {
 				if (simulation.getPausePlayButton().getAabb().intersects(x, y) && currentSim != -1) {
 					
 					simulation.pausePlaySimulation();
+					return;
+				}
+				
+				// reset button
+				if (simulation.getResetButton().getAabb().intersects(x, y) && currentSim != -1) {
+					
+					resetSimulation();
 					return;
 				}
 				
@@ -1030,6 +1033,17 @@ public class CustomizedScreen {
 	 */
 	public void setCurrentSim(int currentSim) {
 		this.currentSim = currentSim;
+	}
+	
+	/**
+	 * Resets the current simulation.
+	 */
+	public void resetSimulation() {
+		
+		simulation.setPause(false);
+		simulation.pausePlaySimulation();
+		
+		simulation.loadSimulation(sidebar.getSimulationsData().get(currentSim - 1));
 	}
 	
 }

@@ -59,6 +59,9 @@ public class SimulationWindow {
 	private Model pauseButtonModel;
 	private Model playButtonModel;
 	
+	// button for reset simulation
+	private Button resetButton;
+	
 	// static variables
 	public static final String CRATE_TEXTURE_FILE = "./res/crate.png";
 	public static final String METAL_BOX_TEXTURE_FILE = "./res/metal_box.png";
@@ -69,6 +72,7 @@ public class SimulationWindow {
 	
 	public static final String PAUSE_BUTTON_TEXTURE_FILE = "./res/pauseButton.png";
 	public static final String PLAY_BUTTON_TEXTURE_FILE = "./res/playButton.png";
+	public static final String RESET_BUTTON_TEXTURE_FILE = "./res/resetButton.png";
 	
 	public static final float CRATE_STATIC_FRICTION = 0.2f;
 	public static final float METAL_BOX_STATIC_FRICTION = 0.3f;
@@ -217,6 +221,21 @@ public class SimulationWindow {
 				
 		pausePlayButton = new Button(playButtonModel, position, rotation, scale, buttonWidth, buttonHeight);
 		guiComponents.add(pausePlayButton);
+		
+		// **********************************************
+		
+		
+		// *************** RESET BUTTON *****************
+				
+		buttonX -= buttonWidth + 5f;
+						
+		position = new Vector3f(buttonX, buttonY, z);
+						
+		textureID = loader.loadTexture(RESET_BUTTON_TEXTURE_FILE);
+		Model model = loader.loadToVAO(vertices, texCoords, indices, textureID);
+						
+		resetButton = new Button(model, position, rotation, scale, buttonWidth, buttonHeight);
+		guiComponents.add(resetButton);
 		
 		// **********************************************
 		
@@ -487,6 +506,15 @@ public class SimulationWindow {
 	 */
 	public Button getPausePlayButton() {
 		return pausePlayButton;
+	}
+	
+	/**
+	 * Returns the reset button.
+	 * 
+	 * @return resetButton
+	 */
+	public Button getResetButton() {
+		return resetButton;
 	}
 	
 	/**
