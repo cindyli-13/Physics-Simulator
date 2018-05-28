@@ -42,6 +42,9 @@ public class FrictionLessonDisplayPanel {
 	
 	private Text timeText;
 	private Text velocityText;
+	
+	private Label timeBlankLabel;
+	private Label velocityBlankLabel;
 		
 	private GUIComponent displayPanel;
 		
@@ -58,6 +61,8 @@ public class FrictionLessonDisplayPanel {
 	
 	public static final String TIME_LABEL_TEXTURE_FILE = "./res/timeLabel.png";
 	public static final String VELOCITY_LABEL_TEXTURE_FILE = "./res/velocityLabel.png";
+	
+	public static final String BLANK_LABEL_TEXTURE_FILE = "./res/blankLabel.png";
 	
 	// constructor
 	public FrictionLessonDisplayPanel(Loader loader, float x, float y, float z) {
@@ -188,6 +193,37 @@ public class FrictionLessonDisplayPanel {
 		textY = velocityLabel.getPosition().y - labelHeight/2;
 										
 		velocityText = new Text("0", textX, textY, z + 0.01f, textWidth, textHeight, loader);
+		
+		// **************************************************
+		
+		// blank labels
+						
+		float blanklabelWidth = 37f;
+		float blanklabelHeight = 20f;
+				
+		vertices = Entity.getVertices(blanklabelWidth, blanklabelHeight, z);
+						
+		textureID = loader.loadTexture(BLANK_LABEL_TEXTURE_FILE);
+		model = loader.loadToVAO(vertices, texCoords, indices, textureID);
+				
+		// velocity blank label
+		offsetX = 10f + labelWidth + 5f + buttonWidth + 3f + blanklabelWidth/2;
+		offsetY = 10f + labelHeight/2;
+								
+		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.005f);
+								
+		velocityBlankLabel = new Label(model, position, rotation, scale, labelWidth, labelHeight);
+										
+		guiComponents.add(velocityBlankLabel);
+				
+		// time blank label
+		offsetY += 15f + labelHeight;
+		
+		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.005f);
+												
+		timeBlankLabel = new Label(model, position, rotation, scale, labelWidth, labelHeight);
+												
+		guiComponents.add(timeBlankLabel);
 	}
 	
 	/**

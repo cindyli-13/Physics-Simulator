@@ -48,6 +48,11 @@ public class MotionLessonDisplayPanel {
 	private Text positionText;
 	private Text velocityText;
 	private Text accelerationText;
+	
+	private Label timeBlankLabel;
+	private Label positionBlankLabel;
+	private Label velocityBlankLabel;
+	private Label accelerationBlankLabel;
 		
 	private GUIComponent displayPanel;
 		
@@ -66,6 +71,8 @@ public class MotionLessonDisplayPanel {
 	public static final String POSITION_LABEL_TEXTURE_FILE = "./res/positionLabel.png";
 	public static final String VELOCITY_LABEL_TEXTURE_FILE = "./res/velocityLabel.png";
 	public static final String ACCELERATION_LABEL_TEXTURE_FILE = "./res/accelerationLabel.png";
+	
+	public static final String BLANK_LABEL_TEXTURE_FILE = "./res/blankLabel.png";
 	
 	// constructor
 	public MotionLessonDisplayPanel(Loader loader, float x, float y, float z) {
@@ -256,6 +263,55 @@ public class MotionLessonDisplayPanel {
 		textY = accelerationLabel.getPosition().y - labelHeight/2;
 								
 		accelerationText = new Text("0", textX, textY, z + 0.01f, textWidth, textHeight, loader);
+		
+		// **************************************************
+		
+		// blank labels
+				
+		float blanklabelWidth = 37f;
+		float blanklabelHeight = 20f;
+		
+		vertices = Entity.getVertices(blanklabelWidth, blanklabelHeight, z);
+				
+		textureID = loader.loadTexture(BLANK_LABEL_TEXTURE_FILE);
+		model = loader.loadToVAO(vertices, texCoords, indices, textureID);
+				
+		// position blank label
+		offsetX = 10f + labelWidth + 5f + buttonWidth + 3f + blanklabelWidth/2;
+		offsetY = 10f + labelHeight/2;
+		
+		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.005f);
+				
+		positionBlankLabel = new Label(model, position, rotation, scale, labelWidth, labelHeight);
+				
+		guiComponents.add(positionBlankLabel);
+		
+		// velocity blank label
+		offsetY += 10f + labelHeight;
+						
+		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.005f);
+								
+		velocityBlankLabel = new Label(model, position, rotation, scale, labelWidth, labelHeight);
+								
+		guiComponents.add(velocityBlankLabel);
+		
+		// acceleration blank label
+		offsetY += 10f + labelHeight;
+								
+		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.005f);
+										
+		accelerationBlankLabel = new Label(model, position, rotation, scale, labelWidth, labelHeight);
+										
+		guiComponents.add(accelerationBlankLabel);
+				
+		// time blank label
+		offsetY += 15f + labelHeight;
+								
+		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.005f);
+										
+		timeBlankLabel = new Label(model, position, rotation, scale, labelWidth, labelHeight);
+										
+		guiComponents.add(timeBlankLabel);
 	}
 	
 	/**

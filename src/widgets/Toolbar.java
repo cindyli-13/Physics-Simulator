@@ -28,14 +28,12 @@ public class Toolbar {
 	private Button infoButton;			// iButton
 	private Button rectangleButton;		// rButton
 	private Button circleButton;		// cButton
-	private Button rampButton;			// raButton
 
 	// static variables
 	public static String MENU_BUTTON_TEXTURE_FILE = "./res/MenuB.png";
 	public static String INFO_BUTTON_TEXTURE_FILE = "./res/InfoB.png";
 	public static String RECT_BUTTON_TEXTURE_FILE = "./res/Rect.png";
 	public static String CIRC_BUTTON_TEXTURE_FILE = "./res/Circ.png";
-	public static String RAMP_BUTTON_TEXTURE_FILE = "./res/Ramp.png";
 
 	// constructor
 	public  Toolbar(Loader loader, float z) {
@@ -73,9 +71,6 @@ public class Toolbar {
 		float cButtonX = rButtonX + buttonWidth + 2f;
 		Vector3f cButtonPos = new Vector3f(cButtonX, buttonY, z - 100f);
 		
-		float raButtonX = cButtonX + buttonWidth + 2f;
-		Vector3f raButtonPos = new Vector3f(raButtonX, buttonY, z - 100f);
-		
 		// **************************************************
 		
 		// menu button
@@ -102,19 +97,12 @@ public class Toolbar {
 		
 		circleButton = new Button(cButtonModel, cButtonPos, rotation, scale, buttonWidth, buttonHeight);
 		
-		// ramp button
-		textureID = loader.loadTexture(RAMP_BUTTON_TEXTURE_FILE);
-		Model raButtonModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
-		
-		rampButton = new Button(raButtonModel, raButtonPos, rotation, scale, buttonWidth, buttonHeight);
-		
 		// initialize GUI components array list
 		guiComponents = new ArrayList<GUIComponent>();
 		guiComponents.add(menuButton);
 		guiComponents.add(infoButton);
 		guiComponents.add(rectangleButton);
 		guiComponents.add(circleButton);
-		guiComponents.add(rampButton);
 		
 		// initialize button array list
 		buttons = new ArrayList<Button>();
@@ -122,7 +110,6 @@ public class Toolbar {
 		buttons.add(infoButton);
 		buttons.add(rectangleButton);
 		buttons.add(circleButton);
-		buttons.add(rampButton);
 	}
 	
 	/**
@@ -178,15 +165,6 @@ public class Toolbar {
 	 */
 	public Button getCircleButton() {
 		return circleButton;
-	}
-
-	/**
-	 * Returns the ramp button.
-	 * 
-	 * @return rampButton
-	 */
-	public Button getRampButton() {
-		return rampButton;
 	}
 	
 }

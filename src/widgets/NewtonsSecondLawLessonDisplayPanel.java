@@ -47,6 +47,11 @@ public class NewtonsSecondLawLessonDisplayPanel {
 	private Text massText;
 	private Text netForceText;
 	private Text accelerationText;
+	
+	private Label timeBlankLabel;
+	private Label massBlankLabel;
+	private Label netForceBlankLabel;
+	private Label accelerationBlankLabel;
 		
 	private GUIComponent displayPanel;
 		
@@ -65,6 +70,8 @@ public class NewtonsSecondLawLessonDisplayPanel {
 	public static final String MASS_LABEL_TEXTURE_FILE = "./res/massLabel.png";
 	public static final String NET_FORCE_LABEL_TEXTURE_FILE = "./res/netForceLabel.png";
 	public static final String ACCELERATION_LABEL_TEXTURE_FILE = "./res/accelerationLabel.png";
+	
+	public static final String BLANK_LABEL_TEXTURE_FILE = "./res/blankLabel.png";
 	
 	// constructor
 	public NewtonsSecondLawLessonDisplayPanel(Loader loader, float x, float y, float z) {
@@ -235,6 +242,55 @@ public class NewtonsSecondLawLessonDisplayPanel {
 		textY = accelerationLabel.getPosition().y - labelHeight/2;
 										
 		accelerationText = new Text("0", textX, textY, z + 0.01f, textWidth, textHeight, loader);
+		
+		// **************************************************
+		
+		// blank labels
+						
+		float blanklabelWidth = 37f;
+		float blanklabelHeight = 20f;
+				
+		vertices = Entity.getVertices(blanklabelWidth, blanklabelHeight, z);
+						
+		textureID = loader.loadTexture(BLANK_LABEL_TEXTURE_FILE);
+		model = loader.loadToVAO(vertices, texCoords, indices, textureID);
+						
+		// mass blank label
+		offsetX = 10f + labelWidth + 5f + buttonWidth + 3f + blanklabelWidth/2;
+		offsetY = 10f + labelHeight/2;
+				
+		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.005f);
+						
+		massBlankLabel = new Label(model, position, rotation, scale, labelWidth, labelHeight);
+						
+		guiComponents.add(massBlankLabel);
+				
+		// net force blank label
+		offsetY += 10f + labelHeight;
+								
+		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.005f);
+										
+		netForceBlankLabel = new Label(model, position, rotation, scale, labelWidth, labelHeight);
+										
+		guiComponents.add(netForceBlankLabel);
+				
+		// acceleration blank label
+		offsetY += 10f + labelHeight;
+										
+		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.005f);
+												
+		accelerationBlankLabel = new Label(model, position, rotation, scale, labelWidth, labelHeight);
+												
+		guiComponents.add(accelerationBlankLabel);
+						
+		// time blank label
+		offsetY += 15f + labelHeight;
+										
+		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.005f);
+									
+		timeBlankLabel = new Label(model, position, rotation, scale, labelWidth, labelHeight);
+												
+		guiComponents.add(timeBlankLabel);
 	}
 	
 	/**
