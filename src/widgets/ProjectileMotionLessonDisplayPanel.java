@@ -144,7 +144,7 @@ public class ProjectileMotionLessonDisplayPanel {
 		textureID = loader.loadTexture(POSITION_Y_LABEL_TEXTURE_FILE);
 		model = loader.loadToVAO(vertices, texCoords, indices, textureID);
 		
-		position = new Vector3f(leftOfDisplay + offsetX + labelWidth + 110f, topOfDisplay - offsetY, z + 0.01f);
+		position = new Vector3f(leftOfDisplay + offsetX + labelWidth + 130f, topOfDisplay - offsetY, z + 0.01f);
 		
 		positionYLabel = new Label(model, position, rotation, scale, labelWidth, labelHeight);
 		
@@ -167,7 +167,7 @@ public class ProjectileMotionLessonDisplayPanel {
 		textureID = loader.loadTexture(VELOCITY_Y_LABEL_TEXTURE_FILE);
 		model = loader.loadToVAO(vertices, texCoords, indices, textureID);
 		
-		position = new Vector3f(leftOfDisplay + offsetX + labelWidth + 110f, topOfDisplay - offsetY, z + 0.01f);
+		position = new Vector3f(leftOfDisplay + offsetX + labelWidth + 130f, topOfDisplay - offsetY, z + 0.01f);
 		
 		velocityYLabel = new Label(model, position, rotation, scale, labelWidth, labelHeight);
 		
@@ -190,7 +190,7 @@ public class ProjectileMotionLessonDisplayPanel {
 		textureID = loader.loadTexture(ACCELERATION_Y_LABEL_TEXTURE_FILE);
 		model = loader.loadToVAO(vertices, texCoords, indices, textureID);
 		
-		position = new Vector3f(leftOfDisplay + offsetX + labelWidth + 110f, topOfDisplay - offsetY, z + 0.01f);
+		position = new Vector3f(leftOfDisplay + offsetX + labelWidth + 130f, topOfDisplay - offsetY, z + 0.01f);
 		
 		accelerationYLabel = new Label(model, position, rotation, scale, labelWidth, labelHeight);
 		
@@ -243,7 +243,7 @@ public class ProjectileMotionLessonDisplayPanel {
 		guiComponents.add(decreaseVelocityXButton);
 		
 		
-		offsetX += 40f + buttonWidth + 3f;
+		offsetX += 60f + buttonWidth + 3f;
 		
 		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.01f);
 		
@@ -253,7 +253,7 @@ public class ProjectileMotionLessonDisplayPanel {
 		
 		
 		// for velocity y
-		offsetX = 10f + labelWidth/2 + 110f + labelWidth + labelWidth/2 + buttonWidth/2 + 5f;
+		offsetX = 10f + labelWidth/2 + 130f + labelWidth + labelWidth/2 + buttonWidth/2 + 5f;
 		
 		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.01f);
 		
@@ -263,7 +263,7 @@ public class ProjectileMotionLessonDisplayPanel {
 		
 		
 		
-		offsetX += 40f + buttonWidth + 3f;
+		offsetX += 60f + buttonWidth + 3f;
 		
 		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.01f);
 		
@@ -330,7 +330,7 @@ public class ProjectileMotionLessonDisplayPanel {
 		
 		// blank labels
 			
-		float blanklabelWidth = 37f;
+		float blanklabelWidth = 57f;
 		float blanklabelHeight = 20f;
 				
 		vertices = Entity.getVertices(blanklabelWidth, blanklabelHeight, z);
@@ -376,7 +376,7 @@ public class ProjectileMotionLessonDisplayPanel {
 		guiComponents.add(timeBlankLabel);
 		
 		// position y blank label
-		offsetX = 10f + 2 * labelWidth + 110f + 5f + buttonWidth + 3f + blanklabelWidth/2;
+		offsetX = 10f + 2 * labelWidth + 130f + 5f + buttonWidth + 3f + blanklabelWidth/2;
 		offsetY = 10f + labelHeight/2;
 						
 		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.005f);
@@ -542,10 +542,10 @@ public class ProjectileMotionLessonDisplayPanel {
 	 * 
 	 * @param time
 	 */
-	public void updateTimeText(int time) {
+	public void updateTimeText(float time) {
 		
-		if (time <= 999)
-			timeText.changeStr(intToText(time));
+		if (time <= 999.99)
+			timeText.changeStr(floatToText(time));
 	}
 	
 	/**
@@ -553,10 +553,10 @@ public class ProjectileMotionLessonDisplayPanel {
 	 * 
 	 * @param positionX
 	 */
-	public void updatePositionXText(int positionX) {
+	public void updatePositionXText(float positionX) {
 		
-		if (positionX <= 999 && positionX >= -999)		
-			positionXText.changeStr(intToText(positionX));
+		if (positionX <= 999.9 && positionX >= -999.9)		
+			positionXText.changeStr(floatToText(positionX));
 	}
 	
 	/**
@@ -564,10 +564,10 @@ public class ProjectileMotionLessonDisplayPanel {
 	 * 
 	 * @param velocityX
 	 */
-	public void updateVelocityXText(int velocityX) {
+	public void updateVelocityXText(float velocityX) {
 		
-		if (velocityX <= 999 && velocityX >= -999) 			
-			velocityXText.changeStr(intToText(velocityX));
+		if (velocityX <= 999.9 && velocityX >= -999.9) 			
+			velocityXText.changeStr(floatToText(velocityX));
 	}
 	
 	/**
@@ -575,10 +575,10 @@ public class ProjectileMotionLessonDisplayPanel {
 	 * 
 	 * @param accelerationX
 	 */
-	public void updateAccelerationXText(int accelerationX) {
+	public void updateAccelerationXText(float accelerationX) {
 		
-		if (accelerationX <= 999 && accelerationX >= -999)
-			accelerationXText.changeStr(intToText(accelerationX));
+		if (accelerationX <= 999.9 && accelerationX >= -999.9)
+			accelerationXText.changeStr(floatToText(accelerationX));
 	}
 	
 	/**
@@ -586,10 +586,10 @@ public class ProjectileMotionLessonDisplayPanel {
 	 * 
 	 * @param positionY
 	 */
-	public void updatePositionYText(int positionY) {
+	public void updatePositionYText(float positionY) {
 		
-		if (positionY <= 999 && positionY >= -999)		
-			positionYText.changeStr(intToText(positionY));
+		if (positionY <= 999.9 && positionY >= -999.9)		
+			positionYText.changeStr(floatToText(positionY));
 	}
 	
 	/**
@@ -597,10 +597,10 @@ public class ProjectileMotionLessonDisplayPanel {
 	 * 
 	 * @param velocityY
 	 */
-	public void updateVelocityYText(int velocityY) {
+	public void updateVelocityYText(float velocityY) {
 		
-		if (velocityY <= 999 && velocityY >= -999) 			
-			velocityYText.changeStr(intToText(velocityY));
+		if (velocityY <= 999.9 && velocityY >= -999.9) 			
+			velocityYText.changeStr(floatToText(velocityY));
 	}
 	
 	/**
@@ -608,33 +608,38 @@ public class ProjectileMotionLessonDisplayPanel {
 	 * 
 	 * @param accelerationY
 	 */
-	public void updateAccelerationYText(int accelerationY) {
+	public void updateAccelerationYText(float accelerationY) {
 		
-		if (accelerationY <= 999 && accelerationY >= -999)
-			accelerationYText.changeStr(intToText(accelerationY));
+		if (accelerationY <= 999.9 && accelerationY >= -999.9)
+			accelerationYText.changeStr(floatToText(accelerationY));
 	}
 	
 	/**
-	 * Converts an integer to text (a string).
-	 * @param n
+	 * Converts a float to text (a string).
+	 * @param f
 	 */
-	private String intToText(int n) {
+	private String floatToText(float f) {
 		
 		String s = "";
-		String temp = Integer.toString(n);
+		
+		// round float to 1 decimal places
+		f = Math.round(f * 10.0f) / 10.0f;
+		
+		String temp = Float.toString(f);
 				
-		if (n < 0) {
+		if (f < 0f) {
 			s += "-";
 			temp = temp.substring(1);
 		}
 		else
 			s += " ";
 				
-		for (int i = 0; i < 3 - temp.length(); i ++)
+		for (int i = 0; i < 6 - temp.length(); i ++)
 			s += " ";
 				
 		s += temp;
 		
 		return s;
 	}
+	
 }

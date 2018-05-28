@@ -295,9 +295,9 @@ public class LessonScreen {
 						velocityX = entity.getVelocity().x;
 						
 						// update text
-						motionLessonDisplayPanel.updateTimeText((int) time);
-						motionLessonDisplayPanel.updatePositionText((int) positionX);
-						motionLessonDisplayPanel.updateVelocityText((int) velocityX);
+						motionLessonDisplayPanel.updateTimeText(time);
+						motionLessonDisplayPanel.updatePositionText(positionX);
+						motionLessonDisplayPanel.updateVelocityText(velocityX);
 						
 						break;
 						
@@ -334,11 +334,11 @@ public class LessonScreen {
 						velocityY = entity.getVelocity().y;
 						
 						// update text
-						projectileMotionLessonDisplayPanel.updateTimeText((int) time);
-						projectileMotionLessonDisplayPanel.updatePositionXText((int) positionX);
-						projectileMotionLessonDisplayPanel.updateVelocityXText((int) velocityX);
-						projectileMotionLessonDisplayPanel.updatePositionYText((int) positionY);
-						projectileMotionLessonDisplayPanel.updateVelocityYText((int) velocityY);
+						projectileMotionLessonDisplayPanel.updateTimeText(time);
+						projectileMotionLessonDisplayPanel.updatePositionXText(positionX);
+						projectileMotionLessonDisplayPanel.updateVelocityXText(velocityX);
+						projectileMotionLessonDisplayPanel.updatePositionYText(positionY);
+						projectileMotionLessonDisplayPanel.updateVelocityYText(velocityY);
 						
 						break;
 						
@@ -358,7 +358,7 @@ public class LessonScreen {
 						time += simulation.getDt();
 						
 						// update text
-						newtonsSecondLawLessonDisplayPanel.updateTimeText((int) time);
+						newtonsSecondLawLessonDisplayPanel.updateTimeText(time);
 						
 						break;
 					
@@ -378,7 +378,7 @@ public class LessonScreen {
 						time += simulation.getDt();
 						
 						// update text
-						forceOfGravityLessonDisplayPanel.updateTimeText((int) time);
+						forceOfGravityLessonDisplayPanel.updateTimeText(time);
 						
 						break;
 						
@@ -422,8 +422,8 @@ public class LessonScreen {
 						velocityX = entity.getVelocity().x;
 						
 						// update text
-						frictionLessonDisplayPanel.updateTimeText((int) time);
-						frictionLessonDisplayPanel.updateVelocityText((int) velocityX);
+						frictionLessonDisplayPanel.updateTimeText(time);
+						frictionLessonDisplayPanel.updateVelocityText(velocityX);
 						
 						break;
 				}
@@ -533,10 +533,10 @@ public class LessonScreen {
 							velocityX = entity.getVelocity().x;
 							accelerationX = entity.getAcceleration().x;
 							
-							motionLessonDisplayPanel.updateTimeText((int) time);
-							motionLessonDisplayPanel.updatePositionText((int) positionX);
-							motionLessonDisplayPanel.updateVelocityText((int) velocityX);
-							motionLessonDisplayPanel.updateAccelerationText((int) accelerationX);
+							motionLessonDisplayPanel.updateTimeText(time);
+							motionLessonDisplayPanel.updatePositionText(positionX);
+							motionLessonDisplayPanel.updateVelocityText(velocityX);
+							motionLessonDisplayPanel.updateAccelerationText(accelerationX);
 							break;
 							
 						// projectile motion lesson
@@ -553,13 +553,13 @@ public class LessonScreen {
 							velocityY = entity.getVelocity().y;
 							accelerationY = entity.getAcceleration().y;
 							
-							projectileMotionLessonDisplayPanel.updateTimeText((int) time);
-							projectileMotionLessonDisplayPanel.updatePositionXText((int) positionX);
-							projectileMotionLessonDisplayPanel.updateVelocityXText((int) velocityX);
-							projectileMotionLessonDisplayPanel.updateAccelerationXText((int) accelerationX);
-							projectileMotionLessonDisplayPanel.updatePositionYText((int) positionY);
-							projectileMotionLessonDisplayPanel.updateVelocityYText((int) velocityY);
-							projectileMotionLessonDisplayPanel.updateAccelerationYText((int) accelerationY);
+							projectileMotionLessonDisplayPanel.updateTimeText(time);
+							projectileMotionLessonDisplayPanel.updatePositionXText(positionX);
+							projectileMotionLessonDisplayPanel.updateVelocityXText(velocityX);
+							projectileMotionLessonDisplayPanel.updateAccelerationXText(accelerationX);
+							projectileMotionLessonDisplayPanel.updatePositionYText(positionY);
+							projectileMotionLessonDisplayPanel.updateVelocityYText(velocityY);
+							projectileMotionLessonDisplayPanel.updateAccelerationYText(accelerationY);
 							break;
 							
 						// Newton's Second Law lesson
@@ -581,10 +581,10 @@ public class LessonScreen {
 							mass = entity.getMass();
 							accelerationX = entity.getAcceleration().x;
 							
-							newtonsSecondLawLessonDisplayPanel.updateTimeText((int) time);
-							newtonsSecondLawLessonDisplayPanel.updateMassText((int) mass);
-							newtonsSecondLawLessonDisplayPanel.updateNetForceText((int) netForce);
-							newtonsSecondLawLessonDisplayPanel.updateAccelerationText((int) accelerationX);
+							newtonsSecondLawLessonDisplayPanel.updateTimeText(time);
+							newtonsSecondLawLessonDisplayPanel.updateMassText(mass);
+							newtonsSecondLawLessonDisplayPanel.updateNetForceText(netForce);
+							newtonsSecondLawLessonDisplayPanel.updateAccelerationText(accelerationX);
 							break;
 						
 						// force of gravity lesson
@@ -608,10 +608,10 @@ public class LessonScreen {
 							mass = entity.getMass();
 							accelerationY = entity.getAcceleration().y;
 							
-							forceOfGravityLessonDisplayPanel.updateTimeText((int) time);
-							forceOfGravityLessonDisplayPanel.updateMassText((int) mass);
-							forceOfGravityLessonDisplayPanel.updateForceOfGravityText((int) forceOfGravity);
-							forceOfGravityLessonDisplayPanel.updateAccelerationText((int) accelerationY);
+							forceOfGravityLessonDisplayPanel.updateTimeText(time);
+							forceOfGravityLessonDisplayPanel.updateMassText(mass);
+							forceOfGravityLessonDisplayPanel.updateForceOfGravityText(forceOfGravity);
+							forceOfGravityLessonDisplayPanel.updateAccelerationText(accelerationY);
 							break;
 						
 						// friction lesson
@@ -645,8 +645,8 @@ public class LessonScreen {
 							time = 0f;
 							velocityX = entity.getVelocity().x;
 							
-							frictionLessonDisplayPanel.updateTimeText((int) time);
-							frictionLessonDisplayPanel.updateVelocityText((int) velocityX);
+							frictionLessonDisplayPanel.updateTimeText(time);
+							frictionLessonDisplayPanel.updateVelocityText(velocityX);
 							break;
 					}
 						
@@ -722,7 +722,7 @@ public class LessonScreen {
 						}
 						
 						velocityX = entity.getVelocity().x;
-						motionLessonDisplayPanel.updateVelocityText((int) velocityX);
+						motionLessonDisplayPanel.updateVelocityText(velocityX);
 					}
 						
 					// decrease velocity button
@@ -740,7 +740,7 @@ public class LessonScreen {
 						}
 						
 						velocityX = entity.getVelocity().x;
-						motionLessonDisplayPanel.updateVelocityText((int) velocityX);
+						motionLessonDisplayPanel.updateVelocityText(velocityX);
 					}
 						
 					// increase acceleration button
@@ -758,7 +758,7 @@ public class LessonScreen {
 						}
 						
 						accelerationX = entity.getAcceleration().x;
-						motionLessonDisplayPanel.updateAccelerationText((int) accelerationX);
+						motionLessonDisplayPanel.updateAccelerationText(accelerationX);
 					}
 						
 					// decrease acceleration button
@@ -776,7 +776,7 @@ public class LessonScreen {
 						}
 						
 						accelerationX = entity.getAcceleration().x;
-						motionLessonDisplayPanel.updateAccelerationText((int) accelerationX);
+						motionLessonDisplayPanel.updateAccelerationText(accelerationX);
 					}
 				}
 				
@@ -798,7 +798,7 @@ public class LessonScreen {
 						}
 						
 						velocityX = entity.getVelocity().x;
-						projectileMotionLessonDisplayPanel.updateVelocityXText((int) velocityX);
+						projectileMotionLessonDisplayPanel.updateVelocityXText(velocityX);
 					}
 						
 					// decrease velocity x button
@@ -816,7 +816,7 @@ public class LessonScreen {
 						}
 						
 						velocityX = entity.getVelocity().x;
-						projectileMotionLessonDisplayPanel.updateVelocityXText((int) velocityX);
+						projectileMotionLessonDisplayPanel.updateVelocityXText(velocityX);
 					}
 						
 					// increase velocity y button
@@ -834,7 +834,7 @@ public class LessonScreen {
 						}
 						
 						velocityY = entity.getVelocity().y;
-						projectileMotionLessonDisplayPanel.updateVelocityYText((int) velocityY);
+						projectileMotionLessonDisplayPanel.updateVelocityYText(velocityY);
 					}
 						
 					// decrease velocity y button
@@ -852,7 +852,7 @@ public class LessonScreen {
 						}
 						
 						velocityY = entity.getVelocity().y;
-						projectileMotionLessonDisplayPanel.updateVelocityYText((int) velocityY);
+						projectileMotionLessonDisplayPanel.updateVelocityYText(velocityY);
 					}
 				}
 				
@@ -878,9 +878,9 @@ public class LessonScreen {
 						simulation.getEntities().get(0).getAcceleration().x = accelerationX;
 						
 						mass = entity.getMass();
-						newtonsSecondLawLessonDisplayPanel.updateMassText((int) mass);
+						newtonsSecondLawLessonDisplayPanel.updateMassText(mass);
 						
-						newtonsSecondLawLessonDisplayPanel.updateAccelerationText((int) accelerationX);
+						newtonsSecondLawLessonDisplayPanel.updateAccelerationText(accelerationX);
 					}
 						
 					// decrease mass button
@@ -902,9 +902,9 @@ public class LessonScreen {
 						simulation.getEntities().get(0).getAcceleration().x = accelerationX;
 						
 						mass = entity.getMass();
-						newtonsSecondLawLessonDisplayPanel.updateMassText((int) mass);
+						newtonsSecondLawLessonDisplayPanel.updateMassText(mass);
 						
-						newtonsSecondLawLessonDisplayPanel.updateAccelerationText((int) accelerationX);
+						newtonsSecondLawLessonDisplayPanel.updateAccelerationText(accelerationX);
 					}
 				}
 					
@@ -927,10 +927,10 @@ public class LessonScreen {
 						}
 						
 						mass = entity.getMass();
-						forceOfGravityLessonDisplayPanel.updateMassText((int) mass);
+						forceOfGravityLessonDisplayPanel.updateMassText(mass);
 						
 						forceOfGravity = mass * entity.getAcceleration().y;
-						forceOfGravityLessonDisplayPanel.updateForceOfGravityText((int) forceOfGravity);
+						forceOfGravityLessonDisplayPanel.updateForceOfGravityText(forceOfGravity);
 					}
 							
 					// decrease mass button
@@ -949,10 +949,10 @@ public class LessonScreen {
 						}	
 						
 						mass = entity.getMass();
-						forceOfGravityLessonDisplayPanel.updateMassText((int) mass);
+						forceOfGravityLessonDisplayPanel.updateMassText(mass);
 						
 						forceOfGravity = mass * entity.getAcceleration().y;
-						forceOfGravityLessonDisplayPanel.updateForceOfGravityText((int) forceOfGravity);
+						forceOfGravityLessonDisplayPanel.updateForceOfGravityText(forceOfGravity);
 					}
 					
 					// update force of gravity arrow
@@ -985,7 +985,7 @@ public class LessonScreen {
 						}
 						
 						velocityX = entity.getVelocity().x;
-						frictionLessonDisplayPanel.updateVelocityText((int) velocityX);
+						frictionLessonDisplayPanel.updateVelocityText(velocityX);
 					}
 						
 					// decrease velocity button
@@ -1003,7 +1003,7 @@ public class LessonScreen {
 						}
 						
 						velocityX = entity.getVelocity().x;
-						frictionLessonDisplayPanel.updateVelocityText((int) velocityX);
+						frictionLessonDisplayPanel.updateVelocityText(velocityX);
 					}
 						
 				}

@@ -201,7 +201,7 @@ public class NewtonsSecondLawLessonDisplayPanel {
 		guiComponents.add(decreaseMassButton);
 		
 		
-		offsetX += 40f + buttonWidth + 3f;
+		offsetX += 60f + buttonWidth + 3f;
 		
 		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.01f);
 		
@@ -247,7 +247,7 @@ public class NewtonsSecondLawLessonDisplayPanel {
 		
 		// blank labels
 						
-		float blanklabelWidth = 37f;
+		float blanklabelWidth = 57f;
 		float blanklabelHeight = 20f;
 				
 		vertices = Entity.getVertices(blanklabelWidth, blanklabelHeight, z);
@@ -370,10 +370,10 @@ public class NewtonsSecondLawLessonDisplayPanel {
 	 * 
 	 * @param time
 	 */
-	public void updateTimeText(int time) {
+	public void updateTimeText(float time) {
 		
-		if (time <= 999)
-			timeText.changeStr(intToText(time));
+		if (time <= 999.9)
+			timeText.changeStr(floatToText(time));
 	}
 	
 	/**
@@ -381,10 +381,10 @@ public class NewtonsSecondLawLessonDisplayPanel {
 	 * 
 	 * @param mass
 	 */
-	public void updateMassText(int mass) {
+	public void updateMassText(float mass) {
 		
-		if (mass <= 999 && mass >= -999)		
-			massText.changeStr(intToText(mass));
+		if (mass <= 999.9 && mass >= -999.9)		
+			massText.changeStr(floatToText(mass));
 	}
 	
 	/**
@@ -392,10 +392,10 @@ public class NewtonsSecondLawLessonDisplayPanel {
 	 * 
 	 * @param netForce
 	 */
-	public void updateNetForceText(int netForce) {
+	public void updateNetForceText(float netForce) {
 		
-		if (netForce <= 999 && netForce >= -999) 			
-			netForceText.changeStr(intToText(netForce));
+		if (netForce <= 999.9 && netForce >= -999.9) 			
+			netForceText.changeStr(floatToText(netForce));
 	}
 	
 	/**
@@ -403,29 +403,33 @@ public class NewtonsSecondLawLessonDisplayPanel {
 	 * 
 	 * @param acceleration
 	 */
-	public void updateAccelerationText(int acceleration) {
+	public void updateAccelerationText(float acceleration) {
 		
-		if (acceleration <= 999 && acceleration >= -999)
-			accelerationText.changeStr(intToText(acceleration));
+		if (acceleration <= 999.9 && acceleration >= -999.9)
+			accelerationText.changeStr(floatToText(acceleration));
 	}
 	
 	/**
-	 * Converts an integer to text (a string).
-	 * @param n
+	 * Converts a float to text (a string).
+	 * @param f
 	 */
-	private String intToText(int n) {
+	private String floatToText(float f) {
 		
 		String s = "";
-		String temp = Integer.toString(n);
+		
+		// round float to 1 decimal places
+		f = Math.round(f * 10.0f) / 10.0f;
+		
+		String temp = Float.toString(f);
 				
-		if (n < 0) {
+		if (f < 0f) {
 			s += "-";
 			temp = temp.substring(1);
 		}
 		else
 			s += " ";
 				
-		for (int i = 0; i < 3 - temp.length(); i ++)
+		for (int i = 0; i < 6 - temp.length(); i ++)
 			s += " ";
 				
 		s += temp;

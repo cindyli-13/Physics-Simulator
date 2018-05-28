@@ -44,6 +44,10 @@ public class Text {
 			{
 				New.add("space");
 			}
+			else if ((Character.toString(this.str.charAt(i))).equals("."))
+			{
+				New.add("period");
+			}
 			else {
 			New.add(Character.toString(this.str.charAt(i)));
 			}
@@ -65,6 +69,10 @@ public class Text {
 			if((Character.toString(str.charAt(i))).equals(" "))
 			{
 				New.add("space");
+			}
+			else if ((Character.toString(str.charAt(i))).equals("."))
+			{
+				New.add("period");
 			}
 			else {
 			New.add(Character.toString(str.charAt(i)));

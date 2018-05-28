@@ -202,7 +202,7 @@ public class MotionLessonDisplayPanel {
 		guiComponents.add(decreaseVelocityButton);
 		
 		
-		offsetX += 40f + buttonWidth + 3f;
+		offsetX += 60f + buttonWidth + 3f;
 		
 		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.01f);
 		
@@ -222,7 +222,7 @@ public class MotionLessonDisplayPanel {
 		guiComponents.add(decreaseAccelerationButton);
 				
 				
-		offsetX += 40f + buttonWidth + 3f;
+		offsetX += 60f + buttonWidth + 3f;
 				
 		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.01f);
 				
@@ -268,7 +268,7 @@ public class MotionLessonDisplayPanel {
 		
 		// blank labels
 				
-		float blanklabelWidth = 37f;
+		float blanklabelWidth = 57f;
 		float blanklabelHeight = 20f;
 		
 		vertices = Entity.getVertices(blanklabelWidth, blanklabelHeight, z);
@@ -449,10 +449,10 @@ public class MotionLessonDisplayPanel {
 	 * 
 	 * @param time
 	 */
-	public void updateTimeText(int time) {
+	public void updateTimeText(float time) {
 		
-		if (time <= 999)
-			timeText.changeStr(intToText(time));
+		if (time <= 999.9)
+			timeText.changeStr(floatToText(time));
 	}
 	
 	/**
@@ -460,10 +460,10 @@ public class MotionLessonDisplayPanel {
 	 * 
 	 * @param position
 	 */
-	public void updatePositionText(int position) {
+	public void updatePositionText(float position) {
 		
-		if (position <= 999 && position >= -999)		
-			positionText.changeStr(intToText(position));
+		if (position <= 999.9 && position >= -999.9)		
+			positionText.changeStr(floatToText(position));
 	}
 	
 	/**
@@ -471,10 +471,10 @@ public class MotionLessonDisplayPanel {
 	 * 
 	 * @param velocity
 	 */
-	public void updateVelocityText(int velocity) {
+	public void updateVelocityText(float velocity) {
 		
-		if (velocity <= 999 && velocity >= -999) 			
-			velocityText.changeStr(intToText(velocity));
+		if (velocity <= 999.9 && velocity >= -999.9) 			
+			velocityText.changeStr(floatToText(velocity));
 	}
 	
 	/**
@@ -482,33 +482,38 @@ public class MotionLessonDisplayPanel {
 	 * 
 	 * @param acceleration
 	 */
-	public void updateAccelerationText(int acceleration) {
+	public void updateAccelerationText(float acceleration) {
 		
-		if (acceleration <= 999 && acceleration >= -999)
-			accelerationText.changeStr(intToText(acceleration));
+		if (acceleration <= 999.9 && acceleration >= -999.9)
+			accelerationText.changeStr(floatToText(acceleration));
 	}
 	
 	/**
-	 * Converts an integer to text (a string).
-	 * @param n
+	 * Converts a float to text (a string).
+	 * @param f
 	 */
-	private String intToText(int n) {
+	private String floatToText(float f) {
 		
 		String s = "";
-		String temp = Integer.toString(n);
+		
+		// round float to 1 decimal places
+		f = Math.round(f * 10.0f) / 10.0f;
+		
+		String temp = Float.toString(f);
 				
-		if (n < 0) {
+		if (f < 0f) {
 			s += "-";
 			temp = temp.substring(1);
 		}
 		else
 			s += " ";
 				
-		for (int i = 0; i < 3 - temp.length(); i ++)
+		for (int i = 0; i < 6 - temp.length(); i ++)
 			s += " ";
 				
 		s += temp;
 		
 		return s;
 	}
+	
 }

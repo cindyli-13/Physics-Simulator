@@ -425,7 +425,7 @@ public class Physics {
 		// store inverse masses
 		float invMassA = 1f / a.getMass();
 		float invMassB = 1f / b.getMass();
-			
+		
 		// find velocity of B relative to A
 		Vector3f relativeVel = new Vector3f();
 		b.getVelocity().sub(a.getVelocity(), relativeVel);
