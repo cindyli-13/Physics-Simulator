@@ -162,10 +162,10 @@ public class CustomizedScreen {
 			if (name.length() <= 9)
 				button.getText().changeStr(name);
 			else
-				button.getText().changeStr(name.substring(0, 12));
+				button.getText().changeStr(name.substring(0, 8));
 			
 			button.getText().updatePosition(
-					-(10f/2 +0.3f*10f*button.getText().getGUIlist().size() + 20f)/2,
+					-(20f/2 +0.5f*20f*button.getText().getGUIlist().size() + 8f)/2,
 					0);
 		}
 		
@@ -591,86 +591,94 @@ public class CustomizedScreen {
 					simulation.setPause(false);
 					simulation.pausePlaySimulation();
 					
+					// ***** uses Java Swing to get user input *****
+					
 					// get user input
-					String input = getUserInput().trim();
-					String fileName = "./data/customized_" + input + ".txt";
+					String input = JOptionPane.showInputDialog(null, "Enter a name for your simulation:");;
 					
-					int validName = 0;
-					
-					// check for invalid name
-					if (input.replace(" ", "").equals(""))
-						validName = 1;
-					
-					else {
+					if (input != null) {
 						
-						// check if simulation already exists
-						for (String file: sidebar.getSimulationsData()) {
+						input.trim();
+						
+						String fileName = "./data/customized_" + input + ".txt";
+						
+						int validName = 0;
+						
+						// check for invalid name
+						if (input.replace(" ", "").equals(""))
+							validName = 1;
+						
+						else {
 							
-							if (file.equals(fileName)) {
+							// check if simulation already exists
+							for (String file: sidebar.getSimulationsData()) {
 								
-								validName = 1;
-								break;
+								if (file.equals(fileName)) {
+									
+									validName = 1;
+									break;
+								}
 							}
 						}
-					}
-					
-					// if name is valid
-					if (validName == 0) {
 						
-						// create simulation button
-						sidebar.createSimulationButton(fileName);
-						
-						// change button text
-						SimulationButton newButton = sidebar.getButtons().get(sidebar.getButtons().size() - 1);
-						String name = newButton.getFileName().substring(18, newButton.getFileName().length() - 4);
-						
-						if (name.length() <= 9)
-							newButton.getText().changeStr(name);
-						else
-							newButton.getText().changeStr(name.substring(0, 12));
-						
-						newButton.getText().updatePosition(
-								-(10f/2 +0.3f*10f*newButton.getText().getGUIlist().size() + 20f)/2,
-								0);
-						
-						// update file
-						IO.createOutputFile(fileName);
-						IO.println("0");
-						IO.closeOutputFile();
-						
-						// sort simulations
-						sidebar.sortSimulations(fileName);
-						
-						// add to customized data file
-						IO.createOutputFile("./data/customized_data_files.txt");
-						IO.println(Integer.toString(sidebar.getSimulationsData().size()));
-						
-						for (String file: sidebar.getSimulationsData()) {
+						// if name is valid
+						if (validName == 0) {
 							
-							IO.println(file);
+							// create simulation button
+							sidebar.createSimulationButton(fileName);
+							
+							// change button text
+							SimulationButton newButton = sidebar.getButtons().get(sidebar.getButtons().size() - 1);
+							String name = newButton.getFileName().substring(18, newButton.getFileName().length() - 4);
+							
+							if (name.length() <= 9)
+								newButton.getText().changeStr(name);
+							else
+								newButton.getText().changeStr(name.substring(0, 8));
+							
+							newButton.getText().updatePosition(
+									-(20f/2 +0.5f*20f*newButton.getText().getGUIlist().size() + 8f)/2,
+									0);
+							
+							// update file
+							IO.createOutputFile(fileName);
+							IO.println("0");
+							IO.closeOutputFile();
+							
+							// sort simulations
+							sidebar.sortSimulations(fileName);
+							
+							// add to customized data file
+							IO.createOutputFile("./data/customized_data_files.txt");
+							IO.println(Integer.toString(sidebar.getSimulationsData().size()));
+							
+							for (String file: sidebar.getSimulationsData()) {
+								
+								IO.println(file);
+							}
+							IO.closeOutputFile();
+							
+							// change to current simulation
+							simulation.getEntities().clear();
+							currentSim = sidebar.getSimulationsData().size();
+							
+							// update down button state
+							if (sidebar.getButtons().size() < 4)
+								sidebar.getDownButton().setModel(sidebar.getDownButtonDisabledModel());
+							else
+								sidebar.getDownButton().setModel(sidebar.getDownButtonEnabledModel());
 						}
-						IO.closeOutputFile();
 						
-						// change to current simulation
-						simulation.getEntities().clear();
-						currentSim = sidebar.getSimulationsData().size();
+						// if name is not valid
+						else if (validName == 1){
+							
+							JOptionPane.showMessageDialog(null, "That name is invalid.");
+						}
 						
-						// update down button state
-						if (sidebar.getButtons().size() < 4)
-							sidebar.getDownButton().setModel(sidebar.getDownButtonDisabledModel());
-						else
-							sidebar.getDownButton().setModel(sidebar.getDownButtonEnabledModel());
-					}
-					
-					// if name is not valid
-					else if (validName == 1){
-						
-						JOptionPane.showMessageDialog(null, "That name is invalid.");
-					}
-					
-					// if name is already taken
-					else {
-						JOptionPane.showMessageDialog(null, "That simulation already exists");
+						// if name is already taken
+						else {
+							JOptionPane.showMessageDialog(null, "That simulation already exists.");
+						}
 					}
 					
 					return;
@@ -1101,15 +1109,5 @@ public class CustomizedScreen {
 		simulation.pausePlaySimulation();
 		
 		simulation.loadSimulation(sidebar.getSimulationsData().get(currentSim - 1));
-	}
-	
-	/**
-	 * Prompts the user to enter a name 
-	 * for their simulation.
-	 * @return
-	 */
-	public String getUserInput() {
-		
-		return JOptionPane.showInputDialog(null, "Enter a name for your simulation");
 	}
 }

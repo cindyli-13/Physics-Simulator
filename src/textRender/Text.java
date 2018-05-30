@@ -202,7 +202,7 @@ public class Text {
 		{
 			float height = this.height;
 			float width = this.width;
-			float x = this.x +width/2 +0.3f*width*i;
+			float x = this.x +width/2 +0.5f*width*i;
 			float y = this.y+height/2;
 			float z=this.z;
 
@@ -232,7 +232,7 @@ public class Text {
 	{
 		float height = this.height;
 		float width = this.width;
-		float x = this.x +width/2 +0.3f*width*index;
+		float x = this.x +width/2 +0.5f*width*index;
 		float y = this.y+height/2;
 		float z=this.z;
 

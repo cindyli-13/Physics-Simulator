@@ -144,7 +144,7 @@ public class ProjectileMotionLessonDisplayPanel {
 		textureID = loader.loadTexture(POSITION_Y_LABEL_TEXTURE_FILE);
 		model = loader.loadToVAO(vertices, texCoords, indices, textureID);
 		
-		position = new Vector3f(leftOfDisplay + offsetX + labelWidth + 130f, topOfDisplay - offsetY, z + 0.01f);
+		position = new Vector3f(leftOfDisplay + offsetX + labelWidth + 150f, topOfDisplay - offsetY, z + 0.01f);
 		
 		positionYLabel = new Label(model, position, rotation, scale, labelWidth, labelHeight);
 		
@@ -167,7 +167,7 @@ public class ProjectileMotionLessonDisplayPanel {
 		textureID = loader.loadTexture(VELOCITY_Y_LABEL_TEXTURE_FILE);
 		model = loader.loadToVAO(vertices, texCoords, indices, textureID);
 		
-		position = new Vector3f(leftOfDisplay + offsetX + labelWidth + 130f, topOfDisplay - offsetY, z + 0.01f);
+		position = new Vector3f(leftOfDisplay + offsetX + labelWidth + 150f, topOfDisplay - offsetY, z + 0.01f);
 		
 		velocityYLabel = new Label(model, position, rotation, scale, labelWidth, labelHeight);
 		
@@ -190,7 +190,7 @@ public class ProjectileMotionLessonDisplayPanel {
 		textureID = loader.loadTexture(ACCELERATION_Y_LABEL_TEXTURE_FILE);
 		model = loader.loadToVAO(vertices, texCoords, indices, textureID);
 		
-		position = new Vector3f(leftOfDisplay + offsetX + labelWidth + 130f, topOfDisplay - offsetY, z + 0.01f);
+		position = new Vector3f(leftOfDisplay + offsetX + labelWidth + 150f, topOfDisplay - offsetY, z + 0.01f);
 		
 		accelerationYLabel = new Label(model, position, rotation, scale, labelWidth, labelHeight);
 		
@@ -243,7 +243,7 @@ public class ProjectileMotionLessonDisplayPanel {
 		guiComponents.add(decreaseVelocityXButton);
 		
 		
-		offsetX += 60f + buttonWidth + 3f;
+		offsetX += 83f + buttonWidth + 3f;
 		
 		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.01f);
 		
@@ -253,7 +253,7 @@ public class ProjectileMotionLessonDisplayPanel {
 		
 		
 		// for velocity y
-		offsetX = 10f + labelWidth/2 + 130f + labelWidth + labelWidth/2 + buttonWidth/2 + 5f;
+		offsetX = 10f + labelWidth/2 + 150f + labelWidth + labelWidth/2 + buttonWidth/2 + 5f;
 		
 		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.01f);
 		
@@ -263,7 +263,7 @@ public class ProjectileMotionLessonDisplayPanel {
 		
 		
 		
-		offsetX += 60f + buttonWidth + 3f;
+		offsetX += 83f + buttonWidth + 3f;
 		
 		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.01f);
 		
@@ -330,7 +330,7 @@ public class ProjectileMotionLessonDisplayPanel {
 		
 		// blank labels
 			
-		float blanklabelWidth = 57f;
+		float blanklabelWidth = 80f;
 		float blanklabelHeight = 20f;
 				
 		vertices = Entity.getVertices(blanklabelWidth, blanklabelHeight, z);
@@ -376,7 +376,7 @@ public class ProjectileMotionLessonDisplayPanel {
 		guiComponents.add(timeBlankLabel);
 		
 		// position y blank label
-		offsetX = 10f + 2 * labelWidth + 130f + 5f + buttonWidth + 3f + blanklabelWidth/2;
+		offsetX = 10f + 2 * labelWidth + 150f + 5f + buttonWidth + 3f + blanklabelWidth/2;
 		offsetY = 10f + labelHeight/2;
 						
 		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.005f);

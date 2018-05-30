@@ -202,7 +202,7 @@ public class ForceOfGravityLessonDisplayPanel {
 		guiComponents.add(decreaseMassButton);
 		
 		
-		offsetX += 60f + buttonWidth + 3f;
+		offsetX += 83f + buttonWidth + 3f;
 		
 		position = new Vector3f(leftOfDisplay + offsetX, topOfDisplay - offsetY, z + 0.01f);
 		
@@ -248,7 +248,7 @@ public class ForceOfGravityLessonDisplayPanel {
 		
 		// blank labels
 								
-		float blanklabelWidth = 57f;
+		float blanklabelWidth = 80f;
 		float blanklabelHeight = 20f;
 						
 		vertices = Entity.getVertices(blanklabelWidth, blanklabelHeight, z);

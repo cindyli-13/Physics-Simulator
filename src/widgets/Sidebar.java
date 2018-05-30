@@ -444,8 +444,8 @@ public class Sidebar {
 	}
 	
 	/**
-	 * Uses quick sort to sort the array list of buttons
-	 * in alphabetical order.
+	 * Quick sort uses recursion to sort the array 
+	 * list of buttons in alphabetical order.
 	 * 
 	 * @param arr
 	 * @return the sorted array list
