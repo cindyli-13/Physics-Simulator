@@ -66,6 +66,50 @@ public class Text {
 			{
 				New.add("period");
 			}
+			else if ((Character.toString(this.str.charAt(i))).equals("*"))
+			{
+				New.add("asterick");
+			}
+			else if ((Character.toString(this.str.charAt(i))).equals("\\"))
+			{
+				New.add("backwardSlash");
+			}
+			else if ((Character.toString(this.str.charAt(i))).equals(":"))
+			{
+				New.add("colon");
+			}
+			else if ((Character.toString(this.str.charAt(i))).equals("/"))
+			{
+				New.add("forwardSlash");
+			}
+			else if ((Character.toString(this.str.charAt(i))).equals("<"))
+			{
+				New.add("lessThan");
+			}
+			else if ((Character.toString(this.str.charAt(i))).equals(">"))
+			{
+				New.add("greaterThan");
+			}
+			else if ((Character.toString(this.str.charAt(i))).equals("?"))
+			{
+				New.add("questionMark");
+			}
+			else if ((Character.toString(this.str.charAt(i))).equals("\""))
+			{
+				New.add("quotationMark");
+			}
+			else if ((Character.toString(this.str.charAt(i))).equals(";"))
+			{
+				New.add("semicolon");
+			}
+			else if ((Character.toString(this.str.charAt(i))).equals("~"))
+			{
+				New.add("tilde");
+			}
+			else if ((Character.toString(this.str.charAt(i))).equals("|"))
+			{
+				New.add("verticalLine");
+			}
 			else {
 			New.add(Character.toString(this.str.charAt(i)));
 			}
@@ -91,6 +135,22 @@ public class Text {
 			else if ((Character.toString(str.charAt(i))).equals("."))
 			{
 				New.add("period");
+			}
+			else if ((Character.toString(str.charAt(i))).equals("*"))
+			{
+				New.add("asterick");
+			}
+			else if ((Character.toString(str.charAt(i))).equals("\\"))
+			{
+				New.add("backwardSlash");
+			}
+			else if ((Character.toString(str.charAt(i))).equals(":"))
+			{
+				New.add("colon");
+			}
+			else if ((Character.toString(str.charAt(i))).equals("/"))
+			{
+				New.add("forwardSlash");
 			}
 			else {
 			New.add(Character.toString(str.charAt(i)));

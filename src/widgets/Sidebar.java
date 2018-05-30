@@ -19,7 +19,7 @@ import renderEngine.Renderer;
 public class Sidebar {
 
 	// instance variables
-	private ArrayList<Button> buttons;
+	private ArrayList<SimulationButton> buttons;
 	private ArrayList<GUIComponent> guiComponents;
 	private ArrayList<String> simulationsData;
 	
@@ -34,6 +34,8 @@ public class Sidebar {
 	private Button upButton;
 	
 	private GUIComponent sidebarPanel;
+	
+	private Loader loader;
 	
 	private float buttonWidth;
 	private float buttonHeight;
@@ -74,6 +76,7 @@ public class Sidebar {
 		this.x = -380f;
 		this.y = -50f;
 		this.z = z - 100f;
+		this.loader = loader;
 		
 		float[] vertices = Entity.getVertices(buttonWidth, buttonHeight, z);
 		float[] texCoords = Entity.getTexCoords();
@@ -82,7 +85,7 @@ public class Sidebar {
 		// **************************************************
 		
 		// initialize buttons array list
-		buttons = new ArrayList<Button>();
+		buttons = new ArrayList<SimulationButton>();
 				
 		// initialize GUI components array list
 		guiComponents = new ArrayList<GUIComponent>();
@@ -191,7 +194,7 @@ public class Sidebar {
 		for (String filename: files) {
 			
 			simulationsData.add(filename);
-			createSimulationButton();
+			createSimulationButton(filename);
 		}
 		
 		topSimulationIndex = 0;
@@ -205,9 +208,10 @@ public class Sidebar {
 	/**
 	 * Creates a simulation button.
 	 * 
+	 * @param fileName	the file name
 	 * @return the simulation button
 	 */
-	public void createSimulationButton() {
+	public void createSimulationButton(String fileName) {
 		
 		float buttonY = 0f; // will be changed
 		
@@ -215,7 +219,8 @@ public class Sidebar {
 		Vector3f rotation = new Vector3f(0,0,0);
 		float scale = 1f;
 		
-		Button button = new Button(simulationButtonModel, position, rotation, scale, buttonWidth, buttonHeight); 
+		SimulationButton button = new SimulationButton(simulationButtonModel, position, rotation, scale, 
+				buttonWidth, buttonHeight, fileName, loader); 
 		
 		// add button to array list
 		buttons.add(button);
@@ -254,11 +259,19 @@ public class Sidebar {
 			// simulation button
 			else {
 				
-				Button button = buttons.get(i);
+				SimulationButton button = buttons.get(i);
+				
+				float prevY = button.getPosition().y;
+				
+				// update button
 				button.getPosition().y = buttonY;
 				button.updateAABB();
 				button.setEnabled(true);
 				renderer.render(button);
+				
+				// update button text
+				button.getText().updatePosition(0f, buttonY - prevY);
+				renderer.renderGUI(button.getText().getGUIlist());
 			}
 			
 			buttonY -= buttonHeight + 7f;
@@ -270,7 +283,7 @@ public class Sidebar {
 	 * 
 	 * @return buttons
 	 */
-	public ArrayList<Button> getButtons() {
+	public ArrayList<SimulationButton> getButtons() {
 		return buttons;
 	}
 	
@@ -404,6 +417,90 @@ public class Sidebar {
 			downButton.setModel(downButtonDisabledModel);
 		else
 			downButton.setModel(downButtonEnabledModel);
+	}
+	
+	/**
+	 * Sorts the buttons and simulationsData array 
+	 * lists alphabetically based on the file names 
+	 * of the simulations.
+	 * 
+	 * @param newFile	the file name of the newly 
+	 * created simulation
+	 */
+	public void sortSimulations(String newFile) {
+		
+		// sort buttons
+		buttons = quickSort(buttons);
+		
+		// update simulation data
+		for (int i = 0; i < buttons.size(); i++) {
+			
+			if (buttons.get(i).getFileName().equals(newFile)) {
+				
+				simulationsData.add(i, buttons.get(i).getFileName());
+				break;
+			}
+		}
+	}
+	
+	/**
+	 * Uses quick sort to sort the array list of buttons
+	 * in alphabetical order.
+	 * 
+	 * @param arr
+	 * @return the sorted array list
+	 */
+	private ArrayList<SimulationButton> quickSort(ArrayList<SimulationButton> arr) {
+		
+		// if array size is 1 or less, it is already sorted
+		if (arr.size() <= 1)
+			return arr;
+				
+			int pivot = arr.size() - 1;
+			int index = 0;
+				
+			while (index < pivot) {
+					
+				if (arr.get(index).getFileName().compareTo(arr.get(pivot).getFileName()) > 0) {
+						
+					SimulationButton temp = arr.get(index);
+					arr.set(index, arr.get(pivot));
+					arr.set(pivot, temp);
+						
+					pivot--;
+						
+					temp = arr.get(index);
+					arr.set(index, arr.get(pivot));
+					arr.set(pivot, temp);
+				}
+				else {
+					index++;
+				}
+			}
+				
+			// recursively sort left and right sides of pivot
+			
+			ArrayList<SimulationButton> unsortedLeft = new ArrayList<SimulationButton>();
+			for (int i = 0; i < pivot; i++)
+				unsortedLeft.add(arr.get(i));
+			
+			ArrayList<SimulationButton> unsortedRight = new ArrayList<SimulationButton>();
+			for (int i = pivot; i < arr.size(); i++)
+				unsortedRight.add(arr.get(i));
+			
+			ArrayList<SimulationButton> sortedLeft = quickSort(unsortedLeft);
+			ArrayList<SimulationButton> sortedRight = quickSort(unsortedRight);
+				
+			// link sorted arrays together
+			ArrayList<SimulationButton> sorted = new ArrayList<SimulationButton>();
+				
+			for (int i = 0; i < sortedLeft.size(); i ++)
+				sorted.add(sortedLeft.get(i));
+			
+			for (int i = 0; i < sortedRight.size(); i ++)
+				sorted.add(sortedRight.get(i));
+				
+			return sorted;
 	}
 
 	/**

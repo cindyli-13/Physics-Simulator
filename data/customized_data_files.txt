@@ -1,5 +1,5 @@
 4
-./data/customized_1.txt
-./data/customized_2.txt
-./data/customized_3.txt
-./data/customized_4.txt
+./data/customized_sample 1.txt
+./data/customized_sample 2.txt
+./data/customized_sample 3.txt
+./data/customized_sample 4.txt

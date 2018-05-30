@@ -6,6 +6,8 @@ import java.io.File;
 import java.nio.DoubleBuffer;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
@@ -22,6 +24,7 @@ import widgets.GUIComponent;
 import widgets.Label;
 import widgets.PopUpBox;
 import widgets.Sidebar;
+import widgets.SimulationButton;
 import widgets.SimulationWindow;
 import widgets.Toolbar;
 
@@ -150,6 +153,21 @@ public class CustomizedScreen {
 		
 		title = new Label(titleModel, position, rotation, 1, labelWidth, labelHeight);
 		
+		
+		// change button texts
+		for (SimulationButton button: sidebar.getButtons()) {
+			
+			String name = button.getFileName().substring(18, button.getFileName().length() - 4);
+			
+			if (name.length() <= 9)
+				button.getText().changeStr(name);
+			else
+				button.getText().changeStr(name.substring(0, 12));
+			
+			button.getText().updatePosition(
+					-(10f/2 +0.3f*10f*button.getText().getGUIlist().size() + 20f)/2,
+					0);
+		}
 		
 		guiComponents = new ArrayList<GUIComponent>();
 		guiComponents.add(saveButton);
@@ -573,36 +591,87 @@ public class CustomizedScreen {
 					simulation.setPause(false);
 					simulation.pausePlaySimulation();
 					
-					String fileName = "./data/customized_" + 
-							(sidebar.getButtons().size() + 1) + ".txt";
+					// get user input
+					String input = getUserInput().trim();
+					String fileName = "./data/customized_" + input + ".txt";
 					
-					sidebar.getSimulationsData().add(fileName);
+					int validName = 0;
 					
-					IO.createOutputFile(fileName);
-					IO.println("0");
-					IO.closeOutputFile();
+					// check for invalid name
+					if (input.replace(" ", "").equals(""))
+						validName = 1;
 					
-					// add to customized data file
-					IO.createOutputFile("./data/customized_data_files.txt");
-					IO.println(Integer.toString(sidebar.getSimulationsData().size()));
-					
-					for (String file: sidebar.getSimulationsData()) {
+					else {
 						
-						IO.println(file);
+						// check if simulation already exists
+						for (String file: sidebar.getSimulationsData()) {
+							
+							if (file.equals(fileName)) {
+								
+								validName = 1;
+								break;
+							}
+						}
 					}
-					IO.closeOutputFile();
 					
-					sidebar.createSimulationButton();
+					// if name is valid
+					if (validName == 0) {
+						
+						// create simulation button
+						sidebar.createSimulationButton(fileName);
+						
+						// change button text
+						SimulationButton newButton = sidebar.getButtons().get(sidebar.getButtons().size() - 1);
+						String name = newButton.getFileName().substring(18, newButton.getFileName().length() - 4);
+						
+						if (name.length() <= 9)
+							newButton.getText().changeStr(name);
+						else
+							newButton.getText().changeStr(name.substring(0, 12));
+						
+						newButton.getText().updatePosition(
+								-(10f/2 +0.3f*10f*newButton.getText().getGUIlist().size() + 20f)/2,
+								0);
+						
+						// update file
+						IO.createOutputFile(fileName);
+						IO.println("0");
+						IO.closeOutputFile();
+						
+						// sort simulations
+						sidebar.sortSimulations(fileName);
+						
+						// add to customized data file
+						IO.createOutputFile("./data/customized_data_files.txt");
+						IO.println(Integer.toString(sidebar.getSimulationsData().size()));
+						
+						for (String file: sidebar.getSimulationsData()) {
+							
+							IO.println(file);
+						}
+						IO.closeOutputFile();
+						
+						// change to current simulation
+						simulation.getEntities().clear();
+						currentSim = sidebar.getSimulationsData().size();
+						
+						// update down button state
+						if (sidebar.getButtons().size() < 4)
+							sidebar.getDownButton().setModel(sidebar.getDownButtonDisabledModel());
+						else
+							sidebar.getDownButton().setModel(sidebar.getDownButtonEnabledModel());
+					}
 					
-					// change to current simulation
-					simulation.getEntities().clear();
-					currentSim = sidebar.getSimulationsData().size();
+					// if name is not valid
+					else if (validName == 1){
+						
+						JOptionPane.showMessageDialog(null, "That name is invalid.");
+					}
 					
-					// update down button state
-					if (sidebar.getButtons().size() < 4)
-						sidebar.getDownButton().setModel(sidebar.getDownButtonDisabledModel());
-					else
-						sidebar.getDownButton().setModel(sidebar.getDownButtonEnabledModel());
+					// if name is already taken
+					else {
+						JOptionPane.showMessageDialog(null, "That simulation already exists");
+					}
 					
 					return;
 				}
@@ -642,7 +711,7 @@ public class CustomizedScreen {
 					if (currentSim != -1) {
 					
 						// save data into text file
-						IO.createOutputFile("./data/customized_" + currentSim + ".txt");
+						IO.createOutputFile(sidebar.getButtons().get(currentSim - 1).getFileName());
 						
 						// number of entities
 						IO.println(Integer.toString(simulation.getEntities().size()));
@@ -695,18 +764,6 @@ public class CustomizedScreen {
 						File file = new File(sidebar.getSimulationsData().get(currentSim - 1));
 						file.delete();
 						sidebar.getSimulationsData().remove(currentSim - 1);
-						
-						// loop through files and rename them
-						for (int i = currentSim - 1; i < sidebar.getSimulationsData().size(); i++) {
-							
-							file = new File(sidebar.getSimulationsData().get(i));
-							File newFile = new File("./data/customized_" + (i + 1) + ".txt");
-							
-							file.renameTo(newFile);
-							
-							sidebar.getSimulationsData().remove(i);
-							sidebar.getSimulationsData().add(i, "./data/customized_" + (i + 1) + ".txt");
-						}
 						
 						// edit customized_data_files.txt data
 						IO.createOutputFile("./data/customized_data_files.txt");
@@ -1046,4 +1103,13 @@ public class CustomizedScreen {
 		simulation.loadSimulation(sidebar.getSimulationsData().get(currentSim - 1));
 	}
 	
+	/**
+	 * Prompts the user to enter a name 
+	 * for their simulation.
+	 * @return
+	 */
+	public String getUserInput() {
+		
+		return JOptionPane.showInputDialog(null, "Enter a name for your simulation");
+	}
 }
