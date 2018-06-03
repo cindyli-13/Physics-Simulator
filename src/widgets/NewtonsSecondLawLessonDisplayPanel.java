@@ -372,7 +372,7 @@ public class NewtonsSecondLawLessonDisplayPanel {
 	 */
 	public void updateTimeText(float time) {
 		
-		if (time <= 999.9)
+		if (time <= 999.99)
 			timeText.changeStr(floatToText(time));
 	}
 	
@@ -383,7 +383,7 @@ public class NewtonsSecondLawLessonDisplayPanel {
 	 */
 	public void updateMassText(float mass) {
 		
-		if (mass <= 999.9 && mass >= -999.9)		
+		if (mass <= 999.99 && mass >= -999.99)		
 			massText.changeStr(floatToText(mass));
 	}
 	
@@ -394,7 +394,7 @@ public class NewtonsSecondLawLessonDisplayPanel {
 	 */
 	public void updateNetForceText(float netForce) {
 		
-		if (netForce <= 999.9 && netForce >= -999.9) 			
+		if (netForce <= 999.99 && netForce >= -999.99) 			
 			netForceText.changeStr(floatToText(netForce));
 	}
 	
@@ -405,7 +405,7 @@ public class NewtonsSecondLawLessonDisplayPanel {
 	 */
 	public void updateAccelerationText(float acceleration) {
 		
-		if (acceleration <= 999.9 && acceleration >= -999.9)
+		if (acceleration <= 999.99 && acceleration >= -999.99)
 			accelerationText.changeStr(floatToText(acceleration));
 	}
 	

@@ -113,7 +113,7 @@ public class PopUpBox extends GUIComponent {
 		buttonHeight = 30f;
 		
 		buttonX = position.x;
-		buttonY = position.y - height/2 + buttonHeight/2 + 10f;
+		buttonY = position.y - height/2 + buttonHeight/2 + 15f;
 		
 		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
 		pos = new Vector3f(buttonX, buttonY, z);
@@ -128,8 +128,8 @@ public class PopUpBox extends GUIComponent {
 		buttonWidth = 20f;
 		buttonHeight = 20f;
 				
-		buttonX = position.x + 5f;
-		buttonY = position.y + 60f;
+		buttonX = position.x - 5f;
+		buttonY = position.y + 55f;
 				
 		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
 		pos = new Vector3f(buttonX, buttonY, z);
@@ -144,7 +144,7 @@ public class PopUpBox extends GUIComponent {
 		
 		// increase size button
 		
-		buttonX = position.x + 87f;
+		buttonX = position.x + 100f;
 						
 		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
 		pos = new Vector3f(buttonX, buttonY, z);
@@ -162,8 +162,8 @@ public class PopUpBox extends GUIComponent {
 		float labelWidth = 70f;
 		float labelHeight = 20f;
 								
-		float labelX = position.x - 55f;
-		float labelY = position.y + 60f;
+		float labelX = position.x - 65f;
+		float labelY = position.y + 55f;
 								
 		vertices = Entity.getVertices(labelWidth, labelHeight, z + 0.01f);
 		pos = new Vector3f(labelX, labelY, z);
@@ -177,7 +177,7 @@ public class PopUpBox extends GUIComponent {
 		
 		// decrease velocity x button
 						
-		buttonX = position.x + 5f;
+		buttonX = position.x - 5f;
 		buttonY -= buttonHeight + 5f;
 						
 		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
@@ -187,7 +187,7 @@ public class PopUpBox extends GUIComponent {
 				
 		
 		// increase velocity x button
-		buttonX = position.x + 87f;
+		buttonX = position.x + 100f;
 								
 		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
 		pos = new Vector3f(buttonX, buttonY, z);
@@ -211,7 +211,7 @@ public class PopUpBox extends GUIComponent {
 		
 		// decrease velocity y button
 		
-		buttonX = position.x + 5f;
+		buttonX = position.x - 5f;
 		buttonY -= buttonHeight + 5f;
 								
 		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
@@ -221,7 +221,7 @@ public class PopUpBox extends GUIComponent {
 						
 				
 		// increase velocity y button
-		buttonX = position.x + 87f;
+		buttonX = position.x + 100f;
 										
 		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
 		pos = new Vector3f(buttonX, buttonY, z);
@@ -245,7 +245,7 @@ public class PopUpBox extends GUIComponent {
 		
 		// decrease mass button
 		
-		buttonX = position.x + 5f;
+		buttonX = position.x - 5f;
 		buttonY -= buttonHeight + 5f;
 										
 		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
@@ -255,7 +255,7 @@ public class PopUpBox extends GUIComponent {
 								
 						
 		// increase mass button
-		buttonX = position.x + 87f;
+		buttonX = position.x + 100f;
 												
 		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
 		pos = new Vector3f(buttonX, buttonY, z);
@@ -282,7 +282,7 @@ public class PopUpBox extends GUIComponent {
 		
 		// size text
 		
-		float textX = position.x + 5f + buttonWidth/2 + 3f;
+		float textX = position.x - 5f + buttonWidth/2 + 3f;
 		float textY = sizeLabel.getPosition().y - labelHeight/2;
 		
 		sizeText = new Text("0", textX, textY, z + 0.01f, textWidth, textHeight, loader);
@@ -309,7 +309,7 @@ public class PopUpBox extends GUIComponent {
 		
 		// blank labels
 				
-		float blanklabelWidth = 57f;
+		float blanklabelWidth = 80f;
 		float blanklabelHeight = 20f;
 		
 		vertices = Entity.getVertices(blanklabelWidth, blanklabelHeight, z);
@@ -318,7 +318,7 @@ public class PopUpBox extends GUIComponent {
 		model = loader.loadToVAO(vertices, texCoords, indices, textureID);
 				
 		// size blank label
-		labelX = position.x + 5f + buttonWidth/2 + 3f + blanklabelWidth/2;
+		labelX = position.x - 5f + buttonWidth/2 + 3f + blanklabelWidth/2;
 		labelY = sizeLabel.getPosition().y;
 		
 		position = new Vector3f(labelX, labelY, z + 0.005f);
@@ -729,7 +729,7 @@ public class PopUpBox extends GUIComponent {
 	 */
 	public void updateSizeText(float size) {
 		
-		if (size <= 999.9)
+		if (size <= 999.99)
 			sizeText.changeStr(floatToText(size));
 	}
 	
@@ -740,7 +740,7 @@ public class PopUpBox extends GUIComponent {
 	 */
 	public void updateMassText(float mass) {
 		
-		if (mass <= 999.9 && mass >= -999.9)		
+		if (mass <= 999.99 && mass >= -999.99)		
 			massText.changeStr(floatToText(mass));
 	}
 	
@@ -751,7 +751,7 @@ public class PopUpBox extends GUIComponent {
 	 */
 	public void updateVelocityXText(float velocityX) {
 		
-		if (velocityX <= 999.9 && velocityX >= -999.9) 			
+		if (velocityX <= 999.99 && velocityX >= -999.99) 			
 			velocityXText.changeStr(floatToText(velocityX));
 	}
 	
@@ -762,7 +762,7 @@ public class PopUpBox extends GUIComponent {
 	 */
 	public void updateVelocityYText(float velocityY) {
 		
-		if (velocityY <= 999.9 && velocityY >= -999.9)
+		if (velocityY <= 999.99 && velocityY >= -999.99)
 			velocityYText.changeStr(floatToText(velocityY));
 	}
 	

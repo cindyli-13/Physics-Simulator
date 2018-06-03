@@ -58,61 +58,7 @@ public class Text {
 		ArrayList<String> New = new ArrayList<String>();
 		for( int i=0;i<sizeS; i++)
 		{
-			if((Character.toString(this.str.charAt(i))).equals(" "))
-			{
-				New.add("space");
-			}
-			else if ((Character.toString(this.str.charAt(i))).equals("."))
-			{
-				New.add("period");
-			}
-			else if ((Character.toString(this.str.charAt(i))).equals("*"))
-			{
-				New.add("asterick");
-			}
-			else if ((Character.toString(this.str.charAt(i))).equals("\\"))
-			{
-				New.add("backwardSlash");
-			}
-			else if ((Character.toString(this.str.charAt(i))).equals(":"))
-			{
-				New.add("colon");
-			}
-			else if ((Character.toString(this.str.charAt(i))).equals("/"))
-			{
-				New.add("forwardSlash");
-			}
-			else if ((Character.toString(this.str.charAt(i))).equals("<"))
-			{
-				New.add("lessThan");
-			}
-			else if ((Character.toString(this.str.charAt(i))).equals(">"))
-			{
-				New.add("greaterThan");
-			}
-			else if ((Character.toString(this.str.charAt(i))).equals("?"))
-			{
-				New.add("questionMark");
-			}
-			else if ((Character.toString(this.str.charAt(i))).equals("\""))
-			{
-				New.add("quotationMark");
-			}
-			else if ((Character.toString(this.str.charAt(i))).equals(";"))
-			{
-				New.add("semicolon");
-			}
-			else if ((Character.toString(this.str.charAt(i))).equals("~"))
-			{
-				New.add("tilde");
-			}
-			else if ((Character.toString(this.str.charAt(i))).equals("|"))
-			{
-				New.add("verticalLine");
-			}
-			else {
-			New.add(Character.toString(this.str.charAt(i)));
-			}
+			New.add(charToString(this.str.charAt(i)));
 
 		}
 
@@ -128,33 +74,7 @@ public class Text {
 		ArrayList<String> New = new ArrayList<String>();
 		for( int i=0;i<sizeS; i++)
 		{
-			if((Character.toString(str.charAt(i))).equals(" "))
-			{
-				New.add("space");
-			}
-			else if ((Character.toString(str.charAt(i))).equals("."))
-			{
-				New.add("period");
-			}
-			else if ((Character.toString(str.charAt(i))).equals("*"))
-			{
-				New.add("asterick");
-			}
-			else if ((Character.toString(str.charAt(i))).equals("\\"))
-			{
-				New.add("backwardSlash");
-			}
-			else if ((Character.toString(str.charAt(i))).equals(":"))
-			{
-				New.add("colon");
-			}
-			else if ((Character.toString(str.charAt(i))).equals("/"))
-			{
-				New.add("forwardSlash");
-			}
-			else {
-			New.add(Character.toString(str.charAt(i)));
-			}
+			New.add(charToString(str.charAt(i)));
 
 		}
 
@@ -303,5 +223,108 @@ public class Text {
 	public ArrayList<GUIComponent> getGUIlist()
 	{
 		return GUIlist;
+	}
+	
+	/**
+	 * Returns the string.
+	 * 
+	 * @return str
+	 */
+	public String getString() {
+		return str;
+	}
+	
+	/**
+	 * Converts a given character to the string 
+	 * that represents the file name containing that 
+	 * character.
+	 * 
+	 * @return a string
+	 */
+	private String charToString(char c) {
+		
+		switch (c) {
+			case 'A':
+				return "aUpper";
+			case 'B':
+				return "bUpper";
+			case 'C':
+				return "cUpper";
+			case 'D':
+				return "dUpper";
+			case 'E':
+				return "eUpper";
+			case 'F':
+				return "fUpper";
+			case 'G':
+				return "gUpper";
+			case 'H':
+				return "hUpper";
+			case 'I':
+				return "iUpper";
+			case 'J':
+				return "jUpper";
+			case 'K':
+				return "kUpper";
+			case 'L':
+				return "lUpper";
+			case 'M':
+				return "mUpper";
+			case 'N':
+				return "nUpper";
+			case 'O':
+				return "oUpper";
+			case 'P':
+				return "pUpper";
+			case 'Q':
+				return "qUpper";
+			case 'R':
+				return "rUpper";
+			case 'S':
+				return "sUpper";
+			case 'T':
+				return "tUpper";
+			case 'U':
+				return "uUpper";
+			case 'V':
+				return "vUpper";
+			case 'W':
+				return "wUpper";
+			case 'X':
+				return "xUpper";
+			case 'Y':
+				return "yUpper";
+			case 'Z':
+				return "zUpper";
+			case ' ':
+				return "space";
+			case '.':
+				return "period";
+			case '*':
+				return "asterick";
+			case '\\':
+				return "backwardSlash";
+			case ':':
+				return "colon";
+			case '/':
+				return "forwardSlash";
+			case '<':
+				return "lessThan";
+			case '>':
+				return "greaterThan";
+			case '?':
+				return "questionMark";
+			case '"':
+				return "quotationMark";
+			case ';':
+				return "semicolon";
+			case '~':
+				return "tilde";
+			case '|':
+				return "verticalLine";
+			default:
+				return Character.toString(c);
+		}
+		
 	}
 }

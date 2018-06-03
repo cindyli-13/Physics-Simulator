@@ -28,7 +28,7 @@ public class SimulationButton extends Button {
 		
 		this.fileName = fileName;
 		
-		text = new Text("", position.x, position.y - 15f, position.z + 100f, 20f, 20f, loader);
+		text = new Text("", position.x, position.y - 15f, position.z + 99f, 20f, 20f, loader);
 	}
 	
 	/**

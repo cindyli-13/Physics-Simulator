@@ -282,15 +282,18 @@ public class SimulationWindow {
 	 * @param sideLength	the side length of the crate
 	 * @param x				the x coordinate of the crate's center
 	 * @param y				the y coordinate of the crate's center
+	 * @param vx			the horizontal component of the crate's velocity
+	 * @param vy			the vertical component of the crate's velocity
 	 * @param z				the z coordinate of the crate
 	 * @param mass			the crate's mass
 	 * @param e				the crate's coefficient of restitution
 	 * @return crate		the crate entity
 	 */
-	public Entity createCrateEntity(float sideLength, float x, float y, float z, float mass, float e) {
+	public Entity createCrateEntity(float sideLength, float x, float y, float z, 
+			float vx, float vy, float mass, float e) {
 		
 		Vector3f position = new Vector3f(x,y,z);
-		Vector3f velocity = new Vector3f(0,0,0);
+		Vector3f velocity = new Vector3f(vx,vy,0);
 		Vector3f acceleration = new Vector3f(0,g,0);
 		Vector3f rotation = new Vector3f(0,0,0);
 		float scale = sideLength / modelSideLength;
@@ -306,18 +309,23 @@ public class SimulationWindow {
 	/**
 	 * Creates a metal box entity in the simulation window.
 	 * 
+	 * Currently, this function is not used.
+	 * 
 	 * @param sideLength	the side length of the metal box 
 	 * @param x				the x coordinate of the metal box's center
 	 * @param y				the y coordinate of the metal box's center
+	 * @param vx			the horizontal component of the metal box's velocity
+	 * @param vy			the vertical component of the metal box's velocity
 	 * @param z				the z coordinate of the metal box
 	 * @param mass			the metal box's mass
 	 * @param e				the metal box's coefficient of restitution
 	 * @return metalBox		the metal box entity
 	 */
-	public Entity createMetalBoxEntity(float sideLength, float x, float y, float z, float mass, float e) {
+	public Entity createMetalBoxEntity(float sideLength, float x, float y, float z, 
+			float vx, float vy, float mass, float e) {
 		
 		Vector3f position = new Vector3f(x,y,z);
-		Vector3f velocity = new Vector3f(0,0,0);
+		Vector3f velocity = new Vector3f(vx,vy,0);
 		Vector3f acceleration = new Vector3f(0,g,0);
 		Vector3f rotation = new Vector3f(0,0,0);
 		float scale = sideLength / modelSideLength;
@@ -336,15 +344,18 @@ public class SimulationWindow {
 	 * @param radius		the radius of the ball
 	 * @param x				the x coordinate of the ball's center
 	 * @param y				the y coordinate of the ball's center
+	 * @param vx			the horizontal component of the ball's velocity
+	 * @param vy			the vertical component of the ball's velocity
 	 * @param z				the z coordinate of the ball
 	 * @param mass			the metal ball's mass
 	 * @param e				the metal ball's coefficient of restitution
 	 * @return ball			the ball entity
 	 */
-	public Entity createBallEntity(float radius, float x, float y, float z, float mass, float e) {
+	public Entity createBallEntity(float radius, float x, float y, float z, 
+			float vx, float vy, float mass, float e) {
 		
 		Vector3f position = new Vector3f(x,y,z);
-		Vector3f velocity = new Vector3f(0,0,0);
+		Vector3f velocity = new Vector3f(vx,vy,0);
 		Vector3f acceleration = new Vector3f(0,g,0);
 		Vector3f rotation = new Vector3f(0,0,0);
 		float scale = 2 * radius / modelSideLength;
@@ -453,10 +464,12 @@ public class SimulationWindow {
 					float sideLength = Float.parseFloat(IO.readLine());
 					float x = Float.parseFloat(IO.readLine());
 					float y = Float.parseFloat(IO.readLine());
+					float vx = Float.parseFloat(IO.readLine());
+					float vy = Float.parseFloat(IO.readLine()); 
 					float mass = Float.parseFloat(IO.readLine());
 					float e = Float.parseFloat(IO.readLine());
 					
-					createCrateEntity(sideLength, x, y, z, mass, e);
+					createCrateEntity(sideLength, x, y, z, vx, vy, mass, e);
 				}
 						
 				// circle
@@ -465,10 +478,12 @@ public class SimulationWindow {
 					float radius = Float.parseFloat(IO.readLine());
 					float x = Float.parseFloat(IO.readLine());
 					float y = Float.parseFloat(IO.readLine());
+					float vx = Float.parseFloat(IO.readLine());
+					float vy = Float.parseFloat(IO.readLine()); 
 					float mass = Float.parseFloat(IO.readLine());
 					float e = Float.parseFloat(IO.readLine());
 					
-					createBallEntity(radius, x, y, z, mass, e);
+					createBallEntity(radius, x, y, z, vx, vy, mass, e);
 				}
 						
 				// line buffer

@@ -451,7 +451,7 @@ public class MotionLessonDisplayPanel {
 	 */
 	public void updateTimeText(float time) {
 		
-		if (time <= 999.9)
+		if (time <= 999.99)
 			timeText.changeStr(floatToText(time));
 	}
 	
@@ -462,7 +462,7 @@ public class MotionLessonDisplayPanel {
 	 */
 	public void updatePositionText(float position) {
 		
-		if (position <= 999.9 && position >= -999.9)		
+		if (position <= 999.99 && position >= -999.99)		
 			positionText.changeStr(floatToText(position));
 	}
 	
@@ -473,7 +473,7 @@ public class MotionLessonDisplayPanel {
 	 */
 	public void updateVelocityText(float velocity) {
 		
-		if (velocity <= 999.9 && velocity >= -999.9) 			
+		if (velocity <= 999.99 && velocity >= -999.99) 			
 			velocityText.changeStr(floatToText(velocity));
 	}
 	
@@ -484,7 +484,7 @@ public class MotionLessonDisplayPanel {
 	 */
 	public void updateAccelerationText(float acceleration) {
 		
-		if (acceleration <= 999.9 && acceleration >= -999.9)
+		if (acceleration <= 999.99 && acceleration >= -999.99)
 			accelerationText.changeStr(floatToText(acceleration));
 	}
 	

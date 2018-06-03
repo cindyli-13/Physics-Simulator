@@ -461,7 +461,7 @@ public class Sidebar {
 				
 			while (index < pivot) {
 					
-				if (arr.get(index).getFileName().compareTo(arr.get(pivot).getFileName()) > 0) {
+				if (arr.get(index).getFileName().compareToIgnoreCase(arr.get(pivot).getFileName()) > 0) {
 						
 					SimulationButton temp = arr.get(index);
 					arr.set(index, arr.get(pivot));

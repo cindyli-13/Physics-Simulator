@@ -35,14 +35,17 @@ public class MenuScreen {
 	private Button customizedButton;    // cButton
 	private Button helpButton;			// hButton
 	
+	private GUIComponent background;
+	
 	private ArrayList<GUIComponent> guiComponents;
 	private ArrayList<Button> buttons;
 	
 	// static variables
 	public static String GAME_BUTTON_TEXTURE_FILE = "./res/GameB.png";
-	public static String LESSON_BUTTON_TEXTURE_FILE = "./res/GB.png";
+	public static String LESSON_BUTTON_TEXTURE_FILE = "./res/LessonB.png";
 	public static String CUSTOMIZED_BUTTON_TEXTURE_FILE = "./res/CustomB.png";
-	public static String HELP_BUTTON_TEXTURE_FILE = "./res/InfoB.png";
+	public static String HELP_BUTTON_TEXTURE_FILE = "./res/userGuide.png";
+	public static String TITLE_SCREEN_TEXTURE_FILE = "./res/titleScreen.png";
 	
 	// constructor
 	public MenuScreen(Loader loader, float screenWidth, float screenHeight, float z) {
@@ -54,23 +57,23 @@ public class MenuScreen {
 		// 	x			the x coordinate of the center of the button (in OpenGL world coordinates)
 		// 	y			the y coordinate of the center of the button (in OpenGL world coordinates)
 		
-		float buttonWidth = 300f;
-		float buttonHeight = 80f;
+		float buttonWidth = 220f;
+		float buttonHeight = 60f;
 		
-		float gButtonX = 0;
-		float gButtonY = screenHeight/2 - 100f;  // 100 pixels down from the top of the screen
+		float gButtonX = -screenWidth/2 + buttonWidth/2 + 50f;  // 50 pixels from the left side of the screen
+		float gButtonY = screenHeight/2 - 120f;  // 120 pixels down from the top of the screen
 		Vector3f gButtonPos = new Vector3f(gButtonX, gButtonY, z);
 		
-		float lButtonX = 0;
+		float lButtonX = gButtonX;
 		float lButtonY = gButtonY - buttonHeight - 20f;  // 20 pixels down from gButton
 		Vector3f lButtonPos = new Vector3f(lButtonX, lButtonY, z);
 		
-		float cButtonX = 0;
+		float cButtonX = gButtonX;
 		float cButtonY = lButtonY - buttonHeight - 20f;  // 20 pixels down from lButton
 		Vector3f cButtonPos = new Vector3f(cButtonX, cButtonY, z);
 		
-		float hButtonX = 0;
-		float hButtonY = cButtonY - buttonHeight - 20f;  // 20 pixels down from cButton
+		float hButtonX = gButtonX;
+		float hButtonY = cButtonY - buttonHeight - 70f;  // 70 pixels down from cButton
 		Vector3f hButtonPos = new Vector3f(hButtonX, hButtonY, z);
 		
 		
@@ -108,6 +111,22 @@ public class MenuScreen {
 		
 		helpButton = new Button(hButtonModel, hButtonPos, rotation, scale, buttonWidth, buttonHeight);
 		
+		// **************************************************
+		
+		// background
+		
+		float backgroundWidth = screenWidth;
+		float backgroundHeight = screenHeight;
+		
+		vertices = Entity.getVertices(backgroundWidth, backgroundHeight, z - 100f);
+		
+		textureID = loader.loadTexture(TITLE_SCREEN_TEXTURE_FILE);
+		Model backgroundModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+		
+		background = new GUIComponent(backgroundModel, new Vector3f(0,0,0), rotation,scale);
+		
+		// **************************************************
+		
 		
 		// initialize GUI components array list
 		guiComponents = new ArrayList<GUIComponent>();
@@ -115,6 +134,7 @@ public class MenuScreen {
 		guiComponents.add(lessonButton);
 		guiComponents.add(customizedButton);
 		guiComponents.add(helpButton);
+		guiComponents.add(background);
 		
 		// initialize button array list
 		buttons = new ArrayList<Button>();

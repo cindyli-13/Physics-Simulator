@@ -63,6 +63,7 @@ public class Main {
 	public static final int KEY_DOWN = 2;
 	public static final int KEY_LEFT = 3;
 	public static final int KEY_RIGHT = 4;
+	public static final int KEY_R = 5;
 	
 	// main
 	public static void main(String[] args) {
@@ -154,7 +155,7 @@ public class Main {
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 					
 		// create the window
-		window = glfwCreateWindow(WIDTH, HEIGHT, "Physics Simulator", NULL, NULL);
+		window = glfwCreateWindow(WIDTH, HEIGHT, "Simple Physics Simulator", NULL, NULL);
 		if (window == NULL)
 			throw new RuntimeException("Failed to create the GLFW window");
 						
@@ -179,6 +180,9 @@ public class Main {
 			
 			if (key == GLFW_KEY_RIGHT && action == GLFW_RELEASE)
 				this.key = KEY_RIGHT;
+			
+			if (key == GLFW_KEY_R && action == GLFW_RELEASE)
+				this.key = KEY_R;
 		});
 		
 		// set up a mouse button callback
@@ -236,7 +240,7 @@ public class Main {
 			loader = new Loader();
 				
 		} catch (Exception e) {
-			System.out.println("Exception occured");
+			System.out.println("Exception occurred");
 			e.printStackTrace();
 		}
 	}

@@ -373,7 +373,7 @@ public class ForceOfGravityLessonDisplayPanel {
 	 */
 	public void updateTimeText(float time) {
 		
-		if (time <= 999.9)
+		if (time <= 999.99)
 			timeText.changeStr(floatToText(time));
 	}
 	
@@ -384,7 +384,7 @@ public class ForceOfGravityLessonDisplayPanel {
 	 */
 	public void updateMassText(float mass) {
 		
-		if (mass <= 999.9 && mass >= -999.9)		
+		if (mass <= 999.99 && mass >= -999.99)		
 			massText.changeStr(floatToText(mass));
 	}
 	
@@ -395,7 +395,7 @@ public class ForceOfGravityLessonDisplayPanel {
 	 */
 	public void updateForceOfGravityText(float forceOfGravity) {
 		
-		if (forceOfGravity <= 999.9 && forceOfGravity >= -999.9) 			
+		if (forceOfGravity <= 999.99 && forceOfGravity >= -999.99) 			
 			forceOfGravityText.changeStr(floatToText(forceOfGravity));
 	}
 	
@@ -406,7 +406,7 @@ public class ForceOfGravityLessonDisplayPanel {
 	 */
 	public void updateAccelerationText(float acceleration) {
 		
-		if (acceleration <= 999.9 && acceleration >= -999.9)
+		if (acceleration <= 999.99 && acceleration >= -999.99)
 			accelerationText.changeStr(floatToText(acceleration));
 	}
 	

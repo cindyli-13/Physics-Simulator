@@ -303,7 +303,7 @@ public class FrictionLessonDisplayPanel {
 	 */
 	public void updateTimeText(float time) {
 		
-		if (time <= 999.9)
+		if (time <= 999.99)
 			timeText.changeStr(floatToText(time));
 	}
 	
@@ -314,7 +314,7 @@ public class FrictionLessonDisplayPanel {
 	 */
 	public void updateVelocityText(float velocity) {
 		
-		if (velocity <= 999.9 && velocity >= -999.9)		
+		if (velocity <= 999.99 && velocity >= -999.99)		
 			velocityText.changeStr(floatToText(velocity));
 	}
 	

@@ -379,14 +379,10 @@ public class LessonScreen {
 							motionLessonDisplayPanel.setDecreaseVelocityButtonState(true);
 						else
 							motionLessonDisplayPanel.setDecreaseVelocityButtonState(false);
-							
-						// update attributes
-						positionX = entity.getPosition().x;
-						velocityX = entity.getVelocity().x;
-							
+						
 						// update text
 						motionLessonDisplayPanel.updateTimeText(time);
-						motionLessonDisplayPanel.updatePositionText(positionX);
+						motionLessonDisplayPanel.updatePositionText(positionX + 180f);
 						motionLessonDisplayPanel.updateVelocityText(velocityX);
 							
 						break;
@@ -415,34 +411,19 @@ public class LessonScreen {
 							projectileMotionLessonDisplayPanel.setDecreaseVelocityYButtonState(true);
 						else
 							projectileMotionLessonDisplayPanel.setDecreaseVelocityYButtonState(false);
-						
-						// update attributes
-						positionX = entity.getPosition().x;
-						velocityX = entity.getVelocity().x;
-						positionY = entity.getPosition().y;
-						velocityY = entity.getVelocity().y;
 							
 						// update text
 						projectileMotionLessonDisplayPanel.updateTimeText(time);
-						projectileMotionLessonDisplayPanel.updatePositionXText(positionX);
+						projectileMotionLessonDisplayPanel.updatePositionXText(positionX + 180f);
 						projectileMotionLessonDisplayPanel.updateVelocityXText(velocityX);
-						projectileMotionLessonDisplayPanel.updatePositionYText(positionY);
+						projectileMotionLessonDisplayPanel.updatePositionYText(positionY + 180f);
 						projectileMotionLessonDisplayPanel.updateVelocityYText(velocityY);
 							
 						break;
 							
 					// Newton's Second Law lesson
 					case 3:
-							
-						// update net force arrow
-						Rectangle r1 = (Rectangle) entity;
-							
-						float arrowX = r1.getPosition().x + r1.getWidth()/2 + 20f;
-						float arrowY = r1.getPosition().y;
-							
-						netForceArrow.getPosition().x = arrowX;
-						netForceArrow.getPosition().y = arrowY;
-							
+						
 						// update text
 						newtonsSecondLawLessonDisplayPanel.updateTimeText(time);
 							
@@ -450,15 +431,6 @@ public class LessonScreen {
 						
 					// force of gravity lesson
 					case 4:
-							
-						// update force of gravity arrow
-						Circle c = (Circle) entity;
-							
-						arrowX = c.getPosition().x;
-						arrowY = c.getPosition().y - c.getRadius() - 20f * forceOfGravityArrow.getScale();
-							
-						forceOfGravityArrow.getPosition().x = arrowX;
-						forceOfGravityArrow.getPosition().y = arrowY;
 							
 						// update text
 						forceOfGravityLessonDisplayPanel.updateTimeText(time);
@@ -478,30 +450,6 @@ public class LessonScreen {
 							frictionLessonDisplayPanel.setDecreaseVelocityButtonState(true);
 						else
 							frictionLessonDisplayPanel.setDecreaseVelocityButtonState(false);
-							
-						// update friction arrow
-						Rectangle r2 = (Rectangle) simulation.getEntities().get(0);
-							
-						arrowX = 0;
-							
-						// object traveling right
-						if (r2.getVelocity().x > 0) {
-								
-							arrowX = r2.getPosition().x - r2.getWidth()/2 - 20f;
-							frictionArrow.setRotation(new Vector3f(0,0,180));
-						}
-							
-						// object traveling left
-						else if (r2.getVelocity().x < 0) {
-								
-							arrowX = r2.getPosition().x + r2.getWidth()/2 + 20f;
-							frictionArrow.setRotation(new Vector3f(0,0,0));
-						}
-							
-						frictionArrow.getPosition().x = arrowX;
-							
-						// update attributes
-						velocityX = entity.getVelocity().x;
 							
 						// update text
 						frictionLessonDisplayPanel.updateTimeText(time);
@@ -991,6 +939,10 @@ public class LessonScreen {
 		// right
 		else if (key == Main.KEY_RIGHT && lessonPanel.isShowPanel())
 			lessonPanel.updatePageIndex(false);
+		
+		// r
+		else if (key == Main.KEY_R)
+			resetSimulation();
 	}
 	
 	/**
@@ -1032,7 +984,6 @@ public class LessonScreen {
 			// motion lesson
 			case 1:
 				entity.getAcceleration().y = 0f;
-				entity.getVelocity().x = 10f;
 				
 				// variables for text
 				time = 0f;
@@ -1041,15 +992,19 @@ public class LessonScreen {
 				accelerationX = entity.getAcceleration().x;
 				
 				motionLessonDisplayPanel.updateTimeText(time);
-				motionLessonDisplayPanel.updatePositionText(positionX);
+				motionLessonDisplayPanel.updatePositionText(positionX + 180f);
 				motionLessonDisplayPanel.updateVelocityText(velocityX);
 				motionLessonDisplayPanel.updateAccelerationText(accelerationX);
+				
+				motionLessonDisplayPanel.setDecreaseVelocityButtonState(true);
+				motionLessonDisplayPanel.setIncreaseVelocityButtonState(true);
+				motionLessonDisplayPanel.setDecreaseAccelerationButtonState(true);
+				motionLessonDisplayPanel.setIncreaseAccelerationButtonState(true);
+				
 				break;
 				
 			// projectile motion lesson
 			case 2:
-				entity.getVelocity().x = 20f;
-				entity.getVelocity().y = 50f;
 				
 				// variables for text
 				time = 0f;
@@ -1061,12 +1016,18 @@ public class LessonScreen {
 				accelerationY = entity.getAcceleration().y;
 				
 				projectileMotionLessonDisplayPanel.updateTimeText(time);
-				projectileMotionLessonDisplayPanel.updatePositionXText(positionX);
+				projectileMotionLessonDisplayPanel.updatePositionXText(positionX + 180f);
 				projectileMotionLessonDisplayPanel.updateVelocityXText(velocityX);
 				projectileMotionLessonDisplayPanel.updateAccelerationXText(accelerationX);
-				projectileMotionLessonDisplayPanel.updatePositionYText(positionY);
+				projectileMotionLessonDisplayPanel.updatePositionYText(positionY + 180f);
 				projectileMotionLessonDisplayPanel.updateVelocityYText(velocityY);
 				projectileMotionLessonDisplayPanel.updateAccelerationYText(accelerationY);
+				
+				projectileMotionLessonDisplayPanel.setIncreaseVelocityXButtonState(true);
+				projectileMotionLessonDisplayPanel.setDecreaseVelocityXButtonState(true);
+				projectileMotionLessonDisplayPanel.setIncreaseVelocityYButtonState(true);
+				projectileMotionLessonDisplayPanel.setDecreaseVelocityYButtonState(true);
+				
 				break;
 				
 			// Newton's Second Law lesson
@@ -1092,13 +1053,17 @@ public class LessonScreen {
 				newtonsSecondLawLessonDisplayPanel.updateMassText(mass);
 				newtonsSecondLawLessonDisplayPanel.updateNetForceText(netForce);
 				newtonsSecondLawLessonDisplayPanel.updateAccelerationText(accelerationX);
+				
+				newtonsSecondLawLessonDisplayPanel.setIncreaseMassButtonState(true);
+				newtonsSecondLawLessonDisplayPanel.setDecreaseMassButtonState(true);
+				
 				break;
 			
 			// force of gravity lesson
 			case 4:
 				
 				// force of gravity arrow
-				forceOfGravity = entity.getMass() * Math.abs(entity.getAcceleration().y);
+				forceOfGravity = entity.getMass() * entity.getAcceleration().y;
 				
 				forceOfGravityArrow.setScale(Math.abs(forceOfGravity) / 60f);
 				
@@ -1119,6 +1084,10 @@ public class LessonScreen {
 				forceOfGravityLessonDisplayPanel.updateMassText(mass);
 				forceOfGravityLessonDisplayPanel.updateForceOfGravityText(forceOfGravity);
 				forceOfGravityLessonDisplayPanel.updateAccelerationText(accelerationY);
+				
+				forceOfGravityLessonDisplayPanel.setIncreaseMassButtonState(true);
+				forceOfGravityLessonDisplayPanel.setDecreaseMassButtonState(true);
+				
 				break;
 			
 			// friction lesson
@@ -1154,6 +1123,10 @@ public class LessonScreen {
 				
 				frictionLessonDisplayPanel.updateTimeText(time);
 				frictionLessonDisplayPanel.updateVelocityText(velocityX);
+				
+				frictionLessonDisplayPanel.setIncreaseVelocityButtonState(true);
+				frictionLessonDisplayPanel.setDecreaseVelocityButtonState(true);
+				
 				break;
 		}
 	}

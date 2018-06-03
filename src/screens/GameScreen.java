@@ -401,7 +401,8 @@ public class GameScreen {
 								float mass = 20;
 								float e = -0.3f;
 											
-								selectedEntity = simulation.createCrateEntity(sideLength, posX, posY, z, mass, e);
+								selectedEntity = simulation.createCrateEntity(sideLength, posX, posY, z, 
+										0, 0, mass, e);
 										
 								program = 1;
 								return;
@@ -417,7 +418,8 @@ public class GameScreen {
 								float mass = 20;
 								float e = -0.7f;
 											
-								selectedEntity = simulation.createBallEntity(radius, posX, posY, z, mass, e);
+								selectedEntity = simulation.createBallEntity(radius, posX, posY, z, 
+										0, 0, mass, e);
 							
 								program = 1;
 								return;
@@ -540,6 +542,10 @@ public class GameScreen {
 			// down
 			else if (key == Main.KEY_DOWN)
 				sidebar.updateTopSimulationIndex(false);
+			
+			// r
+			else if (key == Main.KEY_R)
+				resetSimulation();
 		}
 	}
 	

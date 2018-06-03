@@ -59,7 +59,7 @@ public class Toolbar {
 		float scale = 1f;
 		
 		
-		float mButtonX = -450;
+		float mButtonX = -445;
 		Vector3f mButtonPos = new Vector3f(mButtonX, buttonY, z - 100f);
 		
 		float iButtonX = mButtonX + buttonWidth + 2f;

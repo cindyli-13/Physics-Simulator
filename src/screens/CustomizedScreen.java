@@ -19,6 +19,7 @@ import objects.Loader;
 import objects.Model;
 import objects.Rectangle;
 import renderEngine.Renderer;
+import textRender.Text;
 import widgets.Button;
 import widgets.GUIComponent;
 import widgets.Label;
@@ -49,6 +50,8 @@ public class CustomizedScreen {
 	
 	private Label selectASimLabel;
 	private Label title;
+	
+	private Text currentSimName;
 	
 	private float selectedEntityOriginalX;
 	private float selectedEntityOriginalY;
@@ -90,6 +93,9 @@ public class CustomizedScreen {
 		
 		// sidebar
 		sidebar = new Sidebar(loader, z, files, true);
+		
+		// current simulation name text
+		currentSimName = new Text("", 270, 180, z, 40f, 40f, loader);
 		
 		// save button
 		float buttonX = 250;
@@ -159,14 +165,10 @@ public class CustomizedScreen {
 			
 			String name = button.getFileName().substring(18, button.getFileName().length() - 4);
 			
-			if (name.length() <= 9)
-				button.getText().changeStr(name);
-			else
-				button.getText().changeStr(name.substring(0, 8));
+			button.getText().changeStr(name);
 			
 			button.getText().updatePosition(
-					-(20f/2 +0.5f*20f*button.getText().getGUIlist().size() + 8f)/2,
-					0);
+					-(20f/2 +0.5f*20f*button.getText().getGUIlist().size() + 8f)/2,0);
 		}
 		
 		guiComponents = new ArrayList<GUIComponent>();
@@ -196,6 +198,7 @@ public class CustomizedScreen {
 		sidebar.render(renderer);
 		simulation.render(renderer);
 		renderer.renderGUI(guiComponents);
+		renderer.renderGUI(currentSimName.getGUIlist());
 		
 		if (currentSim == -1)
 			renderer.render(selectASimLabel);
@@ -558,7 +561,8 @@ public class CustomizedScreen {
 								float mass = 20;
 								float e = -0.3f;
 									
-								selectedEntity = simulation.createCrateEntity(sideLength, posX, posY, z, mass, e);
+								selectedEntity = simulation.createCrateEntity(sideLength, posX, posY, z, 
+										0, 0, mass, e);
 								
 								program = 1;
 								return;
@@ -574,7 +578,8 @@ public class CustomizedScreen {
 								float mass = 20;
 								float e = -0.7f;
 									
-								selectedEntity = simulation.createBallEntity(radius, posX, posY, z, mass, e);
+								selectedEntity = simulation.createBallEntity(radius, posX, posY, z, 
+										0, 0, mass, e);
 								
 								program = 1;
 								return;
@@ -588,24 +593,41 @@ public class CustomizedScreen {
 				if (sidebar.getCreateNewSimulationButton().getAabb().intersects(x, y)
 						&& sidebar.getCreateNewSimulationButton().isEnabled()) {
 				
+					// pause simulation
 					simulation.setPause(false);
 					simulation.pausePlaySimulation();
 					
 					// ***** uses Java Swing to get user input *****
 					
 					// get user input
-					String input = JOptionPane.showInputDialog(null, "Enter a name for your simulation:");;
+					String input = JOptionPane.showInputDialog(null, 
+							"Enter a name for your simulation (8 characters max):");
 					
 					if (input != null) {
 						
-						input.trim();
+						// remove leading and trailing spaces and clip to 8 characters
+						input = input.trim();
 						
+						if (input.length() > 8)
+							input = input.substring(0, 8);
+						
+						// create file name
 						String fileName = "./data/customized_" + input + ".txt";
 						
 						int validName = 0;
 						
-						// check for invalid name
-						if (input.replace(" ", "").equals(""))
+						// these character: *, \, /, :, ;, <, >, ., ?, ", |
+						// cause problems with file I/O so they cannot be used in the 
+						// simulation name
+						
+						if (input.contains("*") || input.contains("\\") || input.contains("/")
+								|| input.contains(":") || input.contains(";") || input.contains("<")
+								|| input.contains(">") || input.contains(".") || input.contains("?")
+								|| input.contains("\"") || input.contains("|"))
+							validName = 1;
+						
+						// else check if name is all spaces
+						else if  (input.replace(" ", "").equals(""))
 							validName = 1;
 						
 						else {
@@ -613,9 +635,9 @@ public class CustomizedScreen {
 							// check if simulation already exists
 							for (String file: sidebar.getSimulationsData()) {
 								
-								if (file.equals(fileName)) {
+								if (file.compareToIgnoreCase(fileName) == 0) {
 									
-									validName = 1;
+									validName =2;
 									break;
 								}
 							}
@@ -631,14 +653,10 @@ public class CustomizedScreen {
 							SimulationButton newButton = sidebar.getButtons().get(sidebar.getButtons().size() - 1);
 							String name = newButton.getFileName().substring(18, newButton.getFileName().length() - 4);
 							
-							if (name.length() <= 9)
-								newButton.getText().changeStr(name);
-							else
-								newButton.getText().changeStr(name.substring(0, 8));
+							newButton.getText().changeStr(name);
 							
 							newButton.getText().updatePosition(
-									-(20f/2 +0.5f*20f*newButton.getText().getGUIlist().size() + 8f)/2,
-									0);
+									-(20f/2 +0.5f*20f*newButton.getText().getGUIlist().size() + 8f)/2, 0);
 							
 							// update file
 							IO.createOutputFile(fileName);
@@ -660,19 +678,39 @@ public class CustomizedScreen {
 							
 							// change to current simulation
 							simulation.getEntities().clear();
-							currentSim = sidebar.getSimulationsData().size();
+
+							for (int i = 0; i < sidebar.getSimulationsData().size(); i++) {
+								
+								if (sidebar.getSimulationsData().get(i).equals(fileName)) {
+									
+									currentSim = i + 1;
+									break;
+								}
+							}
 							
 							// update down button state
 							if (sidebar.getButtons().size() < 4)
 								sidebar.getDownButton().setModel(sidebar.getDownButtonDisabledModel());
 							else
 								sidebar.getDownButton().setModel(sidebar.getDownButtonEnabledModel());
+							
+							// set current simulation name text
+							
+							String toDisplay = "";
+							
+							for (int i = 0; i < (8 - name.length()); i++)
+								toDisplay += " " ; // add space
+							
+							toDisplay += name;
+							
+							currentSimName.changeStr(toDisplay);
 						}
 						
 						// if name is not valid
 						else if (validName == 1){
 							
-							JOptionPane.showMessageDialog(null, "That name is invalid.");
+							JOptionPane.showMessageDialog(null, "That name is invalid or contains invalid "
+									+ "characters (*, \\, /, :, ;, <, >, ., ?, \", |).");
 						}
 						
 						// if name is already taken
@@ -687,13 +725,28 @@ public class CustomizedScreen {
 				// loop through buttons of sidebar
 				for (int i = 0; i < sidebar.getButtons().size(); i++) {
 					
-					Button button = sidebar.getButtons().get(i);
+					SimulationButton button = sidebar.getButtons().get(i);
 					
 					// check if this button was clicked
 					if (button.getAabb().intersects(x, y) && button.isEnabled()) {
 					
 						currentSim = i + 1;
 						resetSimulation();
+						
+						// set current simulation name text
+						
+						// set current simulation name text
+						
+						String name = button.getText().getString();
+						String toDisplay = "";
+						
+						for (int j = 0; j < (8 - name.length()); j++)
+							toDisplay += " " ; // add space
+						
+						toDisplay += name;
+						
+						currentSimName.changeStr(toDisplay);
+						
 						return;
 					}
 					
@@ -739,6 +792,8 @@ public class CustomizedScreen {
 								IO.println(Float.toString(r.getWidth()));
 								IO.println(Float.toString(r.getPosition().x));
 								IO.println(Float.toString(r.getPosition().y));
+								IO.println(Float.toString(r.getVelocity().x));
+								IO.println(Float.toString(r.getVelocity().y));
 								IO.println(Float.toString(r.getMass()));
 								IO.println(Float.toString(r.getCoefficientOfRestitution()));
 							}
@@ -752,6 +807,8 @@ public class CustomizedScreen {
 								IO.println(Float.toString(c.getRadius()));
 								IO.println(Float.toString(c.getPosition().x));
 								IO.println(Float.toString(c.getPosition().y));
+								IO.println(Float.toString(c.getVelocity().x));
+								IO.println(Float.toString(c.getVelocity().y));
 								IO.println(Float.toString(c.getMass()));
 								IO.println(Float.toString(c.getCoefficientOfRestitution()));
 							}
@@ -768,34 +825,46 @@ public class CustomizedScreen {
 					
 					if (currentSim != -1) {
 						
-						// delete file
-						File file = new File(sidebar.getSimulationsData().get(currentSim - 1));
-						file.delete();
-						sidebar.getSimulationsData().remove(currentSim - 1);
+						// ask "are you sure" message
+						int choice = JOptionPane.showOptionDialog(null, "Are you sure you want to delete "
+								+ "this simulation?", "Delete Simulation", JOptionPane.YES_NO_OPTION, 
+								JOptionPane.PLAIN_MESSAGE, null, new Object[] {"Yes", "No"}, "");
 						
-						// edit customized_data_files.txt data
-						IO.createOutputFile("./data/customized_data_files.txt");
-						IO.println(Integer.toString(sidebar.getSimulationsData().size()));
-						
-						for (String fileName: sidebar.getSimulationsData())
-							IO.println(fileName);
-						
-						IO.closeOutputFile();
-						
-						// delete simulation button
-						Button button = sidebar.getButtons().get(currentSim - 1);
-						sidebar.getButtons().remove(button);
-						sidebar.getGUIComponents().remove(button);
-						
-						// clear simulation data
-						simulation.getEntities().clear();
-						
-						// update top simulation index
-						sidebar.updateTopSimulationIndex();
-						
-						currentSim = -1;
-						
-						System.out.println("Simulation deleted!");
+						// if user picks "yes"
+						if (choice == 0) {
+							
+							// delete file
+							File file = new File(sidebar.getSimulationsData().get(currentSim - 1));
+							file.delete();
+							sidebar.getSimulationsData().remove(currentSim - 1);
+							
+							// edit customized_data_files.txt data
+							IO.createOutputFile("./data/customized_data_files.txt");
+							IO.println(Integer.toString(sidebar.getSimulationsData().size()));
+							
+							for (String fileName: sidebar.getSimulationsData())
+								IO.println(fileName);
+							
+							IO.closeOutputFile();
+							
+							// delete simulation button
+							Button button = sidebar.getButtons().get(currentSim - 1);
+							sidebar.getButtons().remove(button);
+							sidebar.getGUIComponents().remove(button);
+							
+							// clear simulation data
+							simulation.getEntities().clear();
+							
+							// update top simulation index
+							sidebar.updateTopSimulationIndex();
+							
+							// update current simulation name text
+							currentSimName.changeStr("");
+							
+							currentSim = -1;
+							
+							System.out.println("Simulation deleted!");
+						}
 					}
 					return;
 				}
@@ -848,62 +917,8 @@ public class CustomizedScreen {
 					// create pop-up box
 					popUpBox = createPopUpBox(entity);
 					
-					// edit button states
-					
-					// size
-					if (entity.getScale() > 95)
-						popUpBox.setIncreaseSizeButtonState(false);
-					else 
-						popUpBox.setIncreaseSizeButtonState(true);
-					
-					if (entity.getScale() < 40)
-						popUpBox.setDecreaseMassButtonState(false);
-					else 
-						popUpBox.setDecreaseMassButtonState(true);
-					
-					// velocity x
-					if (entity.getVelocity().x > 95)
-						popUpBox.setIncreaseVelocityXButtonState(false);
-					else 
-						popUpBox.setIncreaseVelocityXButtonState(true);
-					
-					if (entity.getVelocity().x < -95)
-						popUpBox.setDecreaseVelocityXButtonState(false);
-					else 
-						popUpBox.setDecreaseVelocityXButtonState(true);
-					
-					// velocity y
-					if (entity.getVelocity().y > 95)
-						popUpBox.setIncreaseVelocityYButtonState(false);
-					else 
-						popUpBox.setIncreaseVelocityYButtonState(true);
-					
-					if (entity.getVelocity().y < -95)
-						popUpBox.setDecreaseVelocityYButtonState(false);
-					else 
-						popUpBox.setDecreaseVelocityYButtonState(true);
-					
-					// mass
-					if (entity.getMass() > 90)
-						popUpBox.setIncreaseMassButtonState(false);
-					else 
-						popUpBox.setIncreaseMassButtonState(true);
-					
-					if (entity.getMass() < 20)
-						popUpBox.setDecreaseMassButtonState(false);
-					else 
-						popUpBox.setDecreaseMassButtonState(true);
-					
 					selectedEntity = entity;
 					program = 2;
-					
-					// set states of increase and decrease size button
-					
-					if (selectedEntity.getScale() == 100f)
-						popUpBox.setIncreaseSizeButtonState(false);
-					
-					else if (selectedEntity.getScale() == 30f)
-						popUpBox.setDecreaseSizeButtonState(false);
 					
 					return;
 				}
@@ -932,6 +947,10 @@ public class CustomizedScreen {
 			// down
 			else if (key == Main.KEY_DOWN)
 				sidebar.updateTopSimulationIndex(false);
+			
+			// r
+			else if (key == Main.KEY_R)
+				resetSimulation();
 		}
 	}
 
@@ -1061,8 +1080,8 @@ public class CustomizedScreen {
 			size = ((Circle) entity).getRadius() * 2;
 		}
 		
-		float width = 230f;
-		float height = 200f;
+		float width = 250f;
+		float height = 180f;
 		
 		float x = entity.getPosition().x - width/2 - offsetX - 5f;
 		float y = entity.getPosition().y + 20f;
@@ -1080,13 +1099,60 @@ public class CustomizedScreen {
 		
 		
 		// create pop-up box
-		PopUpBox p = new PopUpBox(loader, model, position, rotation, scale, width, height, z);
+		PopUpBox p = new PopUpBox(loader, model, position, rotation, scale, width, height, z + 0.4f);
 		
 		// set values
 		p.updateSizeText(size);
 		p.updateMassText(entity.getMass());
 		p.updateVelocityXText(entity.getVelocity().x);
 		p.updateVelocityYText(entity.getVelocity().y);
+		
+		
+		// edit button states
+		
+		// size
+		if (entity.getScale() > 95f)
+			p.setIncreaseSizeButtonState(false);
+		else 
+			p.setIncreaseSizeButtonState(true);
+		
+		if (entity.getScale() < 35f)
+			p.setDecreaseSizeButtonState(false);
+		else 
+			p.setDecreaseSizeButtonState(true);
+		
+		// velocity x
+		if (entity.getVelocity().x > 995f)
+			p.setIncreaseVelocityXButtonState(false);
+		else 
+			p.setIncreaseVelocityXButtonState(true);
+		
+		if (entity.getVelocity().x < -995f)
+			p.setDecreaseVelocityXButtonState(false);
+		else 
+			p.setDecreaseVelocityXButtonState(true);
+		
+		// velocity y
+		if (entity.getVelocity().y > 995f)
+			p.setIncreaseVelocityYButtonState(false);
+		else 
+			p.setIncreaseVelocityYButtonState(true);
+		
+		if (entity.getVelocity().y < -995f)
+			p.setDecreaseVelocityYButtonState(false);
+		else 
+			p.setDecreaseVelocityYButtonState(true);
+		
+		// mass
+		if (entity.getMass() > 99f)
+			p.setIncreaseMassButtonState(false);
+		else 
+			p.setIncreaseMassButtonState(true);
+		
+		if (entity.getMass() < 2f)
+			p.setDecreaseMassButtonState(false);
+		else 
+			p.setDecreaseMassButtonState(true);
 		
 		return p;
 	}
@@ -1105,9 +1171,11 @@ public class CustomizedScreen {
 	 */
 	public void resetSimulation() {
 		
+		// pause simulation
 		simulation.setPause(false);
 		simulation.pausePlaySimulation();
 		
+		// load simulation
 		simulation.loadSimulation(sidebar.getSimulationsData().get(currentSim - 1));
 	}
 }

@@ -555,7 +555,7 @@ public class ProjectileMotionLessonDisplayPanel {
 	 */
 	public void updatePositionXText(float positionX) {
 		
-		if (positionX <= 999.9 && positionX >= -999.9)		
+		if (positionX <= 999.99 && positionX >= -999.99)		
 			positionXText.changeStr(floatToText(positionX));
 	}
 	
@@ -566,7 +566,7 @@ public class ProjectileMotionLessonDisplayPanel {
 	 */
 	public void updateVelocityXText(float velocityX) {
 		
-		if (velocityX <= 999.9 && velocityX >= -999.9) 			
+		if (velocityX <= 999.99 && velocityX >= -999.99) 			
 			velocityXText.changeStr(floatToText(velocityX));
 	}
 	
@@ -577,7 +577,7 @@ public class ProjectileMotionLessonDisplayPanel {
 	 */
 	public void updateAccelerationXText(float accelerationX) {
 		
-		if (accelerationX <= 999.9 && accelerationX >= -999.9)
+		if (accelerationX <= 999.99 && accelerationX >= -999.99)
 			accelerationXText.changeStr(floatToText(accelerationX));
 	}
 	
@@ -588,7 +588,7 @@ public class ProjectileMotionLessonDisplayPanel {
 	 */
 	public void updatePositionYText(float positionY) {
 		
-		if (positionY <= 999.9 && positionY >= -999.9)		
+		if (positionY <= 999.99 && positionY >= -999.99)		
 			positionYText.changeStr(floatToText(positionY));
 	}
 	
@@ -599,7 +599,7 @@ public class ProjectileMotionLessonDisplayPanel {
 	 */
 	public void updateVelocityYText(float velocityY) {
 		
-		if (velocityY <= 999.9 && velocityY >= -999.9) 			
+		if (velocityY <= 999.99 && velocityY >= -999.99) 			
 			velocityYText.changeStr(floatToText(velocityY));
 	}
 	
@@ -610,7 +610,7 @@ public class ProjectileMotionLessonDisplayPanel {
 	 */
 	public void updateAccelerationYText(float accelerationY) {
 		
-		if (accelerationY <= 999.9 && accelerationY >= -999.9)
+		if (accelerationY <= 999.99 && accelerationY >= -999.99)
 			accelerationYText.changeStr(floatToText(accelerationY));
 	}
 	
