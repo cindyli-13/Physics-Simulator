@@ -13,6 +13,7 @@ import org.lwjgl.BufferUtils;
 
 import io.IO;
 import main.Main;
+import objects.Cannon;
 import objects.Circle;
 import objects.Entity;
 import objects.Loader;
@@ -95,7 +96,7 @@ public class CustomizedScreen {
 		sidebar = new Sidebar(loader, z, files, true);
 		
 		// current simulation name text
-		currentSimName = new Text("", 270, 180, z, 40f, 40f, loader);
+		currentSimName = new Text("", 270, 180, z - 0.5f, 40f, 40f, loader);
 		
 		// save button
 		float buttonX = 250;
@@ -108,7 +109,7 @@ public class CustomizedScreen {
 		float[] texCoords = Entity.getTexCoords();
 		int[] indices = Entity.getIndices();
 				
-		Vector3f position = new Vector3f(buttonX, buttonY, z);
+		Vector3f position = new Vector3f(buttonX, buttonY, z - 100f);
 		Vector3f rotation = new Vector3f(0,0,0);
 		float scale = 1f;
 		
@@ -120,7 +121,7 @@ public class CustomizedScreen {
 		// delete button
 		buttonX += buttonWidth + 4f;
 		
-		position = new Vector3f(buttonX, buttonY, z);
+		position = new Vector3f(buttonX, buttonY, z - 100f);
 		
 		textureID = loader.loadTexture(DELETE_BUTTON_TEXTURE_FILE);
 		Model dButtonModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
@@ -235,7 +236,7 @@ public class CustomizedScreen {
 	public void update() {
 		
 		if (!simulation.isPaused())
-			simulation.update(false);
+			simulation.update(true);
 	}
 	
 	/**
@@ -412,77 +413,169 @@ public class CustomizedScreen {
 				// increase velocity x button
 				else if (popUpBox.getIncreaseVelocityXButton().getAabb().intersects(x, y)) {
 					
-					// increase entity's horizontal velocity
-					selectedEntity.getVelocity().x += 5f;
-					
-					if (selectedEntity.getVelocity().x > 995f) {
+					// cannon
+					if (selectedEntity instanceof Cannon) {
 						
-						selectedEntity.getVelocity().x = 999.9f;
-						popUpBox.setIncreaseVelocityXButtonState(false);
-					}
-					else {
-						popUpBox.setDecreaseVelocityXButtonState(true);
+						// increase cannon's stored horizontal velocity
+						selectedEntity.getStoredVelocity().x += 5f;
+						
+						if (selectedEntity.getStoredVelocity().x > 995f) {
+							
+							selectedEntity.getStoredVelocity().x = 999.9f;
+							popUpBox.setIncreaseVelocityXButtonState(false);
+						}
+						else {
+							popUpBox.setDecreaseVelocityXButtonState(true);
+						}
+						
+						// update text
+						popUpBox.updateVelocityXText(selectedEntity.getStoredVelocity().x);
 					}
 					
-					// update text
-					popUpBox.updateVelocityXText(selectedEntity.getVelocity().x);
+					// not cannon
+					else {
+						
+						// increase entity's horizontal velocity
+						selectedEntity.getVelocity().x += 5f;
+						
+						if (selectedEntity.getVelocity().x > 995f) {
+							
+							selectedEntity.getVelocity().x = 999.9f;
+							popUpBox.setIncreaseVelocityXButtonState(false);
+						}
+						else {
+							popUpBox.setDecreaseVelocityXButtonState(true);
+						}
+						
+						// update text
+						popUpBox.updateVelocityXText(selectedEntity.getVelocity().x);
+					}
 				}
 				
 				// decrease velocity x button
 				else if (popUpBox.getDecreaseVelocityXButton().getAabb().intersects(x, y)) {
 					
-					// decrease entity's horizontal velocity
-					selectedEntity.getVelocity().x -= 5f;
-					
-					if (selectedEntity.getVelocity().x < -995) {
+					// cannon
+					if (selectedEntity instanceof Cannon) {
 						
-						selectedEntity.getVelocity().x = -999.9f;
-						popUpBox.setDecreaseVelocityXButtonState(false);
-					}
-					else {
-						popUpBox.setIncreaseVelocityXButtonState(true);
+						// decrease cannon's stored horizontal velocity
+						selectedEntity.getStoredVelocity().x -= 5f;
+						
+						if (selectedEntity.getStoredVelocity().x < -995) {
+							
+							selectedEntity.getStoredVelocity().x = -999.9f;
+							popUpBox.setDecreaseVelocityXButtonState(false);
+						}
+						else {
+							popUpBox.setIncreaseVelocityXButtonState(true);
+						}
+						
+						// update text
+						popUpBox.updateVelocityXText(selectedEntity.getStoredVelocity().x);
 					}
 					
-					// update text
-					popUpBox.updateVelocityXText(selectedEntity.getVelocity().x);
+					// not cannon
+					else {
+						
+						// decrease entity's horizontal velocity
+						selectedEntity.getVelocity().x -= 5f;
+						
+						if (selectedEntity.getVelocity().x < -995) {
+							
+							selectedEntity.getVelocity().x = -999.9f;
+							popUpBox.setDecreaseVelocityXButtonState(false);
+						}
+						else {
+							popUpBox.setIncreaseVelocityXButtonState(true);
+						}
+						
+						// update text
+						popUpBox.updateVelocityXText(selectedEntity.getVelocity().x);
+					}
 				}
 				
 				// increase velocity y button
 				else if (popUpBox.getIncreaseVelocityYButton().getAabb().intersects(x, y)) {
 					
-					// increase entity's vertical velocity
-					selectedEntity.getVelocity().y += 5f;
-					
-					if (selectedEntity.getVelocity().y > 995f) {
+					// cannon
+					if (selectedEntity instanceof Cannon) {
 						
-						selectedEntity.getVelocity().y = 999.9f;
-						popUpBox.setIncreaseVelocityYButtonState(false);
-					}
-					else {
-						popUpBox.setDecreaseVelocityYButtonState(true);
+						// increase cannon's stored vertical velocity
+						selectedEntity.getStoredVelocity().y += 5f;
+						
+						if (selectedEntity.getStoredVelocity().y > 995f) {
+							
+							selectedEntity.getStoredVelocity().y = 999.9f;
+							popUpBox.setIncreaseVelocityYButtonState(false);
+						}
+						else {
+							popUpBox.setDecreaseVelocityYButtonState(true);
+						}
+						
+						// update text
+						popUpBox.updateVelocityYText(selectedEntity.getStoredVelocity().y);
 					}
 					
-					// update text
-					popUpBox.updateVelocityYText(selectedEntity.getVelocity().y);
+					// not cannon
+					else {
+						
+						// increase entity's vertical velocity
+						selectedEntity.getVelocity().y += 5f;
+						
+						if (selectedEntity.getVelocity().y > 995f) {
+							
+							selectedEntity.getVelocity().y = 999.9f;
+							popUpBox.setIncreaseVelocityYButtonState(false);
+						}
+						else {
+							popUpBox.setDecreaseVelocityYButtonState(true);
+						}
+						
+						// update text
+						popUpBox.updateVelocityYText(selectedEntity.getVelocity().y);
+					}
 				}
 				
 				// decrease velocity y button
 				else if (popUpBox.getDecreaseVelocityYButton().getAabb().intersects(x, y)) {
 					
-					// decrease entity's vertical velocity
-					selectedEntity.getVelocity().y -= 5f;
-					
-					if (selectedEntity.getVelocity().y < -995) {
+					// cannon
+					if (selectedEntity instanceof Cannon) {
 						
-						selectedEntity.getVelocity().y = -999.9f;
-						popUpBox.setDecreaseVelocityYButtonState(false);
-					}
-					else {
-						popUpBox.setIncreaseVelocityYButtonState(true);
+						// decrease cannon's stored vertical velocity
+						selectedEntity.getStoredVelocity().y -= 5f;
+						
+						if (selectedEntity.getStoredVelocity().y < -995) {
+							
+							selectedEntity.getStoredVelocity().y = -999.9f;
+							popUpBox.setDecreaseVelocityYButtonState(false);
+						}
+						else {
+							popUpBox.setIncreaseVelocityYButtonState(true);
+						}
+						
+						// update text
+						popUpBox.updateVelocityYText(selectedEntity.getStoredVelocity().y);
 					}
 					
-					// update text
-					popUpBox.updateVelocityYText(selectedEntity.getVelocity().y);
+					// not cannon
+					else {
+						
+						// decrease entity's vertical velocity
+						selectedEntity.getVelocity().y -= 5f;
+						
+						if (selectedEntity.getVelocity().y < -995) {
+							
+							selectedEntity.getVelocity().y = -999.9f;
+							popUpBox.setDecreaseVelocityYButtonState(false);
+						}
+						else {
+							popUpBox.setIncreaseVelocityYButtonState(true);
+						}
+						
+						// update text
+						popUpBox.updateVelocityYText(selectedEntity.getVelocity().y);
+					}
 				}
 				
 				// increase mass button
@@ -538,6 +631,10 @@ public class CustomizedScreen {
 							// pause simulation
 							simulation.setPause(true);
 							
+							// reset to no simulations
+							currentSim = -1;
+							currentSimName.changeStr("");
+							
 							main.setCurrScreen(0);
 							return;
 						}
@@ -581,6 +678,23 @@ public class CustomizedScreen {
 								selectedEntity = simulation.createBallEntity(radius, posX, posY, z, 
 										0, 0, mass, e);
 								
+								program = 1;
+								return;
+							}
+							
+							// cannon button
+							else if (button.equals(toolbar.getCannonButton()) && simulation.isPaused()) {
+								
+								float sideLength = 50;
+								float posX = toolbar.getCannonButton().getPosition().x;
+								float posY = toolbar.getCannonButton().getPosition().y;
+								
+								float mass = 20;
+								float e = -0.7f;
+											
+								selectedEntity = simulation.createCannonEntity(sideLength, posX, posY, 0, 0, 
+										z, mass, e);
+							
 								program = 1;
 								return;
 							}
@@ -784,16 +898,35 @@ public class CustomizedScreen {
 							// rectangle
 							if (entity instanceof Rectangle) {
 									
-								Rectangle r = (Rectangle) entity;
+								// cannon
+								if (entity instanceof Cannon) {
 									
-								IO.println("RECTANGLE");
-								IO.println(Float.toString(r.getWidth()));
-								IO.println(Float.toString(r.getPosition().x));
-								IO.println(Float.toString(r.getPosition().y));
-								IO.println(Float.toString(r.getVelocity().x));
-								IO.println(Float.toString(r.getVelocity().y));
-								IO.println(Float.toString(r.getMass()));
-								IO.println(Float.toString(r.getCoefficientOfRestitution()));
+									Cannon r = (Cannon) entity;
+									
+									IO.println("CANNON");
+									IO.println(Float.toString(r.getWidth()));
+									IO.println(Float.toString(r.getPosition().x));
+									IO.println(Float.toString(r.getPosition().y));
+									IO.println(Float.toString(r.getStoredVelocity().x));
+									IO.println(Float.toString(r.getStoredVelocity().y));
+									IO.println(Float.toString(r.getMass()));
+									IO.println(Float.toString(r.getCoefficientOfRestitution()));
+								}
+								
+								// regular rectangle
+								else {
+									
+									Rectangle r = (Rectangle) entity;
+									
+									IO.println("RECTANGLE");
+									IO.println(Float.toString(r.getWidth()));
+									IO.println(Float.toString(r.getPosition().x));
+									IO.println(Float.toString(r.getPosition().y));
+									IO.println(Float.toString(r.getVelocity().x));
+									IO.println(Float.toString(r.getVelocity().y));
+									IO.println(Float.toString(r.getMass()));
+									IO.println(Float.toString(r.getCoefficientOfRestitution()));
+								}
 							}
 								
 							// circle
@@ -1108,45 +1241,78 @@ public class CustomizedScreen {
 		
 		// edit button states
 		
+		// cannon
+		if (entity instanceof Cannon) {
+					
+			p.updateVelocityXText(entity.getStoredVelocity().x);
+			p.updateVelocityYText(entity.getStoredVelocity().y);
+			
+			// velocity x
+			if (entity.getStoredVelocity().x > 995f)
+				p.setIncreaseVelocityXButtonState(false);
+			else 
+				p.setIncreaseVelocityXButtonState(true);
+							
+			if (entity.getStoredVelocity().x < -995f)
+				p.setDecreaseVelocityXButtonState(false);
+			else 
+				p.setDecreaseVelocityXButtonState(true);
+							
+			// velocity y
+			if (entity.getStoredVelocity().y > 995f)
+				p.setIncreaseVelocityYButtonState(false);
+			else 
+				p.setIncreaseVelocityYButtonState(true);
+					
+			if (entity.getStoredVelocity().y < -995f)
+				p.setDecreaseVelocityXButtonState(false);
+			else 
+				p.setDecreaseVelocityXButtonState(true);
+		}
+				
+		// not cannon
+		else {
+			
+			// velocity x
+			if (entity.getVelocity().x > 995f)
+				p.setIncreaseVelocityXButtonState(false);
+			else 
+				p.setIncreaseVelocityXButtonState(true);
+			
+			if (entity.getVelocity().x < -995f)
+				p.setDecreaseVelocityXButtonState(false);
+			else 
+				p.setDecreaseVelocityXButtonState(true);
+			
+			// velocity y
+			if (entity.getVelocity().y > 995f)
+				p.setIncreaseVelocityYButtonState(false);
+			else 
+				p.setIncreaseVelocityYButtonState(true);
+			
+			if (entity.getVelocity().y < -995f)
+				p.setDecreaseVelocityYButtonState(false);
+			else 
+				p.setDecreaseVelocityYButtonState(true);
+		}
+		
 		// size
 		if (entity.getScale() > 95f)
 			p.setIncreaseSizeButtonState(false);
 		else 
 			p.setIncreaseSizeButtonState(true);
-		
+					
 		if (entity.getScale() < 35f)
 			p.setDecreaseSizeButtonState(false);
 		else 
 			p.setDecreaseSizeButtonState(true);
-		
-		// velocity x
-		if (entity.getVelocity().x > 995f)
-			p.setIncreaseVelocityXButtonState(false);
-		else 
-			p.setIncreaseVelocityXButtonState(true);
-		
-		if (entity.getVelocity().x < -995f)
-			p.setDecreaseVelocityXButtonState(false);
-		else 
-			p.setDecreaseVelocityXButtonState(true);
-		
-		// velocity y
-		if (entity.getVelocity().y > 995f)
-			p.setIncreaseVelocityYButtonState(false);
-		else 
-			p.setIncreaseVelocityYButtonState(true);
-		
-		if (entity.getVelocity().y < -995f)
-			p.setDecreaseVelocityYButtonState(false);
-		else 
-			p.setDecreaseVelocityYButtonState(true);
-		
+					
 		// mass
 		if (entity.getMass() > 99f)
 			p.setIncreaseMassButtonState(false);
 		else 
 			p.setIncreaseMassButtonState(true);
-		
+					
 		if (entity.getMass() < 2f)
 			p.setDecreaseMassButtonState(false);
 		else 

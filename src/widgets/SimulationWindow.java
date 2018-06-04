@@ -13,7 +13,7 @@ import objects.Loader;
 import objects.Model;
 import objects.Rectangle;
 import physicsEngine.Physics;
-import physicsEngine.PhysicsGameMode;
+import physicsEngine.PhysicsWithCannons;
 import renderEngine.Renderer;
 
 /**
@@ -37,7 +37,6 @@ public class SimulationWindow {
 	private ArrayList<Entity> entities;
 	private ArrayList<Entity> boundaries;
 	private ArrayList<Entity> other;
-	private ArrayList<Integer> velocities;
 	private ArrayList<GUIComponent> guiComponents;
 	
 	private Loader loader;
@@ -133,7 +132,7 @@ public class SimulationWindow {
 		Model gModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 		
 		ground = new Rectangle(gModel, gPos, velocity, acceleration, rotation, scale, 
-				maximumMass, 0, gWidth, gHeight, GROUND_STATIC_FRICTION, GROUND_KINETIC_FRICTION);
+				maximumMass, -1f, gWidth, gHeight, GROUND_STATIC_FRICTION, GROUND_KINETIC_FRICTION);
 		
 		// left boundary
 		float lWidth = 30f;
@@ -148,7 +147,7 @@ public class SimulationWindow {
 		boundaryModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 		
 		leftBoundary = new Rectangle(boundaryModel, lPos, velocity, acceleration, rotation, scale, 
-				maximumMass, 0, lWidth, lHeight, BOUNDARY_STATIC_FRICTION, BOUNDARY_KINETIC_FRICTION);
+				maximumMass, -1f, lWidth, lHeight, BOUNDARY_STATIC_FRICTION, BOUNDARY_KINETIC_FRICTION);
 		
 		// right boundary
 		float rWidth = lWidth;	// same as left boundary
@@ -163,7 +162,7 @@ public class SimulationWindow {
 		Model rModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 				
 		rightBoundary = new Rectangle(rModel, rPos, velocity, acceleration, rotation, scale, 
-				maximumMass, 0, rWidth, rHeight, BOUNDARY_STATIC_FRICTION, BOUNDARY_KINETIC_FRICTION);
+				maximumMass, -1f, rWidth, rHeight, BOUNDARY_STATIC_FRICTION, BOUNDARY_KINETIC_FRICTION);
 		
 		// top boundary
 		float tWidth = gWidth;
@@ -178,7 +177,7 @@ public class SimulationWindow {
 		Model tModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 				
 		topBoundary = new Rectangle(tModel, tPos, velocity, acceleration, rotation, scale, 
-				maximumMass, 0, tWidth, tHeight, BOUNDARY_STATIC_FRICTION, BOUNDARY_KINETIC_FRICTION);
+				maximumMass, -1f, tWidth, tHeight, BOUNDARY_STATIC_FRICTION, BOUNDARY_KINETIC_FRICTION);
 		
 		
 		// initialize boundaries array list
@@ -222,7 +221,7 @@ public class SimulationWindow {
 		float buttonY = tY + tHeight/2 + buttonHeight/2 + 20f;
 				
 		vertices = Entity.getVertices(buttonWidth, buttonHeight, z + 0.01f);
-		Vector3f position = new Vector3f(buttonX, buttonY, z);
+		Vector3f position = new Vector3f(buttonX, buttonY, z - 100f);
 				
 		textureID = loader.loadTexture(PAUSE_BUTTON_TEXTURE_FILE);
 		pauseButtonModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
@@ -240,7 +239,7 @@ public class SimulationWindow {
 				
 		buttonX -= buttonWidth + 5f;
 						
-		position = new Vector3f(buttonX, buttonY, z);
+		position = new Vector3f(buttonX, buttonY, z - 100f);
 						
 		textureID = loader.loadTexture(RESET_BUTTON_TEXTURE_FILE);
 		Model model = loader.loadToVAO(vertices, texCoords, indices, textureID);
@@ -291,7 +290,6 @@ public class SimulationWindow {
 		
 		this.z = z;
 		this.loader = loader;
-		velocities = new ArrayList<Integer>();
 		
 		// set up min and max points
 		min = new Vector3f(leftBoundary.getAabb().getMax().x, ground.getAabb().getMax().y, z);
@@ -485,12 +483,15 @@ public class SimulationWindow {
 	 * @param sideLength	the side length of the cannon 
 	 * @param x				the x coordinate of the cannon's center
 	 * @param y				the y coordinate of the cannon's center
+	 * @param vx			the horizontal component of the cannon's stored velocity
+	 * @param vy			the vertical component of the cannon's stored velocity
 	 * @param z				the z coordinate of the cannon
 	 * @param mass			the cannon's mass
 	 * @param e				the cannon's coefficient of restitution
 	 * @return cannon		the cannon entity
 	 */
-	public Entity createCannonEntity( float sideLength, float x, float y, float z, float mass, float e) {
+	public Entity createCannonEntity( float sideLength, float x, float y, float vx, float vy, 
+			float z, float mass, float e) {
 		
 		Vector3f position = new Vector3f(x,y,z);
 		Vector3f velocity = new Vector3f(0,0,0);
@@ -501,9 +502,10 @@ public class SimulationWindow {
 		Cannon cannon = new Cannon(cannonModel, position, velocity, acceleration, rotation, scale, 
 				mass, e,sideLength, sideLength, CRATE_STATIC_FRICTION, CRATE_KINETIC_FRICTION);
 		
+		cannon.getStoredVelocity().x = vx;
+		cannon.getStoredVelocity().y = vy;
+		
 		entities.add(cannon);
-		velocities.add(20);
-		velocities.add(25);		
 		return cannon;
 	}
 	
@@ -523,9 +525,9 @@ public class SimulationWindow {
 	/**
 	 * Updates each object in the simulation.
 	 * 
-	 * @param dt	the change in time, or time step
+	 * @param physicsWithCannons	whether or not the physics allows cannons
 	 */
-	public void update(boolean gameMode) {
+	public void update(boolean physicsWithCannons) {
 		
 		for (Entity entity:entities) {
 			entity.update(dt);
@@ -535,8 +537,8 @@ public class SimulationWindow {
 			boundary.update(dt);
 		}
 		
-		if (gameMode)
-			PhysicsGameMode.collision(entities, boundaries, z);
+		if (physicsWithCannons)
+			PhysicsWithCannons.collision(entities, boundaries, z);
 		else
 			Physics.collision(entities, ground, leftBoundary, topBoundary, rightBoundary, z);
 	}
@@ -630,6 +632,20 @@ public class SimulationWindow {
 					float e = Float.parseFloat(IO.readLine());
 					
 					ncreateCrateEntity(sideLength, x, y, z, mass, e);
+				}
+				
+				// cannon
+				else if (type.equals("CANNON")) {
+							
+					float sideLength = Float.parseFloat(IO.readLine());
+					float x = Float.parseFloat(IO.readLine());
+					float y = Float.parseFloat(IO.readLine());
+					float vx = Float.parseFloat(IO.readLine());
+					float vy = Float.parseFloat(IO.readLine()); 
+					float mass = Float.parseFloat(IO.readLine());
+					float e = Float.parseFloat(IO.readLine());
+					
+					createCannonEntity(sideLength, x, y, z, vx, vy, mass, e);
 				}
 						
 				// circle
@@ -764,6 +780,26 @@ public class SimulationWindow {
 	 */
 	public ArrayList<Entity> getEntities() {
 		return entities;
+	}
+	
+	/**
+	 * Returns the array list of other objects in the simulation
+	 * window.
+	 * 
+	 * @return other
+	 */
+	public ArrayList<Entity> getOther() {
+		return other;
+	}
+	
+	/**
+	 * Returns the array list of boundaries in the simulation
+	 * window.
+	 * 
+	 * @return boundaries
+	 */
+	public ArrayList<Entity> getBoundaries() {
+		return boundaries;
 	}
 	
 	/**

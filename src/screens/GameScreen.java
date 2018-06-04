@@ -243,13 +243,16 @@ public class GameScreen {
 			Boolean hit = levels.check(currentSim, simulation.getEntities().get(0), simulation.getTarget());
 			if(hit==true)
 			{
-				int nlabel = currentSim+1;
-				sidebar.getButtons().get(currentSim).getModel().setTextureID("./res/level_"+nlabel+".png", loader);
-				sidebar.getButtons().get(currentSim).setEnabled(true);
-				renderer.render(levels.displayMessage(simulation, loader, z));
+				if (currentSim < 5) {
 				
-				if (currentSim < 5)
+					int nlabel = currentSim+1;
+					sidebar.getButtons().get(currentSim).getModel().setTextureID("./res/level_"+nlabel+".png", loader);
+					sidebar.getButtons().get(currentSim).setEnabled(true);
+					
 					levelsUnlocked[currentSim] = true;
+				}
+				
+				renderer.render(levels.displayMessage(simulation, loader, z));
 			}
 		}
 	}
@@ -605,7 +608,16 @@ public class GameScreen {
 										
 							// pause simulation
 							simulation.setPause(true);
-													
+							
+							// reset to no simulations
+							currentSim = -1;
+							simulation.getEntities().clear();
+							simulation.getOther().clear();
+							
+							while (simulation.getBoundaries().size() > 4) {
+								simulation.getBoundaries().remove(4);
+							}
+							
 							main.setCurrScreen(0);
 							return;
 						}
@@ -661,7 +673,8 @@ public class GameScreen {
 								float mass = 20;
 								float e = -0.7f;
 											
-								selectedEntity = simulation.createCannonEntity(sideLength, posX, posY, z, mass, e);
+								selectedEntity = simulation.createCannonEntity(sideLength, posX, posY, 0, 0, 
+										z, mass, e);
 							
 								program = 1;
 								return;
@@ -957,8 +970,8 @@ public class GameScreen {
 		// set values
 		p.updateSizeText(size);
 		p.updateMassText(entity.getMass());
-		p.updateVelocityXText(entity.getVelocity().x);
-		p.updateVelocityYText(entity.getVelocity().y);
+		p.updateVelocityXText(entity.getStoredVelocity().x);
+		p.updateVelocityYText(entity.getStoredVelocity().y);
 				
 		// edit button states
 		

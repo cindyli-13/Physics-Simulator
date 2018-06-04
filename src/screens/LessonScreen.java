@@ -518,6 +518,9 @@ public class LessonScreen {
 						// pause simulation
 						simulation.setPause(true);
 							
+						// reset to no simulations
+						currentSim = -1;
+						
 						main.setCurrScreen(0);
 						return;
 					}
