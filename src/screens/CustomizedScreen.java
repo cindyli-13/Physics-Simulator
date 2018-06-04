@@ -235,7 +235,7 @@ public class CustomizedScreen {
 	public void update() {
 		
 		if (!simulation.isPaused())
-			simulation.update();
+			simulation.update(false);
 	}
 	
 	/**
@@ -732,8 +732,6 @@ public class CustomizedScreen {
 					
 						currentSim = i + 1;
 						resetSimulation();
-						
-						// set current simulation name text
 						
 						// set current simulation name text
 						

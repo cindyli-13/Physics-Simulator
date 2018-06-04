@@ -271,7 +271,7 @@ public class LessonScreen {
 		
 		if (!simulation.isPaused() && currentSim != -1) {
 			
-			simulation.update();
+			simulation.update(false);
 			timeLeft -= simulation.getDt();
 			time += simulation.getDt();
 			

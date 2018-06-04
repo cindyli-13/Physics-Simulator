@@ -23,9 +23,9 @@ public class UserGuideScreen {
 		
 		String pt1 = "<html><body width='";
         String pt2 =
-           "'><h1>Instructions</h1>" +
+           "'><h1>User Guide</h1>" +
            "<p>Features " +
-           "<pre>            1. The top bar : " +
+           "<pre>            1. The tool bar : " +
            "<pre>               allows you to drag and drop the selected objects over to your simulation" +
            "<pre>            2. Once an object is in your simulation, you will be allowed to click on it " +
            "<pre>               to change the dimensions" +

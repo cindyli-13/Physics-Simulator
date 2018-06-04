@@ -5,10 +5,13 @@ import static org.lwjgl.glfw.GLFW.*;
 import java.nio.DoubleBuffer;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
 import main.Main;
+import objects.Cannon;
 import objects.Circle;
 import objects.Entity;
 import objects.Loader;
@@ -18,6 +21,7 @@ import renderEngine.Renderer;
 import widgets.Button;
 import widgets.GUIComponent;
 import widgets.Label;
+import widgets.Levels;
 import widgets.PopUpBox;
 import widgets.Sidebar;
 import widgets.SimulationWindow;
@@ -50,6 +54,8 @@ public class GameScreen {
 	private Loader loader;
 			
 	private float z;
+	
+	private Levels levels = new Levels();
 			
 	// specifies the program:
 	// 0 = default
@@ -59,19 +65,25 @@ public class GameScreen {
 	private int program;
 			
 	private int currentSim;
+	
+	private boolean[] levelsUnlocked;
 			
 	private long window;
 	private float screenWidth;
 	private float screenHeight;
-			
+	
+	private int lockedMessage=0;
+	
 	// static variables
 	public static final String LEVEL_1_TEXTURE_FILE = "./res/level_1.png";
 	public static final String LEVEL_2_TEXTURE_FILE = "./res/level_2.png";
 	public static final String LEVEL_3_TEXTURE_FILE = "./res/level_3.png";
 	public static final String LEVEL_4_TEXTURE_FILE = "./res/level_4.png";
 	public static final String LEVEL_5_TEXTURE_FILE = "./res/level_5.png";
+	public static final String LOCK_TEXTURE_FILE = "./res/lock.png";
 	public static final String SELECT_A_SIM_LABEL_TEXTURE_FILE = "./res/selectASimulationLabel.png";
 	public static final String TITLE_TEXTURE_FILE = "./res/gameLabel.png";
+	public static final String LOCK_MESSAGE_TEXTURE_FILE = "./res/lockMessage.png";
 	
 	// constructor
 	public GameScreen(long window, Loader loader, float screenWidth, float screenHeight, float z,
@@ -87,10 +99,10 @@ public class GameScreen {
 		sidebar = new Sidebar(loader, z, files, false);
 				
 		// select a simulation label
-		float labelWidth = 200f;
-		float labelHeight = 200f;
-		
-		float[] vertices = Entity.getVertices(labelWidth, labelHeight, z);
+		float labelWidth = 3f;
+		float labelHeight = 3f;
+						
+		float[] vertices = Entity.getVertices(70, 70, z);
 		float[] texCoords = Entity.getTexCoords();
 		int[] indices = Entity.getIndices();
 		
@@ -103,7 +115,7 @@ public class GameScreen {
 		int textureID = loader.loadTexture(SELECT_A_SIM_LABEL_TEXTURE_FILE);
 		Model selectionASimModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 						
-		selectASimLabel = new Label(selectionASimModel, position, rotation, 1, labelWidth, labelHeight);
+		selectASimLabel = new Label(selectionASimModel, position, rotation, labelWidth, labelWidth, labelHeight);
 				
 		// title label
 		labelWidth = 200f;
@@ -121,9 +133,18 @@ public class GameScreen {
 				
 		title = new Label(titleModel, position, rotation, 1, labelWidth, labelHeight);
 		
+		
+		
+//		textureID = loader.loadTexture(LOCK_MESSAGE_TEXTURE_FILE);
+//		Model LockMessageModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+//				
+//		lockMessage = new Label(LockMessageModel, position, rotation, labelWidth, labelWidth, labelHeight);
+		
+		
 		// initialize GUI components array list
 		guiComponents = new ArrayList<GUIComponent>();
 		guiComponents.add(title);
+		
 		
 		
 		// reset simulation models
@@ -136,25 +157,30 @@ public class GameScreen {
 				
 		// level 2
 		sidebar.getButtons().get(1).setModel(loader.loadToVAO(vertices, texCoords, indices, 
-			loader.loadTexture(LEVEL_2_TEXTURE_FILE)));
+			loader.loadTexture(LOCK_TEXTURE_FILE)));
 				
 		// level 3
 		sidebar.getButtons().get(2).setModel(loader.loadToVAO(vertices, texCoords, indices, 
-			loader.loadTexture(LEVEL_3_TEXTURE_FILE)));
+			loader.loadTexture(LOCK_TEXTURE_FILE)));
 				
 		// level 4
 		sidebar.getButtons().get(3).setModel(loader.loadToVAO(vertices, texCoords, indices, 
-			loader.loadTexture(LEVEL_4_TEXTURE_FILE)));
+			loader.loadTexture(LOCK_TEXTURE_FILE)));
 				
 		// level 5
 		sidebar.getButtons().get(4).setModel(loader.loadToVAO(vertices, texCoords, indices, 
-			loader.loadTexture(LEVEL_5_TEXTURE_FILE)));
-				
+			loader.loadTexture(LOCK_TEXTURE_FILE)));
+			
+		for(int i = 1; i<sidebar.getButtons().size();i++) {
+			
+			sidebar.getButtons().get(i).setEnabled(false);
+		}
 		this.loader = loader;
-						
+		
 		this.z = z;
 		program = 0;
 		currentSim = -1;
+		levelsUnlocked = new boolean[] {true, false, false, false, false};
 						
 		this.window = window;
 		this.screenWidth = screenWidth;
@@ -173,6 +199,12 @@ public class GameScreen {
 		simulation.render(renderer);
 		renderer.renderGUI(guiComponents);
 		
+		if(lockedMessage==1)
+		{
+		
+				renderer.render(levels.ndisplayMessage(simulation, loader, z));	
+		}
+		lockedMessage=0;
 		if (currentSim == -1)
 			renderer.render(selectASimLabel);
 		
@@ -195,12 +227,33 @@ public class GameScreen {
 					(popUpBox.getPosition().x + popUpBox.getWidth()/2 + x + 5f);
 			
 			float offsetY = selectedEntity.getPosition().y - 
-					(popUpBox.getPosition().y - popUpBox.getHeight()/2 - 5f);
+					(popUpBox.getPosition().y - 20f);
 			
 			popUpBox.update(offsetX, offsetY);
 			popUpBox.render(renderer);
 		}
+//		if(currentSim==1 && simulation.getEntities().get(0).intersects(simulation.getTarget())==true)
+//		{
+//			System.out.println("Target hit");
+//			//return true;
+//		}
+		else if(!simulation.isPaused() && currentSim>0)
+		{
+			
+			Boolean hit = levels.check(currentSim, simulation.getEntities().get(0), simulation.getTarget());
+			if(hit==true)
+			{
+				int nlabel = currentSim+1;
+				sidebar.getButtons().get(currentSim).getModel().setTextureID("./res/level_"+nlabel+".png", loader);
+				sidebar.getButtons().get(currentSim).setEnabled(true);
+				renderer.render(levels.displayMessage(simulation, loader, z));
+				
+				if (currentSim < 5)
+					levelsUnlocked[currentSim] = true;
+			}
+		}
 	}
+	
 	
 	/**
 	 * Updates the game screen.
@@ -208,7 +261,7 @@ public class GameScreen {
 	public void update() {
 		
 		if (!simulation.isPaused())
-			simulation.update();
+			simulation.update(true);
 	}
 	/**
 	 * Contains the logic for input handling
@@ -268,100 +321,275 @@ public class GameScreen {
 						
 				// close button
 				if (popUpBox.getCloseButton().getAabb().intersects(x, y)) {
-							
+					
 					popUpBox = null;
 					selectedEntity = null;
 					program = 0;
 					return;
 				}
-						
+				
 				// delete entity button
 				else if (popUpBox.getDeleteEntityButton().getAabb().intersects(x, y)) {
-							
+					
 					// find and remove entity from array list
 					for (int i = 0; i < simulation.getEntities().size(); i++) {
-								
+						
 						if (selectedEntity.equals(simulation.getEntities().get(i))) {
 							simulation.getEntities().remove(i);
 							break;
 						}
 					}
-							
+					
 					popUpBox = null;
 					selectedEntity = null;
 					program = 0;
 					return;
 				}
+				
+				// if entity is a cannon
+				else if (selectedEntity instanceof Cannon) {
+					
+					// increase velocity x button
+					if (popUpBox.getIncreaseVelocityXButton().getAabb().intersects(x, y)) {
 						
-				// increase size button
-				else if (popUpBox.getIncreaseSizeButton().getAabb().intersects(x, y)) {
+						// increase entity's horizontal velocity
+						selectedEntity.getStoredVelocity().x += 5f;
+						
+						if (selectedEntity.getStoredVelocity().x > 995f) {
 							
-					// increase entity's scale
-					selectedEntity.setScale(selectedEntity.getScale() + 10f);
-							
-					if (selectedEntity.getScale() >= 100f) {
-								
-						selectedEntity.setScale(100f);
-						popUpBox.setIncreaseSizeButtonState(false);
+							selectedEntity.getStoredVelocity().x = 999.9f;
+							popUpBox.setIncreaseVelocityXButtonState(false);
+						}
+						else {
+							popUpBox.setDecreaseVelocityXButtonState(true);
+						}
+						
+						// update text
+						popUpBox.updateVelocityXText(selectedEntity.getStoredVelocity().x);
 					}
-					else {
-						popUpBox.setDecreaseSizeButtonState(true);
-					}
+					
+					// decrease velocity x button
+					else if (popUpBox.getDecreaseVelocityXButton().getAabb().intersects(x, y)) {
+						
+						// decrease entity's horizontal velocity
+						selectedEntity.getStoredVelocity().x -= 5f;
+						
+						if (selectedEntity.getStoredVelocity().x < -995) {
 							
-					// rectangle
-					if (selectedEntity instanceof Rectangle) {
-								
-						Rectangle r = (Rectangle) selectedEntity;
-								
-						r.setWidth(r.getScale());
-						r.setHeight(r.getScale());
-								
-						r.updateAABB();
+							selectedEntity.getStoredVelocity().x = -999.9f;
+							popUpBox.setDecreaseVelocityXButtonState(false);
+						}
+						else {
+							popUpBox.setIncreaseVelocityXButtonState(true);
+						}
+						
+						// update text
+						popUpBox.updateVelocityXText(selectedEntity.getStoredVelocity().x);
 					}
+					
+					// increase velocity y button
+					else if (popUpBox.getIncreaseVelocityYButton().getAabb().intersects(x, y)) {
+						
+						// increase entity's vertical velocity
+						selectedEntity.getStoredVelocity().y += 5f;
+						
+						if (selectedEntity.getStoredVelocity().y > 995f) {
 							
-					// circle
-					else if (selectedEntity instanceof Circle) {
-								
-						Circle c = (Circle) selectedEntity;
-								
-						c.setRadius(c.getScale()/2);
+							selectedEntity.getStoredVelocity().y = 999.9f;
+							popUpBox.setIncreaseVelocityYButtonState(false);
+						}
+						else {
+							popUpBox.setDecreaseVelocityYButtonState(true);
+						}
+						
+						// update text
+						popUpBox.updateVelocityYText(selectedEntity.getStoredVelocity().y);
+					}
+					
+					// decrease velocity y button
+					else if (popUpBox.getDecreaseVelocityYButton().getAabb().intersects(x, y)) {
+						
+						// decrease entity's vertical velocity
+						selectedEntity.getStoredVelocity().y -= 5f;
+						
+						if (selectedEntity.getStoredVelocity().y < -995) {
+							
+							selectedEntity.getStoredVelocity().y = -999.9f;
+							popUpBox.setDecreaseVelocityYButtonState(false);
+						}
+						else {
+							popUpBox.setIncreaseVelocityYButtonState(true);
+						}
+						
+						// update text
+						popUpBox.updateVelocityYText(selectedEntity.getStoredVelocity().y);
 					}
 				}
+					
+				else {
+					
+					// increase size button
+					if (popUpBox.getIncreaseSizeButton().getAabb().intersects(x, y)) {
 						
-				// decrease size button
-				else if (popUpBox.getDecreaseSizeButton().getAabb().intersects(x, y)) {
+						// increase entity's scale
+						selectedEntity.setScale(selectedEntity.getScale() + 5f);
+						
+						if (selectedEntity.getScale() > 95f) {
 							
-					// increase entity's scale
-					selectedEntity.setScale(selectedEntity.getScale() - 10f);
+							selectedEntity.setScale(100f);
+							popUpBox.setIncreaseSizeButtonState(false);
+						}
+						else {
+							popUpBox.setDecreaseSizeButtonState(true);
+						}
+						
+						float size = 1f;
+						
+						// rectangle
+						if (selectedEntity instanceof Rectangle) {
 							
-					if (selectedEntity.getScale() <= 30f) {
-								
-						selectedEntity.setScale(30f);
-						popUpBox.setDecreaseSizeButtonState(false);
+							Rectangle r = (Rectangle) selectedEntity;
+							
+							r.setWidth(r.getScale());
+							r.setHeight(r.getScale());
+							
+							r.updateAABB();
+							
+							size = r.getWidth();
+						}
+						
+						// circle
+						else if (selectedEntity instanceof Circle) {
+							
+							Circle c = (Circle) selectedEntity;
+							
+							c.setRadius(c.getScale()/2);
+							
+							size = c.getRadius() * 2;
+						}
+						
+						// update text
+						popUpBox.updateSizeText(size);
 					}
-					else {
-						popUpBox.setIncreaseSizeButtonState(true);
+					
+					// decrease size button
+					else if (popUpBox.getDecreaseSizeButton().getAabb().intersects(x, y)) {
+						
+						// decrease entity's scale
+						selectedEntity.setScale(selectedEntity.getScale() - 5f);
+						
+						if (selectedEntity.getScale() < 35f) {
+							
+							selectedEntity.setScale(30f);
+							popUpBox.setDecreaseSizeButtonState(false);
+						}
+						else {
+							popUpBox.setIncreaseSizeButtonState(true);
+						}
+						
+						float size = 1f;
+						
+						// rectangle
+						if (selectedEntity instanceof Rectangle) {
+							
+							Rectangle r = (Rectangle) selectedEntity;
+							
+							r.setWidth(r.getScale());
+							r.setHeight(r.getScale());
+							
+							r.updateAABB();
+							
+							size = r.getWidth();
+						}
+						
+						// circle
+						else if (selectedEntity instanceof Circle) {
+							
+							Circle c = (Circle) selectedEntity;
+							
+							c.setRadius(c.getScale()/2);
+							
+							size = c.getRadius() * 2;
+						}
+						
+						// update text
+						popUpBox.updateSizeText(size);
+					}
+					
+					// increase mass button
+					else if (popUpBox.getIncreaseMassButton().getAabb().intersects(x, y)) {
+						
+						// increase entity's mass
+						selectedEntity.setMass(selectedEntity.getMass() + 1f);
+						
+						if (selectedEntity.getMass() > 99f) {
+							
+							selectedEntity.setMass(100f);
+							popUpBox.setIncreaseMassButtonState(false);
+						}
+						else {
+							popUpBox.setDecreaseMassButtonState(true);
+						}
+						
+						// update text
+						popUpBox.updateMassText(selectedEntity.getMass());
+					}
+					
+					// decrease mass button
+					else if (popUpBox.getDecreaseMassButton().getAabb().intersects(x, y)) {
+						
+						// decrease entity's mass
+						selectedEntity.setMass(selectedEntity.getMass() - 1f);
+						
+						if (selectedEntity.getMass() < 2f) {
+							
+							selectedEntity.setMass(1f);
+							popUpBox.setDecreaseMassButtonState(false);
+						}
+						else {
+							popUpBox.setIncreaseMassButtonState(true);
+						}
+						
+						// update text
+						popUpBox.updateMassText(selectedEntity.getMass());
 					}
 							
-					// rectangle
-					if (selectedEntity instanceof Rectangle) {
+					// decrease size button
+					else if (popUpBox.getDecreaseSizeButton().getAabb().intersects(x, y)) {
 								
-						Rectangle r = (Rectangle) selectedEntity;
+						// increase entity's scale
+						selectedEntity.setScale(selectedEntity.getScale() - 10f);
 								
-						r.setWidth(r.getScale());
-						r.setHeight(r.getScale());
+						if (selectedEntity.getScale() <= 30f) {
+									
+							selectedEntity.setScale(30f);
+							popUpBox.setDecreaseSizeButtonState(false);
+						}
+						else {
+							popUpBox.setIncreaseSizeButtonState(true);
+						}
 								
-						r.updateAABB();
-					}
-							
-					// circle
-					else if (selectedEntity instanceof Circle) {
+						// rectangle
+						if (selectedEntity instanceof Rectangle) {
+									
+							Rectangle r = (Rectangle) selectedEntity;
+									
+							r.setWidth(r.getScale());
+							r.setHeight(r.getScale());
+									
+							r.updateAABB();
+						}
 								
-						Circle c = (Circle) selectedEntity;
-								
-						c.setRadius(c.getScale()/2);
+						// circle
+						else if (selectedEntity instanceof Circle) {
+									
+							Circle c = (Circle) selectedEntity;
+									
+							c.setRadius(c.getScale()/2);
+						}
 					}
 				}
+				
 			}
 					
 			else {
@@ -377,7 +605,7 @@ public class GameScreen {
 										
 							// pause simulation
 							simulation.setPause(true);
-							
+													
 							main.setCurrScreen(0);
 							return;
 						}
@@ -389,7 +617,7 @@ public class GameScreen {
 							return;
 						}
 								
-						else if (currentSim != -1) {
+						if (currentSim != -1) {
 							
 							// rectangle button
 							if (button.equals(toolbar.getRectangleButton()) && simulation.isPaused()) {
@@ -401,8 +629,7 @@ public class GameScreen {
 								float mass = 20;
 								float e = -0.3f;
 											
-								selectedEntity = simulation.createCrateEntity(sideLength, posX, posY, z, 
-										0, 0, mass, e);
+								selectedEntity = simulation.createCrateEntity(sideLength, posX, posY, z, 0, 0, mass, e);
 										
 								program = 1;
 								return;
@@ -418,13 +645,29 @@ public class GameScreen {
 								float mass = 20;
 								float e = -0.7f;
 											
-								selectedEntity = simulation.createBallEntity(radius, posX, posY, z, 
-										0, 0, mass, e);
+								selectedEntity = simulation.createBallEntity(radius, posX, posY, z, 0, 0, mass, e);
+							
+								program = 1;
+								return;
+							}
+							
+							// cannon button
+							else if (button.equals(toolbar.getCannonButton()) && simulation.isPaused()) {
+								
+								float sideLength = 50;
+								float posX = toolbar.getCannonButton().getPosition().x;
+								float posY = toolbar.getCannonButton().getPosition().y;
+								
+								float mass = 20;
+								float e = -0.7f;
+											
+								selectedEntity = simulation.createCannonEntity(sideLength, posX, posY, z, mass, e);
 							
 								program = 1;
 								return;
 							}
 						}
+						
 					}
 								
 				}
@@ -437,9 +680,19 @@ public class GameScreen {
 					// check if this button was clicked
 					if (button.getAabb().intersects(x, y) && button.isEnabled()) {
 							
-						currentSim = i + 1;
-						resetSimulation();
+						if (levelsUnlocked[i]) {
+						
+							currentSim = i + 1;
+							resetSimulation();
+						}
+						else {
+							JOptionPane.showMessageDialog(null, "Level locked.");
+						}
 						return;
+					}
+					else if(button.getAabb().intersects(x, y) && !button.isEnabled()) {
+						
+						JOptionPane.showMessageDialog(null, "Level locked.");
 					}
 							
 				}
@@ -459,24 +712,29 @@ public class GameScreen {
 				}
 						
 				// pause-play button
-				if (simulation.getPausePlayButton().getAabb().intersects(x, y)  && currentSim != -1) {
+				if (simulation.getPausePlayButton().getAabb().intersects(x, y)) {
 							
 					simulation.pausePlaySimulation();
 					return;
 				}
 				
 				// reset button
-				if (simulation.getResetButton().getAabb().intersects(x, y)  && currentSim != -1) {
-							
+				if (simulation.getResetButton().getAabb().intersects(x, y) && currentSim != -1) {
+					
 					resetSimulation();
 					return;
 				}
 						
 				// selecting an object
 				if (simulation.isPaused()) {
-							
+					ArrayList<Entity> sim = new ArrayList<Entity>();
+					sim.addAll(simulation.getEntities());
+					if (sim.size()>0)
+					{
+					sim.remove(0);
+					}
 					// loop through entities of simulation
-					for (Entity entity: simulation.getEntities()) {
+					for (Entity entity: sim) {
 							
 						if (entity.intersects(x, y)) {
 								
@@ -496,9 +754,14 @@ public class GameScreen {
 		
 		// if right mouse button was pressed
 		else if (rightClick && simulation.isPaused()) {
-					
+			ArrayList<Entity> sim = new ArrayList<Entity>();
+			sim.addAll(simulation.getEntities());
+			if (sim.size()>0)
+			{
+			sim.remove(0);
+			}	
 			// loop through entities of simulation
-			for (Entity entity: simulation.getEntities()) {
+			for (Entity entity: sim) {
 						
 				if (entity.intersects(x, y)) {
 							
@@ -532,7 +795,7 @@ public class GameScreen {
 		if (program == 0) {
 			
 			// space bar
-			if (key == Main.KEY_SPACE && currentSim != -1)
+			if (key == Main.KEY_SPACE)
 				simulation.pausePlaySimulation();
 			
 			// up
@@ -542,10 +805,6 @@ public class GameScreen {
 			// down
 			else if (key == Main.KEY_DOWN)
 				sidebar.updateTopSimulationIndex(false);
-			
-			// r
-			else if (key == Main.KEY_R)
-				resetSimulation();
 		}
 	}
 	
@@ -662,20 +921,24 @@ public class GameScreen {
 	public PopUpBox createPopUpBox(Entity entity) {
 		
 		float offsetX = 0f;
+		float size = 1f;
 		
 		if (entity instanceof Rectangle) {
 			
 			offsetX = ((Rectangle) entity).getWidth()/2;
+			size = ((Rectangle) entity).getWidth();
 		}
 		else if (entity instanceof Circle) {
+			
 			offsetX = ((Circle) entity).getRadius();
+			size = ((Circle) entity).getRadius() * 2;
 		}
 		
-		float width = 200f;
-		float height = 120f;
+		float width = 250f;
+		float height = 180f;
 		
 		float x = entity.getPosition().x - width/2 - offsetX - 5f;
-		float y = entity.getPosition().y + height/2 + 5f;
+		float y = entity.getPosition().y + 20f;
 				
 		float[] vertices = Entity.getVertices(width, height, z);
 		float[] texCoords = Entity.getTexCoords();
@@ -688,7 +951,91 @@ public class GameScreen {
 		int textureID = loader.loadTexture(PopUpBox.POP_UP_BOX_TEXTURE_FILE);
 		Model model = loader.loadToVAO(vertices, texCoords, indices, textureID);
 		
-		return new PopUpBox(loader, model, position, rotation, scale, width, height, z);
+		// create pop-up box
+		PopUpBox p =  new PopUpBox(loader, model, position, rotation, scale, width, height, z + 0.4f);
+		
+		// set values
+		p.updateSizeText(size);
+		p.updateMassText(entity.getMass());
+		p.updateVelocityXText(entity.getVelocity().x);
+		p.updateVelocityYText(entity.getVelocity().y);
+				
+		// edit button states
+		
+		// cannon
+		if (entity instanceof Cannon) {
+			
+			// velocity x
+			if (entity.getStoredVelocity().x > 995f)
+				p.setIncreaseVelocityXButtonState(false);
+			else 
+				p.setIncreaseVelocityXButtonState(true);
+					
+			if (entity.getStoredVelocity().x < -995f)
+				p.setDecreaseVelocityXButtonState(false);
+			else 
+				p.setDecreaseVelocityXButtonState(true);
+					
+			// velocity y
+			if (entity.getStoredVelocity().y > 995f)
+				p.setIncreaseVelocityYButtonState(false);
+			else 
+				p.setIncreaseVelocityYButtonState(true);
+			
+			if (entity.getStoredVelocity().y < -995f)
+				p.setDecreaseVelocityXButtonState(false);
+			else 
+				p.setDecreaseVelocityXButtonState(true);
+			
+			// size
+			p.setIncreaseSizeButtonState(false);
+			p.setDecreaseSizeButtonState(false);
+			
+			// mass
+			p.setIncreaseMassButtonState(false);
+			p.setDecreaseMassButtonState(false);
+		}
+		
+		// other
+		else {
+			
+			// size
+			if (entity.getScale() > 95f)
+				p.setIncreaseSizeButtonState(false);
+			else 
+				p.setIncreaseSizeButtonState(true);
+					
+			if (entity.getScale() < 35f)
+				p.setDecreaseSizeButtonState(false);
+			else 
+				p.setDecreaseSizeButtonState(true);
+					
+			if (entity.getVelocity().y < -995f)
+				p.setDecreaseVelocityYButtonState(false);
+			else 
+				p.setDecreaseVelocityYButtonState(true);
+					
+			// mass
+			if (entity.getMass() > 99f)
+				p.setIncreaseMassButtonState(false);
+			else 
+				p.setIncreaseMassButtonState(true);
+					
+			if (entity.getMass() < 2f)
+				p.setDecreaseMassButtonState(false);
+			else 
+				p.setDecreaseMassButtonState(true);
+			
+			// velocity x
+			p.setIncreaseVelocityXButtonState(false);
+			p.setDecreaseVelocityXButtonState(false);
+			
+			// velocity y
+			p.setIncreaseVelocityYButtonState(false);
+			p.setDecreaseVelocityYButtonState(false);
+		}
+		
+		return p;
 	}
 	
 	/**
@@ -705,9 +1052,11 @@ public class GameScreen {
 	 */
 	public void resetSimulation() {
 		
+		// pause simulation
 		simulation.setPause(false);
 		simulation.pausePlaySimulation();
-				
+		
+		// load simulation
 		simulation.loadSimulation(sidebar.getSimulationsData().get(currentSim - 1));
 	}
 	

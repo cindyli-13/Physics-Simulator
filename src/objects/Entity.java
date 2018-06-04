@@ -23,6 +23,7 @@ public class Entity {
 	private float e;  // the entity's coefficient of restitution, or "bounciness"
 	private float staticFriction;
 	private float kineticFriction;
+	private Vector3f storedvelocity;
 	
 	// constructor
 	public Entity(Model model, Vector3f position, Vector3f velocity, Vector3f acceleration, 
@@ -67,6 +68,30 @@ public class Entity {
 		// coefficients of friction
 		this.staticFriction = staticFriction;
 		this.kineticFriction = kineticFriction;
+		storedvelocity = new Vector3f (0,0,0);
+	}
+	
+	public Entity(Model model, Vector3f position, float scale, Vector3f rotation) {
+		// TODO Auto-generated constructor stub
+		// model
+		this.model = model;
+				
+		// position
+		this.position = new Vector3f();
+		this.position.x = position.x;
+		this.position.y = position.y;
+		this.position.z = position.z;
+		
+		//rotation
+				this.rotation = new Vector3f();
+				this.rotation.x = rotation.x;
+				this.rotation.y = rotation.y;
+				this.rotation.z = rotation.z;
+				
+		// scale
+		this.scale = scale;
+		storedvelocity = new Vector3f (0,0,0);
+		
 	}
 	
 	/**
@@ -211,6 +236,23 @@ public class Entity {
 	 */
 	public Vector3f getVelocity() {
 		return velocity;
+	}
+	
+	public Vector3f getStoredVelocity()
+	{
+		return storedvelocity;
+	}
+	public void setStoredVelocityX(float x)
+	{
+		storedvelocity.x=x;
+	}
+	public void setStoredVelocityY(float y)
+	{
+		storedvelocity.y=y;
+	}
+	public void setStoredVelocityZ(float z)
+	{
+		storedvelocity.z=z;
 	}
 
 	/**

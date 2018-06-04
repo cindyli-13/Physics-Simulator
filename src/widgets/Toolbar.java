@@ -28,12 +28,14 @@ public class Toolbar {
 	private Button infoButton;			// iButton
 	private Button rectangleButton;		// rButton
 	private Button circleButton;		// cButton
+	private Button cannonButton;		// caButton
 
 	// static variables
 	public static String MENU_BUTTON_TEXTURE_FILE = "./res/MenuB.png";
 	public static String INFO_BUTTON_TEXTURE_FILE = "./res/InfoB.png";
 	public static String RECT_BUTTON_TEXTURE_FILE = "./res/Rect.png";
 	public static String CIRC_BUTTON_TEXTURE_FILE = "./res/Circ.png";
+	public static String CANNON_BUTTON_TEXTURE_FILE="./res/CannonB.png";
 
 	// constructor
 	public  Toolbar(Loader loader, float z) {
@@ -71,6 +73,9 @@ public class Toolbar {
 		float cButtonX = rButtonX + buttonWidth + 2f;
 		Vector3f cButtonPos = new Vector3f(cButtonX, buttonY, z - 100f);
 		
+		float caButtonX = cButtonX + buttonWidth + 2f;
+		Vector3f caButtonPos = new Vector3f(caButtonX, buttonY, z - 100f);
+		
 		// **************************************************
 		
 		// menu button
@@ -97,12 +102,20 @@ public class Toolbar {
 		
 		circleButton = new Button(cButtonModel, cButtonPos, rotation, scale, buttonWidth, buttonHeight);
 		
+		// cannon button
+		textureID = loader.loadTexture(CANNON_BUTTON_TEXTURE_FILE);
+		
+		Model caButtonModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+		
+		cannonButton = new Button(caButtonModel, caButtonPos, rotation, scale, buttonWidth, buttonHeight);
+		
 		// initialize GUI components array list
 		guiComponents = new ArrayList<GUIComponent>();
 		guiComponents.add(menuButton);
 		guiComponents.add(infoButton);
 		guiComponents.add(rectangleButton);
 		guiComponents.add(circleButton);
+		guiComponents.add(cannonButton);
 		
 		// initialize button array list
 		buttons = new ArrayList<Button>();
@@ -110,6 +123,7 @@ public class Toolbar {
 		buttons.add(infoButton);
 		buttons.add(rectangleButton);
 		buttons.add(circleButton);
+		buttons.add(cannonButton);
 	}
 	
 	/**
@@ -165,6 +179,15 @@ public class Toolbar {
 	 */
 	public Button getCircleButton() {
 		return circleButton;
+	}
+	
+	/**
+	 * Returns the cannon button.
+	 * 
+	 * @return cannonButton
+	 */
+	public Button getCannonButton() {
+		return cannonButton;
 	}
 	
 }
