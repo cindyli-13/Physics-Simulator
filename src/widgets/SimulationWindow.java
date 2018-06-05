@@ -406,7 +406,7 @@ public class SimulationWindow {
 		Vector3f rotation = new Vector3f(0,0,0);
 		float scale = 1f;
 		
-		float[] vertices = Entity.getVertices(width, height, z);
+		float[] vertices = Entity.getVertices(width, height, z - 100f);
 		float[] texCoords = Entity.getTexCoords();
 		int[] indices = Entity.getIndices();
 		
