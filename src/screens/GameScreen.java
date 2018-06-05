@@ -739,7 +739,7 @@ public class GameScreen {
 				}
 						
 				// selecting an object
-				if (simulation.isPaused()) {
+				if (simulation.isPaused() && currentSim != -1 && program == 0) {
 					ArrayList<Entity> sim = new ArrayList<Entity>();
 					sim.addAll(simulation.getEntities());
 					if (sim.size()>0)
@@ -766,7 +766,7 @@ public class GameScreen {
 		}
 		
 		// if right mouse button was pressed
-		else if (rightClick && simulation.isPaused()) {
+		else if (rightClick && simulation.isPaused() && currentSim != -1 && program == 0) {
 			ArrayList<Entity> sim = new ArrayList<Entity>();
 			sim.addAll(simulation.getEntities());
 			if (sim.size()>0)

@@ -203,6 +203,14 @@ public class PhysicsWithCannons {
 				{
 				b.getPosition().add(horizontal / 2, 0, 0);
 				}
+				
+				// if A is a cannon
+				if (a instanceof Cannon) {
+					
+					Vector3f New = new Vector3f(a.getStoredVelocity());
+					
+					b.setVelocity(New);
+				}
 					
 				// set collision normal (direction A should travel)
 				collisionNormal = new Vector3f(1,0,0);
@@ -220,6 +228,15 @@ public class PhysicsWithCannons {
 				{
 					b.getPosition().sub(horizontal / 2, 0, 0);
 				}
+				
+				// if B is a cannon
+				if (b instanceof Cannon) {
+					
+					Vector3f New = new Vector3f(b.getStoredVelocity());
+					
+					a.setVelocity(New);
+				}
+				
 				// set collision normal (direction A should travel)
 				collisionNormal = new Vector3f(-1,0,0);
 			}
@@ -245,6 +262,13 @@ public class PhysicsWithCannons {
 					b.getPosition().add(horizontal / 2, vertical / 2, 0);
 				}
 				
+				// if A is a cannon
+				if (a instanceof Cannon) {
+					
+					Vector3f New = new Vector3f(a.getStoredVelocity());
+					
+					b.setVelocity(New);
+				}
 					
 				// set collision normal (direction A should travel)
 				collisionNormal = new Vector3f(1,1,0);
@@ -263,6 +287,13 @@ public class PhysicsWithCannons {
 					b.getPosition().sub(horizontal / 2, vertical / 2, 0);
 				}
 				
+				// if B is a cannon
+				if (b instanceof Cannon) {
+					
+					Vector3f New = new Vector3f(b.getStoredVelocity());
+					
+					a.setVelocity(New);
+				}
 					
 				// set collision normal (direction A should travel)
 				collisionNormal = new Vector3f(-1,-1,0);
@@ -287,6 +318,14 @@ public class PhysicsWithCannons {
 				b.getPosition().add(0, vertical / 2, 0);
 				}
 					
+				// if A is a cannon
+				if (a instanceof Cannon) {
+					
+					Vector3f New = new Vector3f(a.getStoredVelocity());
+					
+					b.setVelocity(New);
+				}
+				
 				// set collision normal (direction A should travel)
 				collisionNormal = new Vector3f(0,1,0);
 			}
@@ -303,6 +342,13 @@ public class PhysicsWithCannons {
 					b.getPosition().sub(0, vertical / 2, 0);
 				}
 				
+				// if B is a cannon
+				if (b instanceof Cannon) {
+					
+					Vector3f New = new Vector3f(b.getStoredVelocity());
+					
+					a.setVelocity(New);
+				}
 					
 				// set collision normal (direction A should travel)
 				collisionNormal = new Vector3f(0,-1,0);
@@ -375,7 +421,18 @@ public class PhysicsWithCannons {
 			b.getPosition().y + penetration.y / 2,
 			b.getPosition().z);
 		b.setPosition(newPos);
+		
+		// if A is a cannon
+		if (a instanceof Cannon) {
 			
+			// only if circle is to the top right of the cannon
+			if (b.getPosition().x >= a.getAabb().getMin().x && b.getPosition().y >= a.getAabb().getMin().y) {
+				
+				Vector3f New = new Vector3f(a.getStoredVelocity());
+				
+				b.setVelocity(New);
+			}
+		}
 			
 		// impulse resolution
 		collisionNormal.normalize();
@@ -599,27 +656,17 @@ public class PhysicsWithCannons {
 	
 	public static void collisionCannon( Circle a, Cannon b)
 	{
-		Vector3f New = new Vector3f(b.getStoredVelocity());
-		
-		a.setVelocity(New);
+		collisionRectangleCircle(b, a, false);
 	}
 	
 	public static void collisionCannon( Rectangle a,  Cannon b)
 	{
-		Vector3f New = new Vector3f(b.getStoredVelocity());
-		
-		a.setVelocity(New);
+		collisionRectangleRectangle(b, a, false);
 	}
 	
 	public static void collisionCannon(Cannon a,  Cannon b)
 	{
-		Vector3f New = new Vector3f(b.getStoredVelocity());
-		
-		a.setVelocity(New);
-		
-		New = new Vector3f(a.getStoredVelocity());
-		
-		b.setVelocity(New);
+		collisionRectangleRectangle(b, a, false);
 	}
 	
 	

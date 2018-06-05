@@ -1015,7 +1015,7 @@ public class CustomizedScreen {
 				}
 				
 				// selecting an object
-				if (simulation.isPaused()) {
+				if (simulation.isPaused() && currentSim != -1 && program == 0) {
 					
 					// loop through entities of simulation
 					for (Entity entity: simulation.getEntities()) {
@@ -1038,7 +1038,7 @@ public class CustomizedScreen {
 		}
 		
 		// if right mouse button was pressed
-		else if (rightClick && simulation.isPaused()) {
+		else if (rightClick && simulation.isPaused() && currentSim != -1 && program == 0) {
 			
 			// loop through entities of simulation
 			for (Entity entity: simulation.getEntities()) {

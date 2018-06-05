@@ -472,8 +472,11 @@ public class LessonPanel {
 				leftButton.setModel(leftButtonDisabledModel);
 			}
 			
-			rightButton.setEnabled(true);
-			rightButton.setModel(rightButtonEnabledModel);
+			if (lessons.get(lessonIndex).size() > 1) {
+				
+				rightButton.setEnabled(true);
+				rightButton.setModel(rightButtonEnabledModel);
+			}
 		}
 		
 		else {
@@ -487,8 +490,11 @@ public class LessonPanel {
 				rightButton.setModel(rightButtonDisabledModel);
 			}
 			
-			leftButton.setEnabled(true);
-			leftButton.setModel(leftButtonEnabledModel);
+			if (lessons.get(lessonIndex).size() > 1) {
+				
+				leftButton.setEnabled(true);
+				leftButton.setModel(leftButtonEnabledModel);
+			}
 		}
 	}
 	
