@@ -25,7 +25,20 @@ public class Entity {
 	private float kineticFriction;
 	private Vector3f storedvelocity;
 	
-	// constructor
+	/**
+	 * Creates an entity.
+	 * 
+	 * @param model
+	 * @param position
+	 * @param velocity
+	 * @param acceleration
+	 * @param rotation
+	 * @param scale
+	 * @param mass
+	 * @param e
+	 * @param staticFriction
+	 * @param kineticFriction
+	 */
 	public Entity(Model model, Vector3f position, Vector3f velocity, Vector3f acceleration, 
 			Vector3f rotation, float scale, float mass, float e, float staticFriction, float kineticFriction) {
 		
@@ -71,8 +84,16 @@ public class Entity {
 		storedvelocity = new Vector3f (0,0,0);
 	}
 	
+	/**
+	 * Creates an entity.
+	 * 
+	 * @param model
+	 * @param position
+	 * @param scale
+	 * @param rotation
+	 */
 	public Entity(Model model, Vector3f position, float scale, Vector3f rotation) {
-		// TODO Auto-generated constructor stub
+		
 		// model
 		this.model = model;
 				
@@ -83,10 +104,10 @@ public class Entity {
 		this.position.z = position.z;
 		
 		//rotation
-				this.rotation = new Vector3f();
-				this.rotation.x = rotation.x;
-				this.rotation.y = rotation.y;
-				this.rotation.z = rotation.z;
+		this.rotation = new Vector3f();
+		this.rotation.x = rotation.x;
+		this.rotation.y = rotation.y;
+		this.rotation.z = rotation.z;
 				
 		// scale
 		this.scale = scale;
@@ -174,9 +195,11 @@ public class Entity {
 	 */
 	public boolean intersects(float x, float y) {
 		
+		// check rectangle-point
 		if (this instanceof Rectangle)
 			return ((Rectangle) this).getAabb().intersects(x, y);
 		
+		// check circle-point
 		else if (this instanceof Circle)
 			return ((Circle) this).intersects(x, y);
 		
@@ -238,21 +261,29 @@ public class Entity {
 		return velocity;
 	}
 	
-	public Vector3f getStoredVelocity()
-	{
+	/**
+	 * Returns the entity's stored velocity.
+	 * 
+	 * @return storedvelocity
+	 */
+	public Vector3f getStoredVelocity() {
 		return storedvelocity;
 	}
-	public void setStoredVelocityX(float x)
-	{
+	
+	/**
+	 * Sets the x-value of the entity's stored velocity.
+	 * @param x
+	 */
+	public void setStoredVelocityX(float x) {
 		storedvelocity.x=x;
 	}
-	public void setStoredVelocityY(float y)
-	{
+	
+	/**
+	 * Sets the y-value of the entity's stored velocity.
+	 * @param y
+	 */
+	public void setStoredVelocityY(float y)	{
 		storedvelocity.y=y;
-	}
-	public void setStoredVelocityZ(float z)
-	{
-		storedvelocity.z=z;
 	}
 
 	/**
@@ -261,6 +292,7 @@ public class Entity {
 	 * @param velocity
 	 */
 	public void setVelocity(Vector3f velocity) {
+		
 		this.velocity.x = velocity.x;
 		this.velocity.y = velocity.y;
 		this.velocity.z = velocity.z;
@@ -316,7 +348,7 @@ public class Entity {
 	}
 
 	/**
-	 * Setst the entity's scale.
+	 * Sets the entity's scale.
 	 * 
 	 * @param scale
 	 */

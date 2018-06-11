@@ -17,7 +17,16 @@ public class Label extends GUIComponent {
 	private float width;
 	private float height;
 	
-	// constructor
+	/**
+	 * Creates a label object.
+	 * 
+	 * @param model
+	 * @param position
+	 * @param rotation
+	 * @param scale
+	 * @param width
+	 * @param height
+	 */
 	public Label(Model model, Vector3f position, Vector3f rotation, float scale, float width, float height) {
 		
 		super(model, position, rotation, scale);

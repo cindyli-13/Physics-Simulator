@@ -33,7 +33,9 @@ public class Loader {
 	private static ArrayList<Integer> vbos;
 	private static ArrayList<Integer> textures;
 	
-	// constructor
+	/**
+	 * Constructor.
+	 */
 	public Loader() {
 		vaos = new ArrayList<Integer>();
 		vbos = new ArrayList<Integer>();
@@ -136,6 +138,7 @@ public class Loader {
 	 * A cleanup method to erase memory data when the program stops.
 	 */
 	public void cleanUp() {
+		
 		for (int vao:vaos) {
 			glDeleteVertexArrays(vao);
 		}

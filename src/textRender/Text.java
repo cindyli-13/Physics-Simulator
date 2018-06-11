@@ -20,8 +20,20 @@ public class Text {
 	private Loader loader;
 	private float z;
 	private ArrayList<GUIComponent> GUIlist = new ArrayList<GUIComponent>();
-	public Text(String str, float x, float y, float z, float height, float width, Loader loader)
-	{
+	
+	/**
+	 * Creates a text object.
+	 * 
+	 * @param str			the string to be displayed
+	 * @param x				the x-coordinate of the bottom-left corner of the text
+	 * @param y				the y-coordinate of the bottom-left corner of the text
+	 * @param z				the z-coordinate of the text
+	 * @param height		the height of a single letter
+	 * @param width			the width of a single letter
+	 * @param loader		the loader object
+	 */
+	public Text(String str, float x, float y, float z, float height, float width, Loader loader) {
+		
 		this.str = str;
 		this.x = x;
 		this.y = y;
@@ -30,8 +42,6 @@ public class Text {
 		this.width = width;
 		this.loader = loader;
 		getList();
-
-
 	}
 	
 	/**

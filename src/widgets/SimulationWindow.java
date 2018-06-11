@@ -100,7 +100,15 @@ public class SimulationWindow {
 	
 	private static float g = -9.81f;	// acceleration due to gravity
 	
-	// constructor
+	/**
+	 * Creates a simulation window.
+	 * 
+	 * @param window
+	 * @param loader
+	 * @param screenWidth
+	 * @param screenHeight
+	 * @param z
+	 */
 	public SimulationWindow(long window, Loader loader, float screenWidth, float screenHeight, float z) {
 		
 		// ******** INITIAL STATES OF BOUNDARIES ********

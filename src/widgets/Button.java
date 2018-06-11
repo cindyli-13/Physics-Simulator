@@ -24,7 +24,16 @@ public class Button extends GUIComponent {
 	
 	private boolean enabled;
 	
-	// constructor
+	/**
+	 * Creates a button object.
+	 * 
+	 * @param model
+	 * @param position
+	 * @param rotation
+	 * @param scale
+	 * @param width
+	 * @param height
+	 */
 	public Button(Model model, Vector3f position, Vector3f rotation, float scale, float width, float height) {
 		
 		super(model, position, rotation, scale);

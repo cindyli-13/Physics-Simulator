@@ -48,7 +48,9 @@ public class Main {
 	private UserGuideScreen1 userGuide;
 	
 	private float z = -1f;
-	private int currScreen;		// 0 = menu, 1 = game, 2 = lesson, 3 = customized
+	private int currScreen;		// 0 = menu, 1 = game, 2 = lesson, 3 = customized, 4 = user guide
+	
+	// fields to store user input
 	private int key;
 	private boolean leftClick;
 	private boolean rightClick;
@@ -67,14 +69,16 @@ public class Main {
 	public static final int KEY_RIGHT = 4;
 	public static final int KEY_R = 5;
 	
-	public static int userType = 0;
+	public static int userType = 0; // 1 = game screen, 2 = lesson screen, 3 = customized screen
 	
 	// main
 	public static void main(String[] args) {
 		new Main();
 	}
 		
-	// constructor
+	/**
+	 * Constructor.
+	 */
 	public Main() {
 		initGLFW();
 		initEngine();
@@ -111,20 +115,24 @@ public class Main {
 			
 			// check the current screen the user is on, check for inputs, then render it
 			switch (currScreen) {
+			
 				case 0:
 					menuScreen.input(this, window, WIDTH, HEIGHT);
 					menuScreen.render(renderer);
 					break;
+					
 				case 1:
 					gameScreen.input(this, key, leftClick, rightClick);
 					gameScreen.update();
 					gameScreen.render(renderer);
 					break;
+					
 				case 2:
 					lessonScreen.input(this, key, leftClick);
 					lessonScreen.update();
 					lessonScreen.render(renderer);
 					break;
+					
 				case 3:
 					customizedScreen.input(this, key, leftClick, rightClick);
 					customizedScreen.update();
@@ -132,9 +140,7 @@ public class Main {
 					break;
 					
 				case 4:
-					
 					userGuide.input(this, key, leftClick);
-					
 					userGuide.render(renderer);
 					break;
 			}
@@ -206,6 +212,7 @@ public class Main {
 		        this.rightClick = true;
 		});
 		
+		// reset input holders
 		this.key = -1;
 		this.leftClick = false;
 		this.rightClick = false;
@@ -347,7 +354,7 @@ public class Main {
 	
 	/**
 	 * Sets the value of currScreen. 0 = menu, 1 = game, 
-	 * 2 = lesson, 3 = customized.
+	 * 2 = lesson, 3 = customized, 4 = user guide.
 	 * 
 	 * @param currScreen
 	 */
@@ -357,16 +364,19 @@ public class Main {
 		
 		// reset the simulation window of that screen (if not menu screen)
 		switch (currScreen) {
+		
 			case 1:
 				userType = 1;
 				gameScreen.setCurrentSim(-1);
 				gameScreen.getSimulationWindow().getEntities().clear();
 				break;
+				
 			case 2:
 				userType = 2;
 				lessonScreen.setCurrentSim(-1);
 				lessonScreen.getSimulationWindow().getEntities().clear();
 				break;
+				
 			case 3:
 				userType = 3;
 				customizedScreen.setCurrentSim(-1);

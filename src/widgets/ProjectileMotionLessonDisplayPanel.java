@@ -85,7 +85,14 @@ public class ProjectileMotionLessonDisplayPanel {
 	
 	public static final String BLANK_LABEL_TEXTURE_FILE = "./res/blankLabel.png";
 	
-	// constructor
+	/**
+	 * Creates the lesson display panel.
+	 * 
+	 * @param loader
+	 * @param x
+	 * @param y
+	 * @param z
+	 */
 	public ProjectileMotionLessonDisplayPanel(Loader loader, float x, float y, float z) {
 		
 		float[] texCoords = Entity.getTexCoords();
@@ -633,7 +640,8 @@ public class ProjectileMotionLessonDisplayPanel {
 		}
 		else
 			s += " ";
-				
+			
+		// add spaces before the string
 		for (int i = 0; i < 6 - temp.length(); i ++)
 			s += " ";
 				

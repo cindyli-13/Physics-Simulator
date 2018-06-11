@@ -76,7 +76,18 @@ public class PopUpBox extends GUIComponent {
 	public static final String MASS_LABEL_TEXTURE_FILE = "./res/massLabel.png";
 	public static final String BLANK_LABEL_TEXTURE_FILE = "./res/blankLabel.png";
 	
-	// constructor
+	/**
+	 * Creates a pop-up box.
+	 * 
+	 * @param loader
+	 * @param model
+	 * @param position
+	 * @param rotation
+	 * @param scale
+	 * @param width
+	 * @param height
+	 * @param z
+	 */
 	public PopUpBox(Loader loader, Model model, Vector3f position, Vector3f rotation, float scale, 
 			float width, float height, float z) {
 		
@@ -786,6 +797,7 @@ public class PopUpBox extends GUIComponent {
 		else
 			s += " ";
 				
+		// add spaces before the string
 		for (int i = 0; i < 6 - temp.length(); i ++)
 			s += " ";
 				

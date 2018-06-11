@@ -95,7 +95,16 @@ public class LessonScreen {
 	public static final String NET_FORCE_ARROW_TEXTURE_FILE = "./res/netForceArrow.png";
 	public static final String ARROW_TEXTURE_FILE = "./res/arrow.png";
 	
-	// constructor
+	/**
+	 * Creates the lesson screen.
+	 * 
+	 * @param window			the window ID
+	 * @param loader			the loader object
+	 * @param screenWidth		the width of the screen
+	 * @param screenHeight		the height of the screen
+	 * @param z					the z-value of the components of the screen
+	 * @param files				the data files that contain data for each custom simulation
+	 */
 	public LessonScreen(long window, Loader loader, float screenWidth, float screenHeight, float z, 
 			String[] files) {
 		

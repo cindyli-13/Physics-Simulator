@@ -19,7 +19,22 @@ public class Rectangle extends Entity {
 	
 	private AABB aabb;
 	
-	// constructor
+	/**
+	 * Creates a rectangle object.
+	 * 
+	 * @param model
+	 * @param position
+	 * @param velocity
+	 * @param acceleration
+	 * @param rotation
+	 * @param scale
+	 * @param mass
+	 * @param e
+	 * @param width
+	 * @param height
+	 * @param staticFriction
+	 * @param kineticFriction
+	 */
 	public Rectangle(Model model, Vector3f position, Vector3f velocity, Vector3f acceleration, Vector3f rotation,
 			float scale, float mass, float e, float width, float height, float staticFriction, 
 			float kineticFriction) {

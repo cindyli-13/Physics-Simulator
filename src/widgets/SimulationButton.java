@@ -20,7 +20,18 @@ public class SimulationButton extends Button {
 	String fileName;
 	Text text;
 	
-	// constructor
+	/**
+	 * Creates a simulation button object.
+	 * 
+	 * @param model
+	 * @param position
+	 * @param rotation
+	 * @param scale
+	 * @param width
+	 * @param height
+	 * @param fileName
+	 * @param loader
+	 */
 	public SimulationButton(Model model, Vector3f position, Vector3f rotation, float scale, float width, float height,
 			String fileName, Loader loader) {
 		

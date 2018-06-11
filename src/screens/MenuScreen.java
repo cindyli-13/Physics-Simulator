@@ -47,7 +47,14 @@ public class MenuScreen {
 	public static String HELP_BUTTON_TEXTURE_FILE = "./res/userGuide.png";
 	public static String TITLE_SCREEN_TEXTURE_FILE = "./res/titleScreen.png";
 	
-	// constructor
+	/**
+	 * Creates the menu screen.
+	 * 
+	 * @param loader			the loader object
+	 * @param screenWidth		the width of the screen
+	 * @param screenHeight		the height of the screen
+	 * @param z					the z-value of the components of the screen
+	 */
 	public MenuScreen(Loader loader, float screenWidth, float screenHeight, float z) {
 		
 		// ******** INITIAL STATES OF BUTTONS ********

@@ -15,18 +15,6 @@ private static final String DISABLED_TEXTURE_FILE = "./res/LevelDisabled.png";
 		{
 			return true;
 		}
-//		if(level == 1)
-//		{
-//			
-//		}
-//		else if(level == 2)
-//		{
-//			if(Ball.intersects(Target)==true)
-//			{
-//				return true;
-//			}
-//		}
-//		
 		return false;
 	}
 	

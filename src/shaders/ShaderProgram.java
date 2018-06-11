@@ -30,7 +30,13 @@ public class ShaderProgram {
 	private int locationProjectionMatrix;
 	private int locationWorldMatrix;
 	
-	// constructor
+	/**
+	 * Creates a shader program.
+	 * 
+	 * @param vertexFile		the location of the vertex shader file
+	 * @param fragmentFile		the location of the fragment shader file
+	 * @throws Exception
+	 */
 	public ShaderProgram(String vertexFile, String fragmentFile) throws Exception {
 		
 		// this line is important and is required for OpenGL to function

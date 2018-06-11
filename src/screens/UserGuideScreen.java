@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 
 /**
  * This class implements the user guide pop-up of the 
- * physics simulator.
+ * physics simulator. This class uses Java Swing.
  * 
  * @author Cindy Li
  * @author Larissa Jin

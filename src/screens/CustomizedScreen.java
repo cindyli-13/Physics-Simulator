@@ -82,7 +82,16 @@ public class CustomizedScreen {
 	public static final String SELECT_A_SIM_LABEL_TEXTURE_FILE = "./res/selectASimulationLabel.png";
 	public static final String TITLE_TEXTURE_FILE = "./res/customizedLabel.png";
 		
-	// constructor
+	/**
+	 * Creates the customized screen.
+	 * 
+	 * @param window			the window ID
+	 * @param loader			the loader object
+	 * @param screenWidth		the width of the screen
+	 * @param screenHeight		the height of the screen
+	 * @param z					the z-value of the components of the screen
+	 * @param files				the data files that contain data for each custom simulation
+	 */
 	public CustomizedScreen(long window, Loader loader, float screenWidth, float screenHeight, float z, 
 			String[] files) {
 					
@@ -172,6 +181,7 @@ public class CustomizedScreen {
 					-(20f/2 +0.5f*20f*button.getText().getGUIlist().size() + 8f)/2,0);
 		}
 		
+		// initialize GUI components array list
 		guiComponents = new ArrayList<GUIComponent>();
 		guiComponents.add(saveButton);
 		guiComponents.add(deleteButton);
@@ -201,12 +211,15 @@ public class CustomizedScreen {
 		renderer.renderGUI(guiComponents);
 		renderer.renderGUI(currentSimName.getGUIlist());
 		
+		// if no simulation selected
 		if (currentSim == -1)
 			renderer.render(selectASimLabel);
 		
+		// if entity selected
 		if (program == 1 || program == 3)
 			moveEntity();
 		
+		// if pop-up box is displayed
 		else if (program == 2) {
 			
 			float x = 0f;

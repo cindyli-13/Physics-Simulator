@@ -85,77 +85,70 @@ public class UserGuideScreen1 {
 			max=2;
 		}
 		
-		
 	}
 	
-public void render(Renderer renderer) {
-		
+	public void render(Renderer renderer) {
 		
 		renderer.renderGUI(guiComponents);
-		
-}
-	
-/**
- * Contains the logic for input handling
- * 
- * @param main				where the main loop is
- * @param key				the key that was pressed
- * @param leftClick			whether the left mouse button was pressed
- * @param rightClick		whether the right mouse button was pressed
- */
-public void input(Main main, int key, boolean leftClick) {
-	
-	// mouse input
-	mouseInput(main, leftClick);
-	
-	
-	
-}
-
-/**
- * Contains the logic for when a mouse is clicked.
- * 
- * @param main				where the main loop is
- * @param leftClick			whether the left mouse button was pressed
- * @param rightClick		whether the right mouse button was pressed
- */
-public void mouseInput(Main main, boolean leftClick) {
-	
-	// get cursor coordinate
-	
-	DoubleBuffer cursorPosX = BufferUtils.createDoubleBuffer(1);
-	DoubleBuffer cursorPosY = BufferUtils.createDoubleBuffer(1);
-	
-	glfwGetCursorPos(window, cursorPosX, cursorPosY);
-	
-	float x = (float) cursorPosX.get(0);
-	float y = (float) cursorPosY.get(0);
-	
-	
-	// convert cursor coordinate to OpenGL world coordinate
-	x -= screenWidth/2;
-	y *= -1;
-	y += screenHeight/2;
-	
-	// if left mouse button was pressed
-	if (leftClick) {
-		
-		if(right.getAabb().intersects(x, y)&&right.isEnabled())
-		{
-			incChangeTheBackground();
-		}
-		else if(left.getAabb().intersects(x,y)&& left.isEnabled())
-		{
-			decChangeTheBackground();
-		}
-		else if(close.getAabb().intersects(x,y))
-		{
-			main.setCurrScreen(Main.userType);
-		}
 	}
+	
+	/**
+	 * Contains the logic for input handling
+	 * 
+	 * @param main				where the main loop is
+	 * @param key				the key that was pressed
+	 * @param leftClick			whether the left mouse button was pressed
+	 * @param rightClick		whether the right mouse button was pressed
+	 */
+	public void input(Main main, int key, boolean leftClick) {
+	
+		// mouse input
+		mouseInput(main, leftClick);
 	}
 
+	/**
+	 * Contains the logic for when a mouse is clicked.
+	 * 
+	 * @param main				where the main loop is
+	 * @param leftClick			whether the left mouse button was pressed
+	 * @param rightClick		whether the right mouse button was pressed
+	 */
+	public void mouseInput(Main main, boolean leftClick) {
 	
+		// get cursor coordinate
+	
+		DoubleBuffer cursorPosX = BufferUtils.createDoubleBuffer(1);
+		DoubleBuffer cursorPosY = BufferUtils.createDoubleBuffer(1);
+	
+		glfwGetCursorPos(window, cursorPosX, cursorPosY);
+	
+		float x = (float) cursorPosX.get(0);
+		float y = (float) cursorPosY.get(0);
+	
+	
+		// convert cursor coordinate to OpenGL world coordinate
+		x -= screenWidth/2;
+		y *= -1;
+		y += screenHeight/2;
+	
+			// if left mouse button was pressed
+		if (leftClick) {
+		
+			if(right.getAabb().intersects(x, y)&&right.isEnabled())
+			{
+				incChangeTheBackground();
+			}
+			else if(left.getAabb().intersects(x,y)&& left.isEnabled())
+			{
+				decChangeTheBackground();
+			}
+			else if(close.getAabb().intersects(x,y))
+			{
+				main.setCurrScreen(Main.userType);
+			}
+		}
+	}
+
 	public void incChangeTheBackground()
 	{
 		page++;
@@ -263,6 +256,5 @@ public void mouseInput(Main main, boolean leftClick) {
 				
 		}
 	}
-	
 	
 }

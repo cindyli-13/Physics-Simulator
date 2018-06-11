@@ -20,7 +20,14 @@ public class GUIComponent {
 	private Vector3f rotation;
 	private float scale;
 
-	// constructor
+	/**
+	 * Creates a GUI component object.
+	 * 
+	 * @param model
+	 * @param position
+	 * @param rotation
+	 * @param scale
+	 */
 	public GUIComponent(Model model, Vector3f position, Vector3f rotation, float scale) {
 		
 		this.model = model;

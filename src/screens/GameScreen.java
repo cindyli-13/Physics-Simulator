@@ -72,8 +72,6 @@ public class GameScreen {
 	private float screenWidth;
 	private float screenHeight;
 	
-	private int lockedMessage=0;
-	
 	// static variables
 	public static final String LEVEL_1_TEXTURE_FILE = "./res/level_1.png";
 	public static final String LEVEL_2_TEXTURE_FILE = "./res/level_2.png";
@@ -85,7 +83,16 @@ public class GameScreen {
 	public static final String TITLE_TEXTURE_FILE = "./res/gameLabel.png";
 	public static final String LOCK_MESSAGE_TEXTURE_FILE = "./res/lockMessage.png";
 	
-	// constructor
+	/**
+	 * Creates the game screen.
+	 * 
+	 * @param window			the window ID
+	 * @param loader			the loader object
+	 * @param screenWidth		the width of the screen
+	 * @param screenHeight		the height of the screen
+	 * @param z					the z-value of the components of the screen
+	 * @param files				the data files that contain data for each custom simulation
+	 */
 	public GameScreen(long window, Loader loader, float screenWidth, float screenHeight, float z,
 			String[] files) {
 		
@@ -133,21 +140,12 @@ public class GameScreen {
 				
 		title = new Label(titleModel, position, rotation, 1, labelWidth, labelHeight);
 		
-		
-		
-//		textureID = loader.loadTexture(LOCK_MESSAGE_TEXTURE_FILE);
-//		Model LockMessageModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
-//				
-//		lockMessage = new Label(LockMessageModel, position, rotation, labelWidth, labelWidth, labelHeight);
-		
-		
 		// initialize GUI components array list
 		guiComponents = new ArrayList<GUIComponent>();
 		guiComponents.add(title);
 		
 		
-		
-		// reset simulation models
+		// reset simulation button models
 				
 		vertices = Entity.getVertices(sidebar.getButtonWidth(), sidebar.getButtonHeight(), z);
 				
@@ -171,6 +169,7 @@ public class GameScreen {
 		sidebar.getButtons().get(4).setModel(loader.loadToVAO(vertices, texCoords, indices, 
 			loader.loadTexture(LOCK_TEXTURE_FILE)));
 			
+		// lock levels 2-5
 		for(int i = 1; i<sidebar.getButtons().size();i++) {
 			
 			sidebar.getButtons().get(i).setEnabled(false);
@@ -199,12 +198,6 @@ public class GameScreen {
 		simulation.render(renderer);
 		renderer.renderGUI(guiComponents);
 		
-		if(lockedMessage==1)
-		{
-		
-				renderer.render(levels.ndisplayMessage(simulation, loader, z));	
-		}
-		lockedMessage=0;
 		if (currentSim == -1)
 			renderer.render(selectASimLabel);
 		
@@ -232,13 +225,8 @@ public class GameScreen {
 			popUpBox.update(offsetX, offsetY);
 			popUpBox.render(renderer);
 		}
-//		if(currentSim==1 && simulation.getEntities().get(0).intersects(simulation.getTarget())==true)
-//		{
-//			System.out.println("Target hit");
-//			//return true;
-//		}
-		else if(!simulation.isPaused() && currentSim>0)
-		{
+		
+		else if(!simulation.isPaused() && currentSim>0) {
 			
 			Boolean hit = levels.check(currentSim, simulation.getEntities().get(0), simulation.getTarget());
 			if(hit==true)

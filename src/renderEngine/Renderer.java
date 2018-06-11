@@ -34,7 +34,12 @@ public class Renderer {
 	private ShaderProgram shader;
 	private long window;
 	
-	//constructor
+	/**
+	 * Constructor.
+	 * 
+	 * @param shader
+	 * @param window
+	 */
 	public Renderer(ShaderProgram shader, long window) {
 		
 		this.shader = shader;

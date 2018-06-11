@@ -37,7 +37,12 @@ public class Toolbar {
 	public static String CIRC_BUTTON_TEXTURE_FILE = "./res/Circ.png";
 	public static String CANNON_BUTTON_TEXTURE_FILE="./res/CannonB.png";
 
-	// constructor
+	/**
+	 * Creates a toolbar.
+	 * 
+	 * @param loader
+	 * @param z
+	 */
 	public  Toolbar(Loader loader, float z) {
 		
 		// ******** INITIAL STATES OF BUTTONS ********

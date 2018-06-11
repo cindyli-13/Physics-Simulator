@@ -60,7 +60,14 @@ public class Sidebar {
 	private static String DOWN_BUTTON_ENABLED_TEXTURE_FILE = "./res/downButtonEnabled.png";
 	private static String DOWN_BUTTON_DISABLED_TEXTURE_FILE = "./res/downButtonDisabled.png";
 	
-	// constructor
+	/**
+	 * Creates the sidebar.
+	 * 
+	 * @param loader					the loader object
+	 * @param z							the z-value of the sidebar
+	 * @param files						the data files that contain the data for the simulations
+	 * @param canCreateNewSimulation	if a create new simulation button is needed
+	 */
 	public Sidebar(Loader loader, float z, String[] files, boolean canCreateNewSimulation) {
 		
 		// ******** INITIAL STATES OF BUTTONS ********

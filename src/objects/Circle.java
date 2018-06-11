@@ -15,7 +15,21 @@ public class Circle extends Entity {
 	// instance variables
 	private float radius;
 	
-	// constructor
+	/**
+	 * Creates a circle object.
+	 * 
+	 * @param model
+	 * @param position
+	 * @param velocity
+	 * @param acceleration
+	 * @param rotation
+	 * @param scale
+	 * @param mass
+	 * @param e
+	 * @param radius
+	 * @param staticFriction
+	 * @param kineticFriction
+	 */
 	public Circle(Model model, Vector3f position, Vector3f velocity, Vector3f acceleration, Vector3f rotation,
 			float scale, float mass, float e, float radius, float staticFriction, float kineticFriction) {
 		

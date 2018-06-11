@@ -22,6 +22,7 @@ import objects.Rectangle;
 public class PhysicsWithCannons {
 	
 	static float z;
+	
 	/**
 	 * Manages the collision detection and collision response between 
 	 * all possible collision scenarios.
@@ -32,91 +33,86 @@ public class PhysicsWithCannons {
 	 */
 	public static void collision(ArrayList<Entity> entities,ArrayList<Entity> boundaries , float z1) {
 				
-			z=z1;
-			// entity-entity collision
-			for (int i = 0; i < entities.size(); i++) {
-				for (int j = i + 1; j < entities.size(); j++) {
+		z=z1;
+		
+		// entity-entity collision
+		for (int i = 0; i < entities.size(); i++) {
+			for (int j = i + 1; j < entities.size(); j++) {
 						
-					Entity a = entities.get(i);
-					Entity b = entities.get(j);
-						
-						
-					// if collision is detected
-					if (a.intersects(b)) {
-						
-						// if A is Rectangle
-						if (a instanceof Rectangle) {
+				Entity a = entities.get(i);
+				Entity b = entities.get(j);
+					
+				// if collision is detected
+				if (a.intersects(b)) {
+					
+					// if A is Rectangle
+					if (a instanceof Rectangle) {
 								
-							// if B is Rectangle
-							if (b instanceof Rectangle) {
+						// if B is Rectangle
+						if (b instanceof Rectangle) {
 								
-								if(a instanceof Cannon)
-								{
+							if(a instanceof Cannon) {
 									
-									if (b instanceof Cannon) {
+								if (b instanceof Cannon) {
 										
-										collisionCannon((Cannon) b, (Cannon)a);
-									}
-									else {
-									
-										collisionCannon((Rectangle) b, (Cannon)a);
-									}
+									collisionCannon((Cannon) b, (Cannon)a);
 								}
-								else if (b instanceof Cannon) {
+								else {
 									
-									collisionCannon((Rectangle) a, (Cannon)b);
-								}
-								else
-								{
-								collisionRectangleRectangle((Rectangle) a, (Rectangle) b, false);
+									collisionCannon((Rectangle) b, (Cannon)a);
 								}
 							}
-								
-							// if B is Circle
-							if (b instanceof Circle) {
+							else if (b instanceof Cannon) {
 									
-								if(a instanceof Cannon)
-								{
-									
-									collisionCannon((Circle) b,(Cannon) a);
-								}
-								else
-								{
-									
-								collisionRectangleCircle((Rectangle) a, (Circle) b, false);
-								}
-								
+								collisionCannon((Rectangle) a, (Cannon)b);
+							}
+							else {
+								collisionRectangleRectangle((Rectangle) a, (Rectangle) b, false);
 							}
 						}
-							
-						// if A is Circle
-						if (a instanceof Circle) {
 								
-							// if B is Rectangle
-							if (b instanceof Rectangle) {
-								if(b instanceof Cannon)
-								{
+						// if B is Circle
+						else if (b instanceof Circle) {
 									
-									collisionCannon((Circle) a,(Cannon) b);
-								}
-								else
-								{
+							if(a instanceof Cannon) {
 									
-									collisionRectangleCircle((Rectangle) b, (Circle) a, false);
-								}
-								
+								collisionCannon((Circle) b,(Cannon) a);
+							}
+							else {
+									
+							collisionRectangleCircle((Rectangle) a, (Circle) b, false);
 							}
 								
-							// if B is Circle
-							if (b instanceof Circle) {
-									
-								collisionCircleCircle((Circle) a, (Circle) b);
-							}
 						}
 					}
-						
+							
+					// if A is Circle
+					else if (a instanceof Circle) {
+								
+						// if B is Rectangle
+						if (b instanceof Rectangle) {
+							
+							if(b instanceof Cannon) {
+									
+								collisionCannon((Circle) a,(Cannon) b);
+							}
+							else {
+									
+								collisionRectangleCircle((Rectangle) b, (Circle) a, false);
+							}
+								
+						}
+								
+						// if B is Circle
+						else if (b instanceof Circle) {
+									
+							collisionCircleCircle((Circle) a, (Circle) b);
+						}
+					}
 				}
+						
 			}
+		}
 			
 		// entity-boundary collision
 		for (Entity entity:entities) {
@@ -126,37 +122,29 @@ public class PhysicsWithCannons {
 					
 				Rectangle r = (Rectangle) entity;
 				
-				for (int i = 0; i < boundaries.size(); i++)
-				{
+				for (int i = 0; i < boundaries.size(); i++) {
+					
 					Rectangle b = (Rectangle) boundaries.get(i);
 					
-				
-				// ground
-				if (r.getAabb().intersects(b.getAabb())) {
-					collisionRectangleRectangle(b,r,true);
-					
+					// ground
+					if (r.getAabb().intersects(b.getAabb())) {
+						
+						collisionRectangleRectangle(b,r,true);
+					}
 				}
-					
-				
-					
-				
-					
-				
-			}}
+			}
 				
 			// if entity is circle
 			else if (entity instanceof Circle) {
-//					
+					
 				Circle c = (Circle) entity;
 				
-				for (int i = 0; i < boundaries.size(); i++)
-				{
+				for (int i = 0; i < boundaries.size(); i++) {
+					
 					Rectangle b = (Rectangle) boundaries.get(i);
 					
-				if (c.intersects(b)==true) 
-					{
-					
-					collisionRectangleCircle(b, c, true);
+					if (c.intersects(b)) {
+						collisionRectangleCircle(b, c, true);
 					}
 				
 				}
@@ -359,11 +347,6 @@ public class PhysicsWithCannons {
 		impulseResolution(collisionNormal, a, b, boundary);
 	}
 	
-//	public static void collisionRampCircle(Ramp a, Circle b)
-//	{
-//		Vector3f closest = new Vector3f(b.getPosition().x, b.getPosition().y, b.getPosition().z);
-//	}
-		
 	/**
 	 * Manages rectangle-circle collision.
 	 * 
@@ -653,18 +636,33 @@ public class PhysicsWithCannons {
 		return c;
 	}
 	
-	public static void collisionCannon( Circle a, Cannon b)
-	{
+	/**
+	 * Manages circle-cannon collision.
+	 * 
+	 * @param a		the circle
+	 * @param b		the cannon
+	 */
+	public static void collisionCannon(Circle a, Cannon b) {
 		collisionRectangleCircle(b, a, false);
 	}
 	
-	public static void collisionCannon( Rectangle a,  Cannon b)
-	{
+	/**
+	 * Manages rectangle-cannon collision.
+	 * 
+	 * @param a		the rectangle
+	 * @param b		the cannon
+	 */
+	public static void collisionCannon(Rectangle a, Cannon b) {
 		collisionRectangleRectangle(b, a, false);
 	}
 	
-	public static void collisionCannon(Cannon a,  Cannon b)
-	{
+	/**
+	 * Manages cannon-cannon collision.
+	 * 
+	 * @param a		the first cannon
+	 * @param b		the second cannon
+	 */
+	public static void collisionCannon(Cannon a,  Cannon b) {
 		collisionRectangleRectangle(b, a, false);
 	}
 	

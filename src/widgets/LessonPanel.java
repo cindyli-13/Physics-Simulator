@@ -92,7 +92,12 @@ public class LessonPanel {
 	
 	public static String FRICTION_LESSON_1_TEXTURE_FILE = "./res/frictionLesson1.png";
 	
-	// constructor
+	/**
+	 * Creates the lesson panel.
+	 * 
+	 * @param loader
+	 * @param z
+	 */
 	public LessonPanel(Loader loader, float z) {
 		
 		this.lessonIndex = -1;

@@ -18,7 +18,12 @@ public class AABB {
 	private Vector2f min;
 	private Vector2f max;
 	
-	// constructor
+	/**
+	 * Creates an AABB.
+	 * 
+	 * @param min	the (x, y) coordinates of the bottom-left point of the AABB
+	 * @param max	the (x, y) coordinates of the top-right point of the AABB
+	 */
 	public AABB(Vector2f min, Vector2f max) {
 		
 		this.min = new Vector2f();
@@ -38,8 +43,11 @@ public class AABB {
 	 */
 	public boolean intersects(AABB a) {
 		
+		// check horizontal direction
 		if (this.max.x <= a.min.x || this.min.x >= a.max.x)
 			return false;
+		
+		// check vertical direction
 		if (this.max.y <= a.min.y || this.min.y >= a.max.y)
 			return false;
 		
@@ -54,13 +62,18 @@ public class AABB {
 	 */
 	public boolean intersects(Circle c) {
 		
+		// check horizontal direction
 		if (this.max.x <= c.getPosition().x - c.getRadius() || 
 				this.min.x >= c.getPosition().x + c.getRadius())
 			return false;
 		
+		// check vertical direction
 		if (this.max.y <= c.getPosition().y - c.getRadius() || 
 				this.min.y >= c.getPosition().y + c.getRadius())
 			return false;
+		
+		
+		// check corners:
 		
 		// clamp closest point to the AABB's extents
 		Vector2f closest = new Vector2f(c.getPosition().x, c.getPosition().y);
@@ -89,7 +102,7 @@ public class AABB {
 	}
 
 	/**
-	 * Returns the coordinate of the minimum point of the AABB (xMin, yMin).
+	 * Returns the coordinates of the minimum point of the AABB (xMin, yMin).
 	 * 
 	 * @return min
 	 */
@@ -98,7 +111,7 @@ public class AABB {
 	}
 
 	/**
-	 * Sets the coordinate of the minimum point of the AABB (xMin, yMin).
+	 * Sets the coordinates of the minimum point of the AABB (xMin, yMin).
 	 * 
 	 * @param min
 	 */
@@ -108,7 +121,7 @@ public class AABB {
 	}
 
 	/**
-	 * Returns the coordinate of the maximum point of the AABB (xMax, yMax).
+	 * Returns the coordinates of the maximum point of the AABB (xMax, yMax).
 	 * 
 	 * @return max
 	 */
@@ -117,7 +130,7 @@ public class AABB {
 	}
 
 	/**
-	 * Sets the coordinate of the maximum point of the AABB (xMax, yMax).
+	 * Sets the coordinates of the maximum point of the AABB (xMax, yMax).
 	 * 
 	 * @param max
 	 */

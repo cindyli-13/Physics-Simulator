@@ -15,8 +15,15 @@ public class Model {
 	private int textureID;
 	private int vertexCount;
 	
-	// constructor
+	/**
+	 * Creates a model.
+	 * 
+	 * @param vaoID
+	 * @param vertexCount
+	 * @param textureID
+	 */
 	public Model(int vaoID, int vertexCount, int textureID) {
+		
 		this.vaoID = vaoID;
 		this.textureID = textureID;
 		this.vertexCount = vertexCount;
