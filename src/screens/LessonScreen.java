@@ -528,7 +528,7 @@ public class LessonScreen {
 					// info button
 					else if (button.equals(toolbar.getInfoButton())) {
 										
-						UserGuideScreen.showUserGuide();
+						main.setCurrScreen(4);
 						return;
 					}
 				}

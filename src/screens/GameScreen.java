@@ -625,7 +625,7 @@ public class GameScreen {
 						// info button
 						else if (button.equals(toolbar.getInfoButton())) {
 										
-							UserGuideScreen.showUserGuide();
+							main.setCurrScreen(4);
 							return;
 						}
 								

@@ -21,6 +21,7 @@ import screens.CustomizedScreen;
 import screens.GameScreen;
 import screens.LessonScreen;
 import screens.MenuScreen;
+import screens.UserGuideScreen1;
 import shaders.ShaderProgram;
 
 /**
@@ -44,6 +45,7 @@ public class Main {
 	private GameScreen gameScreen;
 	private LessonScreen lessonScreen;
 	private CustomizedScreen customizedScreen;
+	private UserGuideScreen1 userGuide;
 	
 	private float z = -1f;
 	private int currScreen;		// 0 = menu, 1 = game, 2 = lesson, 3 = customized
@@ -64,6 +66,8 @@ public class Main {
 	public static final int KEY_LEFT = 3;
 	public static final int KEY_RIGHT = 4;
 	public static final int KEY_R = 5;
+	
+	public static int userType = 0;
 	
 	// main
 	public static void main(String[] args) {
@@ -125,6 +129,13 @@ public class Main {
 					customizedScreen.input(this, key, leftClick, rightClick);
 					customizedScreen.update();
 					customizedScreen.render(renderer);
+					break;
+					
+				case 4:
+					
+					userGuide.input(this, key, leftClick);
+					
+					userGuide.render(renderer);
 					break;
 			}
 			
@@ -347,18 +358,25 @@ public class Main {
 		// reset the simulation window of that screen (if not menu screen)
 		switch (currScreen) {
 			case 1:
+				userType = 1;
 				gameScreen.setCurrentSim(-1);
 				gameScreen.getSimulationWindow().getEntities().clear();
 				break;
 			case 2:
+				userType = 2;
 				lessonScreen.setCurrentSim(-1);
 				lessonScreen.getSimulationWindow().getEntities().clear();
 				break;
 			case 3:
+				userType = 3;
 				customizedScreen.setCurrentSim(-1);
 				customizedScreen.getSimulationWindow().getEntities().clear();
 				break;
 		}
+		
+		// set up user guide screen
+		if (currScreen == 1 || currScreen == 2 || currScreen == 3)
+			userGuide = new UserGuideScreen1(window, loader, WIDTH, HEIGHT, z);
 	}
 	
 }
