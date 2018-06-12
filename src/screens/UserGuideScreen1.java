@@ -178,6 +178,9 @@ public class UserGuideScreen1 {
 		{
 			left.getModel().setTextureID(LEFT_BUTTON_DISABLED_TEXTURE_FILE, loader);
 			left.setEnabled(false);
+			
+			right.getModel().setTextureID(RIGHT_BUTTON_ENABLED_TEXTURE_FILE, loader);
+			right.setEnabled(true);
 		}
 		else {
 			left.getModel().setTextureID(LEFT_BUTTON_ENABLED_TEXTURE_FILE, loader);
