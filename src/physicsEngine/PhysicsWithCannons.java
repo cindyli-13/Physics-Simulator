@@ -13,7 +13,9 @@ import objects.Rectangle;
  * This class contains the static methods which govern 
  * the physics of the simulation.
  * 
- * This class allows cannons.
+ * This class allows for cannons.
+ * 
+ * USED FOR GAME AND CUSTOMIZED MODES.
  * 
  * @author Cindy Li
  * @author Larissa Jin
@@ -190,6 +192,7 @@ public class PhysicsWithCannons {
 					// if A is a cannon
 					if (a instanceof Cannon) {
 					
+						// set object's new velocity to the cannon's stored velocity
 						Vector3f New = new Vector3f(a.getStoredVelocity());
 					
 						b.setVelocity(New);
@@ -215,6 +218,7 @@ public class PhysicsWithCannons {
 					// if B is a cannon
 					if (b instanceof Cannon) {
 						
+						// set object's new velocity to the cannon's stored velocity
 						Vector3f New = new Vector3f(b.getStoredVelocity());
 						
 						a.setVelocity(New);
@@ -246,6 +250,7 @@ public class PhysicsWithCannons {
 					// if A is a cannon
 					if (a instanceof Cannon) {
 						
+						// set object's new velocity to the cannon's stored velocity
 						Vector3f New = new Vector3f(a.getStoredVelocity());
 						
 						b.setVelocity(New);
@@ -272,6 +277,7 @@ public class PhysicsWithCannons {
 					// if B is a cannon
 					if (b instanceof Cannon) {
 						
+						// set object's new velocity to the cannon's stored velocity
 						Vector3f New = new Vector3f(b.getStoredVelocity());
 						
 						a.setVelocity(New);
@@ -302,15 +308,15 @@ public class PhysicsWithCannons {
 					// if A is a cannon
 					if (a instanceof Cannon) {
 						
+						// set object's new velocity to the cannon's stored velocity
 						Vector3f New = new Vector3f(a.getStoredVelocity());
 						
 						b.setVelocity(New);
 					}
 				}
 				else {
-				// positional correction
-				
-				b.getPosition().add(0, vertical / 2, 0);
+					// positional correction
+					b.getPosition().add(0, vertical / 2, 0);
 				}
 				
 				// set collision normal (direction A should travel)
@@ -327,6 +333,7 @@ public class PhysicsWithCannons {
 					// if B is a cannon
 					if (b instanceof Cannon) {
 						
+						// set object's new velocity to the cannon's stored velocity
 						Vector3f New = new Vector3f(b.getStoredVelocity());
 						
 						a.setVelocity(New);
@@ -410,6 +417,7 @@ public class PhysicsWithCannons {
 			// only if circle is to the top right of the cannon
 			if (b.getPosition().x >= a.getAabb().getMin().x && b.getPosition().y >= a.getAabb().getMin().y) {
 				
+				// set object's new velocity to the cannon's stored velocity
 				Vector3f New = new Vector3f(a.getStoredVelocity());
 				
 				b.setVelocity(New);

@@ -463,51 +463,54 @@ public class Sidebar {
 		if (arr.size() <= 1)
 			return arr;
 				
-			int pivot = arr.size() - 1;
-			int index = 0;
+		int pivot = arr.size() - 1;
+		int index = 0;
 				
-			while (index < pivot) {
+		while (index < pivot) {
 					
-				if (arr.get(index).getFileName().compareToIgnoreCase(arr.get(pivot).getFileName()) > 0) {
+			// if this element should be placed behind the pivot
+			if (arr.get(index).getFileName().compareToIgnoreCase(arr.get(pivot).getFileName()) > 0) {
 						
-					SimulationButton temp = arr.get(index);
-					arr.set(index, arr.get(pivot));
-					arr.set(pivot, temp);
+				// swap this element with pivot
+				SimulationButton temp = arr.get(index);
+				arr.set(index, arr.get(pivot));
+				arr.set(pivot, temp);
 						
-					pivot--;
+				pivot--;
 						
-					temp = arr.get(index);
-					arr.set(index, arr.get(pivot));
-					arr.set(pivot, temp);
-				}
-				else {
-					index++;
-				}
+				// swap element before pivot with pivot
+				temp = arr.get(index);
+				arr.set(index, arr.get(pivot));
+				arr.set(pivot, temp);
 			}
+			else {
+				index++;
+			}
+		}
 				
-			// recursively sort left and right sides of pivot
+		// recursively sort left and right sides of pivot
 			
-			ArrayList<SimulationButton> unsortedLeft = new ArrayList<SimulationButton>();
-			for (int i = 0; i < pivot; i++)
-				unsortedLeft.add(arr.get(i));
+		ArrayList<SimulationButton> unsortedLeft = new ArrayList<SimulationButton>();
+		for (int i = 0; i < pivot; i++)
+			unsortedLeft.add(arr.get(i));
 			
-			ArrayList<SimulationButton> unsortedRight = new ArrayList<SimulationButton>();
-			for (int i = pivot; i < arr.size(); i++)
-				unsortedRight.add(arr.get(i));
+		ArrayList<SimulationButton> unsortedRight = new ArrayList<SimulationButton>();
+		for (int i = pivot; i < arr.size(); i++)
+			unsortedRight.add(arr.get(i));
 			
-			ArrayList<SimulationButton> sortedLeft = quickSort(unsortedLeft);
-			ArrayList<SimulationButton> sortedRight = quickSort(unsortedRight);
+		ArrayList<SimulationButton> sortedLeft = quickSort(unsortedLeft);
+		ArrayList<SimulationButton> sortedRight = quickSort(unsortedRight);
 				
-			// link sorted arrays together
-			ArrayList<SimulationButton> sorted = new ArrayList<SimulationButton>();
+		// link sorted arrays together
+		ArrayList<SimulationButton> sorted = new ArrayList<SimulationButton>();
 				
-			for (int i = 0; i < sortedLeft.size(); i ++)
-				sorted.add(sortedLeft.get(i));
+		for (int i = 0; i < sortedLeft.size(); i ++)
+			sorted.add(sortedLeft.get(i));
 			
-			for (int i = 0; i < sortedRight.size(); i ++)
-				sorted.add(sortedRight.get(i));
+		for (int i = 0; i < sortedRight.size(); i ++)
+			sorted.add(sortedRight.get(i));
 				
-			return sorted;
+		return sorted;
 	}
 
 	/**

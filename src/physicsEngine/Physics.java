@@ -12,6 +12,8 @@ import objects.Rectangle;
  * This class contains the static methods which govern 
  * the physics of the simulation.
  * 
+ * USED FOR LESSON MODE.
+ * 
  * @author Cindy Li
  * @author Larissa Jin
  * @since Tuesday, April 17th, 2018

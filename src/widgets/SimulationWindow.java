@@ -366,7 +366,7 @@ public class SimulationWindow {
 	/**
 	 * Creates a metal box entity in the simulation window.
 	 * 
-	 * Currently, this function is not used.
+	 * ***** Currently, this function is not used. *****
 	 * 
 	 * @param sideLength	the side length of the metal box 
 	 * @param x				the x coordinate of the metal box's center

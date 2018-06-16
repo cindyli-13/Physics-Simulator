@@ -346,6 +346,7 @@ public class LessonPanel {
 	 */
 	public void render(Renderer renderer) {
 		
+		// render if lesson panel is not hidden
 		if (showPanel) {
 			renderer.renderGUI(guiComponents);
 			

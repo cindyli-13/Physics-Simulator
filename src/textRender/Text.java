@@ -12,6 +12,7 @@ import widgets.GUIComponent;
 
 public class Text {
 
+	//instance variables
 	private String str;
 	private float x;
 	private float y;
@@ -61,11 +62,18 @@ public class Text {
 		}
 	}
 	
+	/**
+	 * Changes text into an array of strings, with each index holding a character
+	 * 
+	 * @return New array list of strings
+	 */
 	private ArrayList<String> changeText()
 	{
 		int sizeS = this.str.length();
        
 		ArrayList<String> New = new ArrayList<String>();
+		
+		//goes through all characters of the string
 		for( int i=0;i<sizeS; i++)
 		{
 			New.add(charToString(this.str.charAt(i)));
@@ -75,13 +83,19 @@ public class Text {
 		return New;	
 	}
 
-
-
+	/**
+	 * Changes text into an array of strings, with each index holding a character
+	 * 
+	 * @param str string that needs to be changed
+	 * @return New array list of strings
+	 */
 	private ArrayList<String> changeText(String str)
 	{
 		int sizeS = str.length();
 
 		ArrayList<String> New = new ArrayList<String>();
+		
+		//goes through all characters of the string
 		for( int i=0;i<sizeS; i++)
 		{
 			New.add(charToString(str.charAt(i)));
@@ -90,44 +104,81 @@ public class Text {
 
 		return New;	
 	}
+	
+	/** 
+	 * Changes the position of the string
+	 * 
+	 * @param x new x position
+	 * @param y new y position
+	 */
 	public void setPositionOfLine(float x, float y)
 	{
 		this.x = x;
 		this.y=y;
 	}
 
+	/** 
+	 * returns the  x position of the string
+	 * 
+	 * @return x 
+	 */
 	public float getPositionOfLineX()
 	{
 		return x;
 	}
 
+	/** 
+	 * returns the  y position of the string
+	 * 
+	 * @return y 
+	 */
 	public float getPositionOfLineY()
 	{
 		return y;
 	}
 
+	/** 
+	 * sets the size of the string
+	 * 
+	 * @param size 
+	 */
 	public void setSize(int size)
 	{
 		this.height = this.height*size;
 		this.width = this.width*size;
 	}
+	
+	/**
+	 * returns the height of the string
+	 * 
+	 * @return height 
+	 */
 	public float getHeight()
 	{
 		return height;
 
 	}
 
+	/** 
+	 * returns the width of the string
+	 * 
+	 * @return width 
+	 */
 	public float getWidth()
 	{
 		return width;
 	}
 
+	/** 
+	 * uses the information of the arraylist and creates a quad for each character
+	 *  
+	 */
 	public void getList(){
 		ArrayList<String> list = new ArrayList<String>();
 		list = changeText();
 		int size = list.size();
 
-
+		//goes through the array list of characters and creates a quad
 		for(int i = 0; i<size;i++ )
 		{
 			float height = this.height;
@@ -145,8 +196,8 @@ public class Text {
 
 			Vector3f Pos = new Vector3f(x, y, z);
 			
-			
-			 int textureID = loader.loadTexture("./text/"+list.get(i)+".png");
+			//gets the specified character image
+			int textureID = loader.loadTexture("./text/"+list.get(i)+".png");
 			
 			Model nButtonModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 
@@ -158,6 +209,12 @@ public class Text {
 
 	}
 
+	/**
+	 * allows characters to be added to the string
+	 * 
+	 * @param index index where the new character has to be added to
+	 *  
+	 */
 	public void addStr(int index)
 	{
 		float height = this.height;
@@ -166,6 +223,7 @@ public class Text {
 		float y = this.y+height/2;
 		float z=this.z;
 
+		//creates another quad
 		float[] vertices = Entity.getVertices(width, height, z);
 		float[] texCoords = Entity.getTexCoords();
 		int[] indices = Entity.getIndices();
@@ -175,6 +233,7 @@ public class Text {
 
 		Vector3f Pos = new Vector3f(x, y, z);
 
+		//gives the quad a default image, it will be changed to the correct one later
 		int textureID = loader.loadTexture("./text/1.png");
 		Model nButtonModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 
@@ -183,30 +242,42 @@ public class Text {
 		GUIlist.add(letter);
 	}
 
-
-
-
-
+	/**
+	 * changes the text of each quad that is rendered
+	 * also gives the command of 
+	 * 
+	 * @param index index where the new character has to be added to
+	 *  
+	 */
 	public void changeStr(String str)
 	{
 
 		int length = this.str.length();
+		
+		//changes the " " to "space" for the program to understand which image to get
 		str.replaceAll(" ","space");
 		ArrayList<String> intList = changeText(str);
+		
+		//if the new string is equal in length to the previous string
 		if(length==str.length())
 		{
+			//loops through all the characters in the new string
 			for(int i = 0; i<length;i++)
 			{
 				GUIlist.get(i).getModel().setTextureID("./text/"+intList.get(i)+".png", loader);
 			}
 
 		}
+		
+		//if the new string is longer than the previous string
 		else if(length<str.length())
 		{
 			for(int i = 0; i<length;i++)
 			{
 				GUIlist.get(i).getModel().setTextureID("./text/"+intList.get(i)+".png", loader);
 			}
+			
+			//adds the new quads 
 			for(int n= length;n<str.length();n++)
 			{
 				addStr(n);
@@ -214,12 +285,16 @@ public class Text {
 
 			}
 		}
+		
+		//if the new string is shorter than the previous string
 		else if(length>str.length())
 		{
 			for(int i = 0; i<str.length();i++)
 			{
 				GUIlist.get(i).getModel().setTextureID("./text/"+intList.get(i)+".png", loader);
 			}
+			
+			//delete the unneeded characters
 			for(int n=length-1;n>=str.length();n--)
 			{
 
@@ -230,6 +305,10 @@ public class Text {
 		this.str = str;
 	}
 
+	/**
+	 * 
+	 * @return GUIlist arraylist of GUI components containing the characters to render text
+	 */
 	public ArrayList<GUIComponent> getGUIlist()
 	{
 		return GUIlist;

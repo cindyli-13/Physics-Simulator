@@ -193,25 +193,32 @@ public class GameScreen {
 	 */
 	public void render(Renderer renderer) {
 		
+		// render components
 		toolbar.render(renderer);
 		sidebar.render(renderer);
 		simulation.render(renderer);
 		renderer.renderGUI(guiComponents);
 		
+		// if no simulation selected
 		if (currentSim == -1)
 			renderer.render(selectASimLabel);
 		
+		// if dragging the currently selected entity
 		if (program == 1 || program == 3)
 			moveEntity();
 		
+		// if pop-up box is displayed
 		else if (program == 2) {
 			
 			float x = 0f;
 			
+			// get pop-up box offset from entity (rectangle)
 			if (selectedEntity instanceof Rectangle) {
 				
 				x = ((Rectangle) selectedEntity).getWidth()/2;
 			}
+			
+			// get pop-up box offset from entity (circle)
 			else if (selectedEntity instanceof Circle) {
 				x = ((Circle) selectedEntity).getRadius();
 			}
@@ -222,15 +229,20 @@ public class GameScreen {
 			float offsetY = selectedEntity.getPosition().y - 
 					(popUpBox.getPosition().y - 20f);
 			
+			// update pop-up box
 			popUpBox.update(offsetX, offsetY);
 			popUpBox.render(renderer);
 		}
 		
+		// if a simulation is currently playing
 		else if(!simulation.isPaused() && currentSim>0) {
 			
+			// check if the ball hit the target
 			Boolean hit = levels.check(currentSim, simulation.getEntities().get(0), simulation.getTarget());
-			if(hit==true)
-			{
+			
+			if(hit) {
+				
+				// unlock next level
 				if (currentSim < 5) {
 				
 					int nlabel = currentSim+1;
@@ -240,6 +252,7 @@ public class GameScreen {
 					levelsUnlocked[currentSim] = true;
 				}
 				
+				// show victory message
 				renderer.render(levels.displayMessage(simulation, loader, z));
 			}
 		}
@@ -254,6 +267,7 @@ public class GameScreen {
 		if (!simulation.isPaused())
 			simulation.update(true);
 	}
+	
 	/**
 	 * Contains the logic for input handling
 	 * 
@@ -679,21 +693,21 @@ public class GameScreen {
 					Button button = sidebar.getButtons().get(i);
 							
 					// check if this button was clicked
-					if (button.getAabb().intersects(x, y) && button.isEnabled()) {
+					if (button.getAabb().intersects(x, y)) {
 							
+						// if level is unlocked, set up the simulation
 						if (levelsUnlocked[i]) {
 						
 							currentSim = i + 1;
 							resetSimulation();
 						}
+						
+						// if level is locked, show locked message
 						else {
 							JOptionPane.showMessageDialog(null, "Level locked.");
 						}
-						return;
-					}
-					else if(button.getAabb().intersects(x, y) && !button.isEnabled()) {
 						
-						JOptionPane.showMessageDialog(null, "Level locked.");
+						return;
 					}
 							
 				}
@@ -728,12 +742,15 @@ public class GameScreen {
 						
 				// selecting an object
 				if (simulation.isPaused() && currentSim != -1 && program == 0) {
+					
 					ArrayList<Entity> sim = new ArrayList<Entity>();
 					sim.addAll(simulation.getEntities());
-					if (sim.size()>0)
-					{
-					sim.remove(0);
-					}
+					
+					// remove the target from the objects array list
+					// the target cannot be selected
+					if (sim.size() > 0)
+						sim.remove(0);
+					
 					// loop through entities of simulation
 					for (Entity entity: sim) {
 							
@@ -755,12 +772,15 @@ public class GameScreen {
 		
 		// if right mouse button was pressed
 		else if (rightClick && simulation.isPaused() && currentSim != -1 && program == 0) {
+			
 			ArrayList<Entity> sim = new ArrayList<Entity>();
 			sim.addAll(simulation.getEntities());
-			if (sim.size()>0)
-			{
-			sim.remove(0);
-			}	
+			
+			// remove the target from the objects array list
+			// the target cannot be selected
+			if (sim.size() > 0)
+				sim.remove(0);
+			
 			// loop through entities of simulation
 			for (Entity entity: sim) {
 						
@@ -924,11 +944,14 @@ public class GameScreen {
 		float offsetX = 0f;
 		float size = 1f;
 		
+		// get horizontal offset if entity is a rectangle
 		if (entity instanceof Rectangle) {
 			
 			offsetX = ((Rectangle) entity).getWidth()/2;
 			size = ((Rectangle) entity).getWidth();
 		}
+		
+		// get horizontal offset if entity is a circle
 		else if (entity instanceof Circle) {
 			
 			offsetX = ((Circle) entity).getRadius();

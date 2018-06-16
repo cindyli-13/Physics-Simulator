@@ -40,12 +40,15 @@ public class UserGuideScreen {
            "<pre>            Create your own simulations and save it for later " ;
 
         
+       //creates a JPanel
        JPanel p = new JPanel( new BorderLayout() );
 
        int width = 700;
 
+       //adds all of the strings together
        String s = pt1 + width + pt2 ;
 
+       //creates a JFrame
        JFrame frame = new JFrame("User Guide");
        
        frame.getContentPane().add(p);

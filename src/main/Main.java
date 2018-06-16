@@ -21,7 +21,7 @@ import screens.CustomizedScreen;
 import screens.GameScreen;
 import screens.LessonScreen;
 import screens.MenuScreen;
-import screens.UserGuideScreen1;
+import screens.UserGuideScreenModes;
 import shaders.ShaderProgram;
 
 /**
@@ -45,7 +45,7 @@ public class Main {
 	private GameScreen gameScreen;
 	private LessonScreen lessonScreen;
 	private CustomizedScreen customizedScreen;
-	private UserGuideScreen1 userGuide;
+	private UserGuideScreenModes userGuide;
 	
 	private float z = -1f;
 	private int currScreen;		// 0 = menu, 1 = game, 2 = lesson, 3 = customized, 4 = user guide
@@ -386,7 +386,7 @@ public class Main {
 		
 		// set up user guide screen
 		if (currScreen == 1 || currScreen == 2 || currScreen == 3)
-			userGuide = new UserGuideScreen1(window, loader, WIDTH, HEIGHT, z);
+			userGuide = new UserGuideScreenModes(window, loader, WIDTH, HEIGHT, z);
 	}
 	
 }

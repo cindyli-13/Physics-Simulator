@@ -1213,11 +1213,14 @@ public class CustomizedScreen {
 		float offsetX = 0f;
 		float size = 1f;
 		
+		// get horizontal offset if entity is a rectangle
 		if (entity instanceof Rectangle) {
 			
 			offsetX = ((Rectangle) entity).getWidth()/2;
 			size = ((Rectangle) entity).getWidth();
 		}
+		
+		// get horizontal offset if entity is a circle
 		else if (entity instanceof Circle) {
 			
 			offsetX = ((Circle) entity).getRadius();

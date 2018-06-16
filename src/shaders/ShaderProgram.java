@@ -14,8 +14,10 @@ import org.lwjgl.system.MemoryUtil;
 /**
  * This class manages the vertex and fragment shaders which 
  * OpenGL uses to render objects.
- * @author Cindy
- *
+ * 
+ * @author Cindy Li
+ * @author Larissa Jin
+ * @since Monday, April 16th, 2018
  */
 public class ShaderProgram {
 
