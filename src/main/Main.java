@@ -349,6 +349,7 @@ public class Main {
 	 */
 	public void cleanUpEngine() {
 			
+		loader.cleanUp();
 		shader.cleanUp();
 	}
 	
