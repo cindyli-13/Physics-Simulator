@@ -115,6 +115,7 @@ public class ShaderProgram {
 	 * @throws Exception
 	 */
 	public void link() throws Exception {
+		
         glLinkProgram(programID);
         if (glGetProgrami(programID, GL_LINK_STATUS) == 0) {
             throw new Exception("Error linking Shader code: " + glGetProgramInfoLog(programID, 1024));

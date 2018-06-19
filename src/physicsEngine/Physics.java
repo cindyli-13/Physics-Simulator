@@ -233,7 +233,7 @@ public class Physics {
 				a.getPosition().sub(horizontal / 2, 0, 0);
 				b.getPosition().add(horizontal / 2, 0, 0);
 					
-				// set collision normal (direction A should travel)
+				// set collision normal (direction B should travel)
 				collisionNormal = new Vector3f(1,0,0);
 			}
 				
@@ -244,7 +244,7 @@ public class Physics {
 				a.getPosition().add(horizontal / 2, 0, 0);
 				b.getPosition().sub(horizontal / 2, 0, 0);
 					
-				// set collision normal (direction A should travel)
+				// set collision normal (direction B should travel)
 				collisionNormal = new Vector3f(-1,0,0);
 			}
 				
@@ -260,7 +260,7 @@ public class Physics {
 				a.getPosition().sub(horizontal / 2, vertical / 2, 0);
 				b.getPosition().add(horizontal / 2, vertical / 2, 0);
 					
-				// set collision normal (direction A should travel)
+				// set collision normal (direction B should travel)
 				collisionNormal = new Vector3f(1,1,0);
 			}
 				
@@ -271,7 +271,7 @@ public class Physics {
 				a.getPosition().add(horizontal / 2, vertical / 2, 0);
 				b.getPosition().sub(horizontal / 2, vertical / 2, 0);
 					
-				// set collision normal (direction A should travel)
+				// set collision normal (direction B should travel)
 				collisionNormal = new Vector3f(-1,-1,0);
 			}
 				
@@ -287,7 +287,7 @@ public class Physics {
 				a.getPosition().sub(0, vertical / 2, 0);
 				b.getPosition().add(0, vertical / 2, 0);
 					
-				// set collision normal (direction A should travel)
+				// set collision normal (direction B should travel)
 				collisionNormal = new Vector3f(0,1,0);
 			}
 			
@@ -298,7 +298,7 @@ public class Physics {
 				a.getPosition().add(0, vertical / 2, 0);
 				b.getPosition().sub(0, vertical / 2, 0);
 					
-				// set collision normal (direction A should travel)
+				// set collision normal (direction B should travel)
 				collisionNormal = new Vector3f(0,-1,0);
 			}
 				

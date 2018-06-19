@@ -376,7 +376,6 @@ public class PopUpBox extends GUIComponent {
 		guiComponents.add(increaseMassButton);
 		guiComponents.add(decreaseMassButton);
 		guiComponents.add(massLabel);
-		
 		guiComponents.add(sizeBlankLabel);
 		guiComponents.add(massBlankLabel);
 		guiComponents.add(velocityXBlankLabel);

@@ -423,6 +423,7 @@ public class LessonPanel {
 		this.lessonIndex = lessonIndex;
 		pageIndex = 0;
 		
+		// set show hide button to show
 		showPanel = true;
 		showHideButton.setModel(hideButtonModel);
 		
